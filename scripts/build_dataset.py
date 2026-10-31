@@ -10,6 +10,8 @@ comportement d'inference.
 Deux taches:
   1. routage de CLASSE (expert) : demande libre -> {"expert": "..."}
   2. routage d'OUTIL (par expert) : demande libre -> {"tool": "...", "params": {...}}
+  3. planification GENERALISTE : objectif (mono ou multi-etapes) ->
+     {"steps": [{"expert": "...", "request": "..."}]}
 
 Formats de sortie:
   - openai : {"messages": [system, user, assistant]}  (Ollama, OpenAI, vLLM...)
@@ -35,6 +37,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from aisec.core.config import Config  # noqa: E402
+from aisec.core.generalist import GENERALIST_SYSTEM  # noqa: E402
 from aisec.core.registry import get as get_tool  # noqa: E402
 from aisec.experts import all_experts, router_catalog  # noqa: E402
 from aisec.experts.base import EXPERT_ROUTER_SYSTEM, tool_router_system  # noqa: E402
@@ -95,9 +98,52 @@ def _tool_samples(fmt: str) -> list[dict]:
     return samples
 
 
+def _generalist_samples(fmt: str) -> list[dict]:
+    """Planification generaliste: objectif -> etapes (mono et multi-experts).
+
+    Mono-etape: on reutilise chaque exemple d'outil comme objectif d'une seule
+    etape (couvre tout le catalogue). Multi-etapes: on combine des exemples de
+    deux experts differents via un connecteur, pour apprendre la decomposition.
+    """
+    from aisec.core.generalist import generalist_user_prompt
+
+    per_expert: dict[str, list[str]] = {}
+    for expert in all_experts():
+        texts: list[str] = []
+        for tool_name in expert.tool_names:
+            texts.extend(get_tool(tool_name).examples)
+        if texts:
+            per_expert[expert.name] = texts
+
+    samples: list[dict] = []
+
+    def _emit(goal: str, steps: list[dict]) -> None:
+        user = generalist_user_prompt(goal)
+        assistant = _json({"steps": steps})
+        samples.append(_format(GENERALIST_SYSTEM, user, assistant, fmt))
+
+    for expert_name, texts in per_expert.items():
+        for text in texts:
+            _emit(text, [{"expert": expert_name, "request": text}])
+
+    names = sorted(per_expert)
+    for index, first in enumerate(names):
+        second = names[(index + 1) % len(names)]
+        if second == first:
+            continue
+        goal = f"{per_expert[first][0]} puis {per_expert[second][0]}"
+        _emit(
+            goal,
+            [
+                {"expert": first, "request": per_expert[first][0]},
+                {"expert": second, "request": per_expert[second][0]},
+            ],
+        )
+    return samples
+
+
 def _split(rows: list[dict], ratio: float, rng: random.Random) -> tuple[list, list]:
     shuffled = rows[:]
-    rng.shuffle(shuffled)
     cut = int(len(shuffled) * ratio)
     return shuffled[:cut], shuffled[cut:]
 
@@ -127,37 +173,56 @@ def _modelfile(expert, base: str) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _generalist_modelfile(base: str) -> str:
+    """Modelfile Ollama de l'IA generaliste: systeme + exemples de decomposition."""
+    lines = [f"FROM {base}", f'SYSTEM """{_quote(GENERALIST_SYSTEM)}"""']
+    for row in _generalist_samples("openai"):
+        user = row["messages"][1]["content"]
+        answer = row["messages"][2]["content"]
+        lines.append(f'MESSAGE user """{_quote(user)}"""')
+        lines.append(f'MESSAGE assistant """{answer}"""')
+    return "\n".join(lines) + "\n"
+
+
 def write_modelfiles(out_dir: Path, base: str) -> None:
-    """Ecrit un Modelfile Ollama par expert (adapte le modele a sa classe)."""
+    """Ecrit un Modelfile Ollama par expert + un pour l'IA generaliste."""
     out_dir.mkdir(parents=True, exist_ok=True)
     for expert in all_experts():
         path = out_dir / f"Modelfile.{expert.name}"
         path.write_text(_modelfile(expert, base), encoding="utf-8")
-    print(f"Modelfiles ecrits: {out_dir}/Modelfile.<expert>  (base={base})")
+    (out_dir / "Modelfile.generalist").write_text(_generalist_modelfile(base), encoding="utf-8")
+    print(f"Modelfiles ecrits: {out_dir}/Modelfile.<expert> + Modelfile.generalist  (base={base})")
     print("  creer un modele par classe:")
     print(f"    ollama create aisec-<expert> -f {out_dir}/Modelfile.<expert>")
+    print(f"    ollama create aisec-generalist -f {out_dir}/Modelfile.generalist")
 
 
 def build(out_dir: Path, fmt: str, ratio: float, seed: int) -> None:
     rng = random.Random(seed)
     expert_rows = _expert_samples(fmt)
     tool_rows = _tool_samples(fmt)
+    generalist_rows = _generalist_samples(fmt)
 
     tools = [get_tool(n) for e in all_experts() for n in e.tool_names]
     with_examples = sum(1 for t in tools if t.examples)
     print(f"couverture exemples: {with_examples}/{len(tools)} outils ont des `examples`")
 
-    for name, rows in (("expert_routing", expert_rows), ("tool_routing", tool_rows)):
+    sets = (
+        ("expert_routing", expert_rows),
+        ("tool_routing", tool_rows),
+        ("generalist_routing", generalist_rows),
+    )
+    for name, rows in sets:
         train, val = _split(rows, ratio, rng)
         _write(out_dir / f"{name}.train.jsonl", train)
         _write(out_dir / f"{name}.val.jsonl", val)
-        print(f"{name:16s} train={len(train):4d}  val={len(val):4d}")
+        print(f"{name:20s} train={len(train):4d}  val={len(val):4d}")
 
-    all_rows = expert_rows + tool_rows
+    all_rows = expert_rows + tool_rows + generalist_rows
     train, val = _split(all_rows, ratio, rng)
     _write(out_dir / "all.train.jsonl", train)
     _write(out_dir / "all.val.jsonl", val)
-    print(f"{'all':16s} train={len(train):4d}  val={len(val):4d}  (format={fmt})")
+    print(f"{'all':20s} train={len(train):4d}  val={len(val):4d}  (format={fmt})")
 
 
 def _expected(row: dict) -> str:

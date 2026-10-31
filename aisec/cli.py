@@ -1,7 +1,10 @@
 """Interface en ligne de commande d'aisec.
 
 Usages:
-  - expert (recommande): aisec ask "resous les MX de example.com"
+  - generaliste         : aisec generalist "audite le reseau puis casse le wpa"
+                          (decompose, questionne les experts, synthetise)
+  - expert (recommande) : aisec ask "resous les MX de example.com"
+  - question a un expert: aisec consult wireless "casse le wpa de capture.cap"
   - expert force        : aisec dns "..."      (IA dediee a la classe DNS)
   - outil direct        : aisec nmap "..."     (ou alias nmapAI)
   - catalogue           : aisec tools [--search X] [--installed]
@@ -67,6 +70,22 @@ def build_parser() -> argparse.ArgumentParser:
     ask = sub.add_parser("ask", help="Demande libre: le routeur choisit l'expert.")
     ask.add_argument("prompt", nargs="+")
     _add_common(ask, suppress=True)
+
+    gen_cmd = sub.add_parser(
+        "generalist",
+        help="IA generaliste: decompose l'objectif, questionne les experts, synthetise.",
+    )
+    gen_cmd.add_argument("prompt", nargs="+", help="Objectif (sous-demandes separees par ';' ou 'puis').")
+    gen_cmd.add_argument("--title", default="Rapport d'audit aisec")
+    gen_cmd.add_argument("--target", default="", help="Cible de l'audit (entete du rapport).")
+    _add_common(gen_cmd, suppress=True)
+
+    consult_cmd = sub.add_parser(
+        "consult", help="Questionner un expert precis (IA specialiste)."
+    )
+    consult_cmd.add_argument("expert", help="Nom de l'expert (ex: wireless).")
+    consult_cmd.add_argument("prompt", nargs="+")
+    _add_common(consult_cmd, suppress=True)
 
     report_cmd = sub.add_parser(
         "report",
@@ -319,6 +338,92 @@ def _cmd_report(args) -> int:
     return 0
 
 
+def _cmd_generalist(args) -> int:
+    """IA generaliste: decompose l'objectif, questionne les experts, synthetise."""
+    from .core.generalist import Generalist
+
+    config = _load_config(args)
+    generalist = Generalist(config)
+    goal = " ".join(args.prompt)
+    assume_yes = True if config.assume_yes else None
+    steps = generalist.plan(goal)
+
+    consultations = []
+    for step in steps:
+        while True:
+            try:
+                consultations.append(generalist.consult(step, assume_yes=assume_yes))
+                break
+            except ConfirmationRequired as exc:
+                if _confirm_interactive(exc):
+                    assume_yes = True
+                    continue
+                print(f"Annule ({step.expert}): {exc}", file=sys.stderr)
+                break
+            except (ExecutionError, KeyError) as exc:
+                print(f"Erreur ({step.expert}): {exc}", file=sys.stderr)
+                break
+
+    synthesis, source = generalist.synthesize(goal, consultations)
+
+    if args.json:
+        _emit_json(
+            {
+                "goal": goal,
+                "source": source,
+                "steps": [{"expert": s.expert, "request": s.request} for s in steps],
+                "consultations": [
+                    {
+                        "expert": c.step.expert,
+                        "request": c.step.request,
+                        "command": c.record.command,
+                        "risk": c.record.risk,
+                        "executed": c.record.executed,
+                        "reply": c.reply,
+                    }
+                    for c in consultations
+                ],
+                "synthesis": synthesis,
+            }
+        )
+        return 0
+
+    print(f"[generaliste -> {len(consultations)} consultation(s), synthese: {source}]")
+    for index, c in enumerate(consultations, 1):
+        status = "execute" if c.record.executed else "dry-run"
+        print(f"  {index}. [{c.step.expert}] {c.record.command} ({status})")
+    print("\n--- Synthese ---")
+    print(synthesis)
+
+    _write_generalist_report(args, generalist)
+    return 0
+
+
+def _write_generalist_report(args, generalist) -> None:
+    out = getattr(args, "report", None)
+    if not out:
+        return
+    report = generalist.report
+    report.title = getattr(args, "title", report.title)
+    report.target = getattr(args, "target", report.target)
+    try:
+        path = report.save(out)
+    except (ValueError, OSError) as exc:
+        print(f"Rapport non ecrit: {exc}", file=sys.stderr)
+        return
+    print(f"\nRapport ecrit: {path}")
+
+
+def _cmd_consult(args) -> int:
+    """Questionner un expert precis (IA specialiste)."""
+    try:
+        get_expert(args.expert)
+    except KeyError as exc:
+        print(f"Erreur: {exc}", file=sys.stderr)
+        return 2
+    return _run_expert_cmd(args.expert, args, " ".join(args.prompt))
+
+
 def run_cli(tool_name: str | None, argv: list[str]) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -329,6 +434,10 @@ def run_cli(tool_name: str | None, argv: list[str]) -> int:
         return _cmd_tools(args)
     if args.command == "report":
         return _cmd_report(args)
+    if args.command == "generalist":
+        return _cmd_generalist(args)
+    if args.command == "consult":
+        return _cmd_consult(args)
 
     expert_names = {e.name for e in all_experts()}
     if tool_name is not None:
@@ -387,6 +496,10 @@ def run_cli(tool_name: str | None, argv: list[str]) -> int:
 
 def main() -> int:
     return run_cli(None, sys.argv[1:])
+
+
+def main_generalist() -> int:
+    return run_cli(None, ["generalist", *sys.argv[1:]])
 
 
 def main_nmap() -> int:

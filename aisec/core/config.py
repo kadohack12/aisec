@@ -40,6 +40,9 @@ class Config:
     assume_yes: bool = False
     # IA dediee par expert: {"dns": "modele-dns", "web": "modele-web"}
     expert_models: dict[str, str] = field(default_factory=dict)
+    # IA generaliste (chef d'orchestre qui questionne les experts). Modele dedie
+    # optionnel: branche une IA generaliste entrainee, comme pour les experts.
+    generalist_model: str = ""
     # Politique de risque par classe (surcharge de DEFAULT_CLASS_POLICIES).
     # {"exploitation": {"max_auto_risk": "low", "require_confirmation": true}}
     expert_policies: dict[str, dict] = field(default_factory=dict)

@@ -5,9 +5,11 @@ comment **l'entraîner / l'adapter** par classe d'outils. Aucune donnée ne sort
 la machine si vous restez sur Ollama.
 
 > Rappel d'architecture : un **expert = une classe Parrot = une IA dédiée + ses
-> outils**. Le routeur choisit d'abord l'expert (classe), puis l'expert choisit
-> l'outil et ses paramètres. Les deux étapes peuvent utiliser le LLM, avec
-> **repli heuristique déterministe** si aucun modèle n'est disponible.
+> outils**. Au-dessus, une **IA généraliste** (`aisec/core/generalist.py`) reçoit
+> un objectif, le décompose, **questionne les experts** puis synthétise. Le
+> routeur choisit d'abord l'expert (classe), puis l'expert choisit l'outil et ses
+> paramètres. Toutes ces étapes peuvent utiliser le LLM, avec **repli heuristique
+> déterministe** si aucun modèle n'est disponible.
 
 ---
 
@@ -75,11 +77,13 @@ Le routage par mots-clés et `parse_intent` construisent la commande sans modèl
 
 ---
 
-## 2. Une IA dédiée par classe (`[expert_models]`)
+## 2. Une IA dédiée par classe (`[expert_models]`) et une IA généraliste
 
 Chaque expert peut utiliser **son propre modèle**. C'est le cœur du principe
 « une IA entraînée par domaine » : un petit modèle spécialisé « passwords » est
-plus fiable qu'un gros modèle généraliste sur cette tâche étroite.
+plus fiable qu'un gros modèle généraliste sur cette tâche étroite. Le
+**généraliste** (chef d'orchestre) a lui aussi sa place réservée, avec
+`generalist_model`.
 
 ```toml
 model = "llama3.1"              # modèle global (repli)
@@ -90,10 +94,14 @@ info         = "aisec-info:latest"
 webapp       = "aisec-webapp:latest"
 passwords    = "aisec-passwords:latest"
 exploitation = "aisec-exploitation:latest"
+
+# IA généraliste (decomposition + synthese d'objectifs composes)
+generalist_model = "aisec-generalist:latest"
 ```
 
-`Config.model_for(expert_name)` résout le modèle, et l'orchestrateur
-(`aisec/core/orchestrator.py`) l'applique automatiquement pour chaque expert.
+`Config.model_for(expert_name)` résout le modèle de l'expert, et l'orchestrateur
+(`aisec/core/orchestrator.py`) l'applique automatiquement ; le généraliste
+applique `generalist_model` à ses appels de décomposition et de synthèse.
 
 ---
 
@@ -101,11 +109,14 @@ exploitation = "aisec-exploitation:latest"
 
 Le savoir est **déjà dans le code** : `system_prompt`, `description`,
 `parameters` et surtout les **`examples`** de chaque outil. Le script
-`scripts/build_dataset.py` en dérive deux tâches supervisées, avec *exactement*
-les prompts de production (importés de `aisec.experts.base`) :
+`scripts/build_dataset.py` en dérive trois tâches supervisées, avec *exactement*
+les prompts de production (importés de `aisec.experts.base` et
+`aisec.core.generalist`) :
 
 1. **Routage de classe** : demande libre → `{"expert": "<nom>"}`
 2. **Routage d'outil** : demande libre → `{"tool": "<nom>", "params": {...}}`
+3. **Planification généraliste** : objectif (mono ou multi-étapes) →
+   `{"steps": [{"expert": "<nom>", "request": "<sous-demande>"}]}`
 
 ```bash
 # format OpenAI/Ollama (messages), split 90/10
@@ -121,9 +132,10 @@ python scripts/build_dataset.py --out datasets --format alpaca
 Fichiers produits :
 
 ```
-datasets/expert_routing.train.jsonl   datasets/expert_routing.val.jsonl
-datasets/tool_routing.train.jsonl     datasets/tool_routing.val.jsonl
-datasets/all.train.jsonl              datasets/all.val.jsonl
+datasets/expert_routing.train.jsonl       datasets/expert_routing.val.jsonl
+datasets/tool_routing.train.jsonl         datasets/tool_routing.val.jsonl
+datasets/generalist_routing.train.jsonl   datasets/generalist_routing.val.jsonl
+datasets/all.train.jsonl                  datasets/all.val.jsonl
 ```
 
 > **Le levier n°1 pour améliorer l'IA : écrire des `examples`.** Chaque exemple
@@ -148,7 +160,8 @@ python scripts/build_dataset.py --eval datasets/expert_routing.val.jsonl --provi
 
 ### 4.1 Ollama : Modelfile (le plus simple, sans GPU)
 
-`build_dataset.py --modelfiles` écrit un `Modelfile` par expert : il fixe le
+`build_dataset.py --modelfiles` écrit un `Modelfile` par expert (plus un
+`Modelfile.generalist` pour le chef d'orchestre) : il fixe le
 prompt système et injecte les exemples comme tours `MESSAGE` (few-shot
 persistant, aucune étape d'entraînement lourde).
 
@@ -158,9 +171,10 @@ python scripts/build_dataset.py --modelfiles --out datasets --base-model llama3.
 ollama create aisec-info       -f datasets/Modelfile.info
 ollama create aisec-passwords  -f datasets/Modelfile.passwords
 ollama create aisec-webapp     -f datasets/Modelfile.webapp
+ollama create aisec-generalist -f datasets/Modelfile.generalist
 # ... un modèle par classe
 
-ollama list    # aisec-info:latest, aisec-passwords:latest, ...
+ollama list    # aisec-info:latest, aisec-passwords:latest, aisec-generalist:latest, ...
 ```
 
 Puis brancher ces modèles :
@@ -170,6 +184,8 @@ Puis brancher ces modèles :
 info      = "aisec-info:latest"
 passwords = "aisec-passwords:latest"
 webapp    = "aisec-webapp:latest"
+
+generalist_model = "aisec-generalist:latest"
 ```
 
 C'est la méthode **recommandée** pour démarrer : un « entraînement » immédiat,
@@ -206,15 +222,18 @@ ollama create aisec-info -f Modelfile   # FROM ./out/lora-info.gguf
 **Stratégie par classe** : un petit modèle (3–8B) fine-tuné **par expert** donne
 d'excellents résultats sur une tâche étroite (choisir un outil + extraire des
 paramètres), pour un coût d'entraînement faible. C'est exactement ce que permet
-`[expert_models]`.
+`[expert_models]`. Le généraliste se fine-tune de la même façon, sur
+`generalist_routing.train.jsonl` (format ChatML), puis se branche via
+`generalist_model` : un modèle généraliste apprend à décomposer des objectifs
+composés et à choisir les experts.
 
 ### 4.3 Boucle de contrôle qualité
 
 1. `python scripts/build_dataset.py` → datasets + couverture.
 2. `python scripts/build_dataset.py --eval ... --provider ollama` → accuracy de référence.
 3. Ajouter/corriger des `examples`, regénérer, ré-évaluer.
-4. Quand un modèle bat l'heuristique sur la tâche, l'activer via `--routing llm`
-   ou `[expert_models]`.
+4. Quand un modèle bat l'heuristique sur la tâche, l'activer via `--routing llm`,
+   `[expert_models]` (spécialistes) ou `generalist_model` (généraliste).
 5. **Toujours** garder `--provider none` comme filet de sécurité : il doit rester
    fonctionnel (déterminisme, aucune dépendance réseau).
 

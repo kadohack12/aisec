@@ -40,6 +40,10 @@ routing = "heuristic"
 # web = "aisec-web:latest"
 # password = "aisec-password:latest"
 
+# --- IA generaliste (chef d'orchestre qui questionne les experts) ---
+# Modele dedie optionnel; vide = utilise `model` ci-dessus.
+# generalist_model = "aisec-generalist:latest"
+
 # --- Niveau 3 : politique de risque par classe ---
 # Surcharge des politiques par defaut (classes offensives deja durcies).
 # Les cles absentes gardent la politique par defaut.

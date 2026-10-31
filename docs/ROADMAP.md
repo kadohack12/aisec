@@ -42,8 +42,8 @@ Résultat sur `main` : **14 experts** (dont `dns`), **214 outils uniques**,
 ## 1. État de `main`
 
 `main` = branche courante (socle + expert `dns` + contrôle niveau 2 + catalogue
-445 outils + répartition en 15 classes + **16 experts** + orchestrateur +
-rapports + **générateur de jeux d'entraînement**).
+445 outils + répartition en 15 classes + **16 experts** + **IA généraliste** +
+orchestrateur + rapports + **générateur de jeux d'entraînement**).
 La consolidation des branches d'agents est **terminée** : toutes les PR sont
 fusionnées et fermées, il ne reste que `main`.
 
@@ -123,6 +123,19 @@ Le socle est complet ; la suite consiste à **approfondir** les classes existant
       wireshark, johnny, mdk3, gdb-gef...), dont les binaires sous-jacents sont
       déjà couverts.
 - [ ] Enrichir les `examples` des outils (levier n°1 de l'entraînement).
+
+### Jalon 6 — IA généraliste (chef d'orchestre) ✅
+- [x] `core/generalist.py` : décompose un objectif, **questionne** les experts
+      (via l'orchestrateur), puis **synthétise** une réponse unique
+- [x] Deux modes : LLM (décomposition + synthèse rédigées) et heuristique
+      (connecteurs `;`/`puis`/`ensuite` + synthèse concaténée), repli déterministe
+- [x] Place réservée : `generalist_model` (IA généraliste entraînée), comme
+      `[expert_models]` pour les experts
+- [x] CLI : commande `generalist` (objectif composé) et `consult` (questionner un
+      expert précis) + alias `generalistAI`
+- [x] Entraînement : tâche `generalist_routing` (mono + multi-étapes) et
+      `Modelfile.generalist` dans `scripts/build_dataset.py`
+- [x] Tests dédiés (`tests/test_generalist.py`)
 
 ---
 

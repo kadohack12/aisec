@@ -47,7 +47,7 @@ def test_build_writes_all_formats(tmp_path):
     for fmt in ("openai", "chatml", "alpaca"):
         out = tmp_path / fmt
         bd.build(out, fmt, 0.9, seed=1)
-        for name in ("expert_routing", "tool_routing", "all"):
+        for name in ("expert_routing", "tool_routing", "generalist_routing", "all"):
             train = out / f"{name}.train.jsonl"
             val = out / f"{name}.val.jsonl"
             assert train.is_file() and val.is_file()
@@ -66,11 +66,29 @@ def test_modelfiles_one_per_expert(tmp_path):
 
     bd.write_modelfiles(tmp_path, "llama3.1")
     files = sorted(p.name for p in tmp_path.glob("Modelfile.*"))
-    assert files == sorted(f"Modelfile.{e.name}" for e in all_experts())
+    expected = sorted([f"Modelfile.{e.name}" for e in all_experts()] + ["Modelfile.generalist"])
+    assert files == expected
     content = (tmp_path / "Modelfile.info").read_text(encoding="utf-8")
     assert content.startswith("FROM llama3.1")
     assert 'SYSTEM """' in content
     assert "MESSAGE assistant" in content
+
+
+def test_generalist_samples_and_modelfile(tmp_path):
+    rows = bd._generalist_samples("openai")
+    assert rows
+    # Le prompt systeme doit etre celui de production (source unique).
+    assert rows[0]["messages"][0]["content"] == bd.GENERALIST_SYSTEM
+    for row in rows:
+        payload = json.loads(row["messages"][2]["content"])
+        assert "steps" in payload and payload["steps"]
+        for step in payload["steps"]:
+            assert set(step) == {"expert", "request"}
+
+    bd.write_modelfiles(tmp_path, "llama3.1")
+    generalist = (tmp_path / "Modelfile.generalist").read_text(encoding="utf-8")
+    assert generalist.startswith("FROM llama3.1")
+    assert bd.GENERALIST_SYSTEM.split(".")[0] in generalist
 
 
 def test_eval_reports_unavailable_provider(tmp_path, capsys):

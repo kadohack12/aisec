@@ -36,6 +36,11 @@ de partir en roue libre.
                         |
                         v
    +--------------  NIVEAU 1 : l'IA pilote  ---------------+
+   |  GENERALISTE (objectif compose, ex: "scanne X puis    |
+   |    casse le WPA") -- decompose --> questionne -->      |
+   |    synthetise                                          |
+   |         |                                              |
+   |         v                                              |
    |  ROUTEUR  -->  EXPERT (classe Parrot)  -->  OUTIL       |
    |                  IA dediee + dig/host/whois             |
    +---------------------------+----------------------------+
@@ -54,13 +59,32 @@ de partir en roue libre.
          Execution (argv, jamais de shell) --> Analyse
 ```
 
+### Deux etages d'IA : le generaliste et les specialistes
+
+- **Les experts sont des IA specialisees** : une par classe (dns, wireless,
+  webapp, ...), chacune maitrise ses outils et son prompt systeme.
+- **Le generaliste est l'IA chef d'orchestre** (`aisec/core/generalist.py`) :
+  il recoit un objectif libre, le **decompose** en etapes, **questionne** les
+  experts pertinents (qui executent leur commande), puis **synthetise** une
+  reponse unique. Il a sa **place reservee** : `generalist_model` dans la config
+  permet de brancher une IA generaliste entrainee, comme `[expert_models]` pour
+  les experts.
+
+```bash
+# Le generaliste decompose, interroge les experts et synthetise
+generalistAI "analyse les ports 22,80,8080 de 10.0.0.5 puis casse le wpa de capture.cap"
+
+# ...ou questionne un specialiste precis
+aisec consult wireless "casse le wpa de capture.cap"
+```
+
 On construit **un expert à la fois** (comme la taxonomie de Parrot :
 Information Gathering, Web, Password Attacks, Sniffing, Forensics, ...), on le
-teste, puis on ajoute le suivant. À terme, un **orchestrateur unique** route
-vers tous les experts.
+teste, puis on ajoute le suivant. Le generaliste route vers tous les experts.
 
 Chaque expert peut être branché sur **sa propre IA entraînée**
-(`[expert_models]` dans la config), ou partager le LLM global.
+(`[expert_models]` dans la config), ou partager le LLM global ; le generaliste a
+son propre modèle (`generalist_model`).
 
 ---
 
@@ -177,6 +201,10 @@ assume_yes = false
 [expert_models]
 dns = "aisec-dns:latest"
 web = "aisec-web:latest"
+
+# --- IA généraliste (chef d'orchestre) ---
+# Modèle dédié optionnel ; laisser vide pour utiliser le modèle global.
+generalist_model = "aisec-generalist:latest"
 ```
 
 ---
@@ -184,6 +212,12 @@ web = "aisec-web:latest"
 ## Utilisation
 
 ```bash
+# IA généraliste : décompose l'objectif, questionne les experts, synthétise
+generalistAI "analyse les ports 22,80,8080 de 10.0.0.5 puis casse le wpa de capture.cap"
+
+# Questionner un expert précis (IA spécialiste)
+aisec consult wireless "casse le wpa de capture.cap"
+
 # Demande libre : le routeur choisit l'expert
 aisec ask "je veux les enregistrements MX de example.com"
 
@@ -286,6 +320,28 @@ aisec --json dns "qui possede example.com"
 
 `aisec` sait enchaîner plusieurs demandes et produire un **rapport d'audit**.
 
+### IA généraliste : décomposer, questionner, synthétiser
+
+Au-dessus des experts, la commande `generalist` traite un **objectif composé**.
+Elle le découpe en étapes, **questionne chaque expert** concerné (chacun exécute
+sa commande avec les mêmes garde-fous), puis **synthétise** le tout :
+
+```bash
+generalistAI "analyse les ports 22,80,8080 de 10.0.0.5 puis casse le wpa de capture.cap"
+```
+
+Sans LLM, la décomposition est **heuristique** (connecteurs `;`, `puis`,
+`ensuite`, ...) et la synthèse concatène les réponses : déterministe et
+testable. Avec un provider, le généraliste choisit lui-même les experts et
+rédige la synthèse. Le rapport d'audit agrège toutes les consultations
+(`--report audit.html`).
+
+Pour ne questionner qu'un seul expert, `consult` :
+
+```bash
+aisec consult wireless "casse le wpa de capture.cap"
+```
+
 ### Routage par LLM (optionnel)
 
 Par défaut le routeur est **heuristique** (mots-clés, déterministe). Avec un
@@ -331,14 +387,17 @@ Surchargeable dans `[expert_policies]` :
 exploitation = { max_auto_risk = "low", require_confirmation = true }
 ```
 
-### IA dédiée par expert
+### IA dédiée par expert (et IA généraliste)
 
 `[expert_models]` branche un modèle par classe (une IA entraînée par domaine) ;
-l'orchestrateur l'applique automatiquement à l'expert sélectionné.
+l'orchestrateur l'applique automatiquement à l'expert sélectionné. Le
+généraliste a son propre modèle (`generalist_model`), réservé de la même façon.
 
 ```toml
 [expert_models]
 dns = "aisec-dns:latest"
+
+generalist_model = "aisec-generalist:latest"
 ```
 
 ### Mettre en place et entraîner les IA
@@ -346,12 +405,13 @@ dns = "aisec-dns:latest"
 Guide complet : **[docs/AI_TRAINING.md](docs/AI_TRAINING.md)**. En bref :
 
 ```bash
-# 1. générer les jeux d'entraînement depuis le code (experts + outils)
+# 1. générer les jeux d'entraînement depuis le code (experts + outils + generaliste)
 python scripts/build_dataset.py --out datasets
 
-# 2. adapter un modèle local par classe (Modelfile Ollama, sans GPU)
+# 2. adapter un modèle local par classe et un pour le generaliste (Ollama, sans GPU)
 python scripts/build_dataset.py --modelfiles --out datasets --base-model llama3.1
 ollama create aisec-info -f datasets/Modelfile.info
+ollama create aisec-generalist -f datasets/Modelfile.generalist
 
 # 3. évaluer l'exactitude JSON d'un modèle
 python scripts/build_dataset.py --eval datasets/expert_routing.val.jsonl --provider ollama
@@ -386,7 +446,8 @@ colle au comportement réel. Ajouter des `examples` est le levier n°1.
 aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, policies (niveau 3),
-                executor, intent, analyzer, engine, orchestrator, registry
+                executor, intent, analyzer, engine, orchestrator, generalist,
+                registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
                 webapp, passwords, sniffing, exploitation, forensics, reverse,
                 post_exploit, reporting, wireless, ai, automotive, maintaining,
@@ -425,15 +486,17 @@ aisec/
                   postgresql/openssh/metasploit/gvm, arduino, powershell,
                   chirp, nyx, firefox, coreutils, gpa, keepassxc, mat2,
                   sirikali, zulucrypt-gui, zulumount-gui, woeusb-ng)
-  cli.py        CLI unifiée + commande `report` + alias (nmapAI, tsharkAI, dnsAI,
+  cli.py        CLI unifiée + commandes `report`, `generalist`, `consult` +
+                alias (generalistAI, nmapAI, tsharkAI, dnsAI,
                 infoAI, vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
                 exploitationAI, forensicsAI, reverseAI, postExploitAI,
                 reportingAI, wirelessAI, aiAI, automotiveAI, maintainingAI,
                 miscAI)
 ```
 
-Flux : `intention → routeur → expert → outil → params → argv → garde-fous →
-politique (niveaux 2+3) → exécution → analyse → rapport`.
+Flux : `objectif → generaliste (decomposition + synthese) → routeur → expert →
+outil → params → argv → garde-fous → politique (niveaux 2+3) → exécution →
+analyse → rapport`.
 
 ### Ajouter un outil (plugin)
 

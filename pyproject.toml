@@ -17,6 +17,7 @@ dev = ["pytest>=8"]
 
 [project.scripts]
 aisec = "aisec.cli:main"
+generalistAI = "aisec.cli:main_generalist"
 nmapAI = "aisec.cli:main_nmap"
 tsharkAI = "aisec.cli:main_tshark"
 dnsAI = "aisec.cli:main_dns"
