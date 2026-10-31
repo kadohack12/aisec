@@ -6,11 +6,11 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 
 | # | Classe | `class_id` | Outils | Priorite | Agent | Statut |
 |---|--------|-----------|--------|----------|-------|--------|
-| 1 | Information Gathering | `01-info-gathering` | 82 | haute | | a faire |
-| 2 | Vulnerability Analysis | `02-vulnerability-analysis` | 42 | haute | | a faire |
-| 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | | a faire |
-| 4 | Password Attacks | `05-password-attacks` | 45 | haute | | a faire |
-| 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | | a faire |
+| 1 | Information Gathering | `01-info-gathering` | 82 | haute | agent-info | **en cours (jalon 1)** |
+| 2 | Vulnerability Analysis | `02-vulnerability-analysis` | 42 | haute | agent-vuln | **en cours (jalon 1)** |
+| 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | agent-web | **en cours (jalon 1)** |
+| 4 | Password Attacks | `05-password-attacks` | 45 | haute | agent-password | **en cours (jalon 1)** |
+| 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | agent-sniffing | **en cours (jalon 1)** |
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | | a faire |
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
@@ -24,6 +24,27 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
+
+## Jalon 1 : 5 experts livres (premier lot d'outils)
+
+Les classes 1, 2, 3, 5 et 9 sont amorcees avec un premier lot d'outils et un
+expert fonctionnel (routage + construction d'argv + analyse heuristique).
+
+| Expert | `class_id` | Outils du jalon 1 | Tests |
+|--------|-----------|-------------------|-------|
+| `info` | `01-info-gathering` | nmap, masscan, arp-scan, sslscan, wafw00f, dnsrecon | `tests/test_info.py` |
+| `vuln` | `02-vulnerability-analysis` | testssl, slowhttptest | `tests/test_vuln.py` |
+| `web` | `03-webapp-analysis` | whatweb, nikto, gobuster, ffuf | `tests/test_web.py` |
+| `password` | `05-password-attacks` | hydra, john, hashid, cewl | `tests/test_password.py` |
+| `sniffing` | `09-sniffing-spoofing` | tshark (reutilise), bettercap | `tests/test_sniffing.py` |
+
+Note : l'expert `dns` (`01-01-dns-analysis`) reste la reference pour
+dig/host/whois et n'a pas ete refait ; l'expert `info` couvre le reste de la
+classe 1.
+
+Les sous-categories restantes de chaque classe (OSINT, SMTP, SMB, SNMP, Cisco,
+fuzzing, VoIP, stress, CMS, proxies, attaques hors ligne/locales, sniffers
+dedies, spoofing MITM, ...) sont a traiter dans les jalons suivants.
 
 ## Contrat d'un agent (une classe)
 

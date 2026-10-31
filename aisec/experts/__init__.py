@@ -9,6 +9,11 @@ from __future__ import annotations
 
 from .base import Expert, route, run_expert
 from .dns import DNS_EXPERT
+from .info import INFO_EXPERT
+from .password import PASSWORD_EXPERT
+from .sniffing import SNIFFING_EXPERT
+from .vuln import VULN_EXPERT
+from .web import WEB_EXPERT
 
 _EXPERTS: dict[str, Expert] = {}
 
@@ -49,5 +54,10 @@ def select(text: str, provider=None) -> Expert:
 
 
 register(DNS_EXPERT)
+register(INFO_EXPERT)
+register(VULN_EXPERT)
+register(WEB_EXPERT)
+register(PASSWORD_EXPERT)
+register(SNIFFING_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]

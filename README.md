@@ -192,6 +192,14 @@ dnsAI "qui possede example.com"
 aisec dns "résolution inverse de 8.8.8.8"
 aisec dns "tente un transfert de zone sur example.com"
 
+# Experts par classe (reconnaissance, vulnerabilites, web, mots de passe, sniffing)
+infoAI "découverte des hôtes sur 192.168.1.0/24"
+infoAI "détecte le waf devant https://example.com"
+vulnAI "audit tls complet de example.com"
+webAI "brute force les répertoires de https://example.com avec gobuster"
+passwordAI "identifie le hash 5f4dcc3b5aa765d61d8327deb882cf99"
+sniffingAI "capture le trafic http sur eth0 pendant 100 paquets"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -247,10 +255,14 @@ aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
-  experts/      experts par classe: base.py (socle) + dns.py (expert DNS)
+  experts/      experts par classe: base.py (socle) + dns, info, vuln, web,
+                password, sniffing
   providers/    backends LLM: ollama (local), openai-compatible (API)
-  tools/        plugins: nmap, tshark, dig, host, whois
-  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI)
+  tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
+                sslscan, wafw00f, dnsrecon, testssl, slowhttptest, whatweb,
+                nikto, gobuster, ffuf, hydra, john, hashid, cewl, bettercap
+  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI, vulnAI,
+                webAI, passwordAI, sniffingAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →
