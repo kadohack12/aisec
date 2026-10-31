@@ -1,0 +1,25 @@
+# Configuration aisec
+# Copier en ./aisec.toml (projet) ou ~/.config/aisec/config.toml (global).
+
+# Backend LLM: "ollama" (local, recommande), "openai", "groq", "none" (heuristique seule).
+provider = "ollama"
+
+# Modele Ollama. Ex: llama3.1, qwen2.5, mistral, llama3.2:3b
+model = "llama3.1"
+
+# Serveur Ollama local.
+ollama_host = "http://localhost:11434"
+
+# --- Si provider = "openai" ou "groq" (donnees envoyees a l'API) ---
+# api_base = "https://api.openai.com/v1"
+# api_base = "https://api.groq.com/openai/v1"
+# model = "gpt-4o-mini"
+# La cle peut aussi venir de la variable d'environnement AISEC_API_KEY / OPENAI_API_KEY / GROQ_API_KEY.
+# api_key = "..."
+
+temperature = 0.1
+timeout = 120.0
+
+# Securite
+dry_run = false      # true = n'execute jamais, affiche seulement la commande
+assume_yes = false   # true = ne demande pas confirmation
