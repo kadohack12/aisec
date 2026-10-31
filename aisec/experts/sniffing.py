@@ -10,21 +10,43 @@ from .base import Expert
 
 SNIFFING_EXPERT = Expert(
     name="sniffing",
-    description="Ecoute et usurpation reseau: capture de trafic (tshark) et MITM (bettercap).",
+    description="Ecoute et usurpation reseau: sniffers (tshark, tcpflow) et MITM (bettercap, ettercap).",
     system_prompt=(
         "Tu es un expert en ecoute et usurpation reseau. Tu choisis l'outil le plus "
-        "adapte parmi tshark et bettercap, et tu extrais les parametres exacts. "
-        "Utilise tshark pour capturer ou lire du trafic et appliquer des filtres "
-        "d'affichage. Utilise bettercap pour la reconnaissance reseau et les attaques "
-        "de type MITM (ARP spoofing, DNS spoofing, sniffing, sslstrip). Ces actions "
-        "exigent une autorisation explicite."
+        "adapte parmi les sniffers (tshark, tcpflow, netsniff-ng, darkstat, driftnet, "
+        "etherape, sslsniff) et les outils de spoofing/MITM (bettercap, ettercap, "
+        "responder, dnschef, sslsplit, mitmproxy, macchanger, dsniff, tcpreplay), et tu "
+        "extrais les parametres exacts. Utilise tshark pour capturer ou lire du trafic et "
+        "appliquer des filtres d'affichage; tcpflow pour reconstituer les flux TCP; "
+        "bettercap ou ettercap pour le MITM (ARP/DNS spoofing, sniffing, sslstrip); "
+        "responder pour LLMNR/NBT-NS; dnschef/sslsplit/mitmproxy pour l'interception; "
+        "macchanger pour changer l'adresse MAC. Ces actions exigent une autorisation explicite."
     ),
-    tool_names=["tshark", "bettercap"],
+    tool_names=[
+        "tshark", "bettercap",
+        "etherape", "etherwake", "ettercap-text-only", "ettercap-graphical",
+        "ferret-sidejack", "hamster-sidejack", "macchanger", "mitmproxy",
+        "python3-impacket", "python3-scapy", "responder", "chaosreader", "darkstat",
+        "driftnet", "hexinject", "netsniff-ng", "sslsniff", "tcpflow", "dnschef",
+        "dsniff", "evil-ssdp", "fiked", "isr-evilgrade", "rebind", "sniffjoke",
+        "sslsplit", "tcpreplay",
+    ],
     routing_rules=(
-        (
-            "bettercap",
-            ("bettercap", "mitm", "arp spoof", "arp spoofing", "dns spoof", "sslstrip", "usurpation", "spoof", "probe"),
-        ),
+        ("responder", ("responder", "llmnr", "nbt-ns", "ntlm", "netbios name")),
+        ("dnschef", ("dnschef", "faux serveur dns", "dns spoof", "usurper le dns")),
+        ("sslsplit", ("sslsplit", "proxy transparent", "interception tls", "intercepter le tls")),
+        ("mitmproxy", ("mitmproxy", "proxy d'interception", "proxy http")),
+        ("sslsniff", ("sslsniff", "dechiffrer le tls")),
+        ("driftnet", ("driftnet", "images qui transitent", "capturer les images")),
+        ("macchanger", ("macchanger", "adresse mac", "changer de mac")),
+        ("dsniff", ("dsniff", "mots de passe en clair")),
+        ("tcpreplay", ("tcpreplay", "rejouer un pcap", "rejouer le trafic")),
+        ("tcpflow", ("tcpflow", "reconstituer les flux", "reconstitution de flux")),
+        ("netsniff-ng", ("netsniff-ng", "sniffer haute performance")),
+        ("darkstat", ("darkstat", "statistiques de trafic")),
+        ("chaosreader", ("chaosreader", "reconstruire les sessions")),
+        ("ettercap", ("ettercap", "arp poisoning", "empoisonnement arp")),
+        ("bettercap", ("bettercap", "mitm", "arp spoof", "arp spoofing", "dns spoof", "sslstrip", "usurpation", "spoof", "probe")),
         (
             "tshark",
             ("tshark", "capture", "pcap", "sniff", "filtre", "paquets", "trafic", "wireshark"),
@@ -41,9 +63,13 @@ SNIFFING_EXPERT = Expert(
         "spoof",
         "usurpation",
         "arp",
-        "bettercap",
         "ettercap",
         "responder",
+        "macchanger",
+        "tcpflow",
+        "sslsplit",
+        "dnschef",
+        "driftnet",
         "wireshark",
         "tshark",
         "trafic",

@@ -1,6 +1,6 @@
 # Feuille de route — aisec
 
-État vérifié le **2026-10-31**. Dépôt : https://github.com/kadohack12/aisec
+État vérifié le **2026-10-31** (jalon 2). Dépôt : https://github.com/kadohack12/aisec
 
 ---
 
@@ -68,14 +68,23 @@ Le socle est complet ; la suite consiste à **approfondir** les classes existant
 - [x] Adopter `tools/spec.py` (base déclarative) comme standard
 - [x] 349 tests (14 experts, 214 outils)
 
-### Jalon 2 — profondeur des classes amorcées
-- [ ] Classe 01 : sous-catégories OSINT, SMTP, SMB, SNMP, SSL, IDS/IPS, Route
-- [ ] Classe 11 : imagerie (autopsy, guymager, ewf-tools), carving complementaire, journaux
-- [ ] Classe 07 : ghidra, edb-debugger, rizin-cutter, bytecode-viewer, jd-gui (CLI)
-- [ ] Classe 02 : Cisco, Fuzzing, VoIP, Stress (couverture complète)
-- [ ] Classe 03 : CMS, Crawlers, Proxies, Scanners web (couverture complète)
-- [ ] Classe 05 : online / offline / local / wordlists
-- [ ] Classe 09 : sniffers dédiés + spoofing/MITM (hors `tshark`)
+### Jalon 2 — profondeur des classes amorcées ✅
+- [x] Classe 01 : scanners, hotes vivants, IDS/IPS, Route, SSL, OSINT, SMTP, SMB,
+      SNMP (`tools/info_recon.py`, `tools/info_extra.py` ; expert `info` : 82 outils)
+- [x] Classe 11 : imagerie (autopsy, guymager, ewf-tools, dcfldd), carving
+      complementaire, journaux (`tools/forensics_extra.py` ; expert : 48 outils)
+- [x] Classe 07 : ghidra, edb-debugger, rizin-cutter, bytecode-viewer, jd-gui,
+      ollydbg, recstudio (`tools/reverse_extra.py` ; expert : 26 outils)
+- [x] Classe 02 : Cisco, Fuzzing, VoIP, Stress (deja couvert par `vulnerability`)
+- [x] Classe 03 : CMS, Crawlers, Proxies, Scanners web (deja couvert par `webapp`)
+- [x] Classe 05 : online / offline / local / wordlists (`tools/passwords_extra.py` ;
+      expert : 42 outils)
+- [x] Classe 09 : sniffers dédiés + spoofing/MITM (`tools/sniff_spoof.py` ; expert
+      `sniffing` : 29 outils)
+- [x] Classe 04 : hashrat, armitage, pompem, unicorn-magic, sqldict, sqlsus
+- [x] Classe 06 : Wi-Fi/BT/SDR/RFID complementaires (`tools/wireless_extra.py` ;
+      expert : 44 outils)
+- [x] Classe 13 : entree de suite `can-utils`
 
 ### Jalon 3 — nouvelles classes
 - [x] 04 Exploitation Tools (`exploitation`, 18 outils)
@@ -96,11 +105,12 @@ Le socle est complet ; la suite consiste à **approfondir** les classes existant
 - [x] 381 tests (14 experts, 214 outils)
 
 ### Jalon 5 — couverture complète du catalogue
-- [ ] Classe 10 `maintaining-access` (34 outils : bloodhound, dnscat2, iodine,
-      proxychains, socat, stunnel4, weevely, nishang, veil, shellter, pwncat...)
-- [ ] Classe `misc` (21 outils : mariadb, postgresql, nginx, apache2, gvm...)
-- [ ] Compléter les classes amorcées : la couverture actuelle est d'environ
-      **40 % du catalogue** (180/445 outils exposés).
+- [x] Classe 10 `maintaining-access` (34 outils : bloodhound, dnscat2, iodine,
+      proxychains, socat, stunnel4, weevely, nishang, shellter, pwncat...) — PR #11
+- [ ] Classe `misc` (21 outils : mariadb, postgresql, nginx, apache2, gvm...) — autre agent
+- [x] Compléter les classes amorcées : la couverture passe d'environ **40 %** à
+      **88 % du catalogue** (390/445 outils exposés). Les 55 restants sont la
+      classe 10 (PR #11) et `misc` (branche `feat/experts-misc`).
 
 ---
 

@@ -42,11 +42,14 @@ def _load_builtins() -> None:
     # Importe les modules pour declencher leur enregistrement.
     from ..tools import dns as _dns  # noqa: F401
     from ..tools import exploitation as _exploitation  # noqa: F401
+    from ..tools import exploitation_extra as _exploitation_extra  # noqa: F401
     from ..tools import nmap as _nmap  # noqa: F401
     from ..tools import tshark as _tshark  # noqa: F401
     # Classe 1 - Information Gathering
     from ..tools import arp_scan as _arp_scan  # noqa: F401
     from ..tools import dnsrecon as _dnsrecon  # noqa: F401
+    from ..tools import info_extra as _info_extra  # noqa: F401
+    from ..tools import info_recon as _info_recon  # noqa: F401
     from ..tools import masscan as _masscan  # noqa: F401
     from ..tools import sslscan as _sslscan  # noqa: F401
     from ..tools import wafw00f as _wafw00f  # noqa: F401
@@ -62,8 +65,10 @@ def _load_builtins() -> None:
     from ..tools import web_vuln as _web_vuln  # noqa: F401
     # Classe 5 - Password Attacks
     from ..tools import passwords as _passwords  # noqa: F401
+    from ..tools import passwords_extra as _passwords_extra  # noqa: F401
     # Classe 9 - Sniffing & Spoofing
     from ..tools import bettercap as _bettercap  # noqa: F401
+    from ..tools import sniff_spoof as _sniff_spoof  # noqa: F401
     # Classe 8 - Post Exploitation
     from ..tools import post_exploit as _post_exploit  # noqa: F401
     # Classe 12 - Reporting Tools
@@ -73,6 +78,7 @@ def _load_builtins() -> None:
     from ..tools import bulk_extractor as _bulk_extractor  # noqa: F401
     from ..tools import extundelete as _extundelete  # noqa: F401
     from ..tools import foremost as _foremost  # noqa: F401
+    from ..tools import forensics_extra as _forensics_extra  # noqa: F401
     from ..tools import imaging as _imaging  # noqa: F401
     from ..tools import integrity as _integrity  # noqa: F401
     from ..tools import pdf_forensics as _pdf_forensics  # noqa: F401
@@ -86,11 +92,14 @@ def _load_builtins() -> None:
     from ..tools import die as _die  # noqa: F401
     from ..tools import gdb as _gdb  # noqa: F401
     from ..tools import radare2 as _radare2  # noqa: F401
+    from ..tools import reverse_extra as _reverse_extra  # noqa: F401
     from ..tools import rizin as _rizin  # noqa: F401
     # Classe 06 - Wireless Testing
     from ..tools import wireless as _wireless  # noqa: F401
+    from ..tools import wireless_extra as _wireless_extra  # noqa: F401
     # Classe 13 - Automotive
     from ..tools import automotive as _automotive  # noqa: F401
+    from ..tools import automotive_extra as _automotive_extra  # noqa: F401
     # Classe 14 - AI Tools
     from ..tools import ai_tools as _ai_tools  # noqa: F401
 
