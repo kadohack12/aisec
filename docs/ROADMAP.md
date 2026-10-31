@@ -41,9 +41,13 @@ Résultat sur `main` : **14 experts** (dont `dns`), **214 outils uniques**,
 
 ## 1. État de `main`
 
-`main` = `8f2a743` (socle + expert `dns` + contrôle niveau 2 + catalogue 445
-outils + répartition en 15 classes). La consolidation est prête à être
-fusionnée par-dessus (branche `consolidate/experts`).
+`main` = branche courante (socle + expert `dns` + contrôle niveau 2 + catalogue
+445 outils + répartition en 15 classes + 14 experts + orchestrateur + rapports).
+La consolidation des branches d'agents est **terminée** : toutes les PR sont
+fusionnées et fermées, il ne reste que `main`.
+
+Le socle est complet ; la suite consiste à **approfondir** les classes existantes
+(jalon 2) et à couvrir les classes restantes (classe 10, `misc`).
 
 ---
 
@@ -83,11 +87,20 @@ fusionnée par-dessus (branche `consolidate/experts`).
 - [x] 12 Reporting (`reporting`, 4 outils)
 - [x] 13 Automotive (`automotive`, 6 outils) · [x] 14 AI Tools (`ai`, 5 outils) · [ ] `misc`
 
-### Jalon 4 — orchestrateur & IA par expert
-- [ ] Orchestrateur unique : le routeur choisit **la classe** puis l'expert
-- [ ] IA dédiée par expert (`[expert_models]`, déjà câblé)
-- [ ] Sortie rapport (classe 12 Reporting) + export JSON/HTML
-- [ ] Table de politiques de risque par classe (affiner au-delà du `risk` par outil)
+### Jalon 4 — orchestrateur & IA par expert ✅
+- [x] Orchestrateur unique (`core/orchestrator.py`) : routeur -> expert -> outil -> exécution
+- [x] IA dédiée par expert (`[expert_models]`) appliquée par l'orchestrateur
+- [x] Routage LLM optionnel (`--routing llm`), repli heuristique déterministe
+- [x] Sortie rapport (classe 12) + export JSON / Markdown / HTML (`report.py`, `aisec report`)
+- [x] Politique de risque par classe (`core/policies.py`, niveau 3, `[expert_policies]`)
+- [x] 381 tests (14 experts, 214 outils)
+
+### Jalon 5 — couverture complète du catalogue
+- [ ] Classe 10 `maintaining-access` (34 outils : bloodhound, dnscat2, iodine,
+      proxychains, socat, stunnel4, weevely, nishang, veil, shellter, pwncat...)
+- [ ] Classe `misc` (21 outils : mariadb, postgresql, nginx, apache2, gvm...)
+- [ ] Compléter les classes amorcées : la couverture actuelle est d'environ
+      **40 % du catalogue** (180/445 outils exposés).
 
 ---
 

@@ -167,7 +167,7 @@ def run_expert(
 
     Renvoie (plan, result, analysis, tool_name).
     """
-    from ..core.control import Decision, Risk, evaluate as evaluate_control
+    from ..core.control import Decision, evaluate as evaluate_control
     from ..core.executor import ConfirmationRequired, ExecutionError, run as run_argv
     from ..core.safety import validate_argv
 
@@ -182,14 +182,10 @@ def run_expert(
             "Commande refusee par les garde-fous: " + "; ".join(report.errors)
         )
 
-    # Controle de l'IA (niveau 2): politique de risque + confirmation.
-    from ..core.control import ControlPolicy
+    # Controle de l'IA (niveaux 2 + 3): politique de risque + politique de classe.
+    from ..core.policies import policy_for
 
-    policy = ControlPolicy(
-        max_auto_risk=Risk.parse(config.auto_approve_risk),
-        max_targets=config.max_targets,
-        deny_private_targets=config.deny_private_targets,
-    )
+    policy = policy_for(config, expert.name)
     verdict = evaluate_control(plan, tool, policy)
     plan.risk = verdict.risk.label
     plan.reasons = list(verdict.reasons)

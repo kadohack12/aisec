@@ -261,8 +261,71 @@ aisec --json dns "qui possede example.com"
 | `--model NAME` | modèle à utiliser |
 | `--dry-run` | affiche sans exécuter |
 | `--json` | sortie machine |
+| `--report FICHIER` | écrit un rapport d'audit (`.json`, `.md` ou `.html`) |
+| `--routing {heuristic,llm}` | sélection d'expert : mots-clés (défaut) ou LLM |
 | `--yes` | auto-approuve les confirmations |
 | `--auto-approve-risk LEVEL` | plafond de risque pour la session |
+
+---
+
+## Orchestrateur et rapports (jalon 4)
+
+`aisec` sait enchaîner plusieurs demandes et produire un **rapport d'audit**.
+
+### Routage par LLM (optionnel)
+
+Par défaut le routeur est **heuristique** (mots-clés, déterministe). Avec un
+provider actif, on peut demander au LLM de choisir la classe :
+
+```bash
+aisec ask --routing llm "trouve les failles du portail web"
+# le LLM choisit l'expert (webapp), puis l'outil ; repli heuristique si échec
+```
+
+### Rapport d'audit
+
+La commande `report` exécute plusieurs demandes (séparées par `;`) et écrit un
+rapport consolidé :
+
+```bash
+aisec report -o audit.html \
+  "analyse les ports 22, 80, 8080 de la cible 10.0.0.1 ; \
+   audite le tls de example.com ; \
+   brute force les répertoires de https://example.com"
+```
+
+Formats : `.html` (autonome, CSS inline), `.md`, `.json`. Le rapport contient
+les constats triés par sévérité, la commande, le risque et la sortie de chaque
+exécution.
+
+Une seule demande peut aussi produire un rapport avec `--report` :
+
+```bash
+aisec nmap --report scan.md "scan des ports 22,80 sur 10.0.0.1"
+```
+
+### Politique de risque par classe (niveau 3)
+
+Au-dessus du niveau 2, chaque **classe** peut durcir sa politique : les classes
+offensives (`exploitation`, `post-exploit`, `wireless`, `passwords`) exigent
+**toujours** une confirmation, même pour un outil de risque faible. La politique
+combinée est la plus stricte des deux (on ne relâche jamais une borne globale).
+Surchargeable dans `[expert_policies]` :
+
+```toml
+[expert_policies]
+exploitation = { max_auto_risk = "low", require_confirmation = true }
+```
+
+### IA dédiée par expert
+
+`[expert_models]` branche un modèle par classe (une IA entraînée par domaine) ;
+l'orchestrateur l'applique automatiquement à l'expert sélectionné.
+
+```toml
+[expert_models]
+dns = "aisec-dns:latest"
+```
 
 ---
 
@@ -288,12 +351,13 @@ aisec --json dns "qui possede example.com"
 ```
 aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
-  core/         moteur: config, safety, control, executor, intent,
-                analyzer, engine, registry
+  core/         moteur: config, safety, control, policies (niveau 3),
+                executor, intent, analyzer, engine, orchestrator, registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
                 webapp, passwords, sniffing, exploitation, forensics, reverse,
                 post_exploit, reporting, wireless, ai, automotive
   providers/    backends LLM: ollama (local), openai-compatible (API)
+  report.py     rapport d'audit: agregation + export JSON / Markdown / HTML
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
                 sslscan, wafw00f, dnsrecon, bettercap, passwords (13 outils),
                 exploitation (18 outils) + spec.py (base déclarative)
@@ -316,14 +380,14 @@ aisec/
                   canconfig, canconvert, isotpdump)
                 + outils IA (classe 14 : hexstrike-ai, mcpwn, opencode, pi-dev,
                   unsloth)
-  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
-                vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
+  cli.py        CLI unifiée + commande `report` + alias (nmapAI, tsharkAI, dnsAI,
+                infoAI, vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
                 exploitationAI, forensicsAI, reverseAI, postExploitAI,
                 reportingAI, wirelessAI, aiAI, automotiveAI)
 ```
 
-Flux : `intention → expert → outil → params → argv → garde-fous → politique →
-exécution → analyse`.
+Flux : `intention → routeur → expert → outil → params → argv → garde-fous →
+politique (niveaux 2+3) → exécution → analyse → rapport`.
 
 ### Ajouter un outil (plugin)
 

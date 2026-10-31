@@ -40,6 +40,11 @@ class Config:
     assume_yes: bool = False
     # IA dediee par expert: {"dns": "modele-dns", "web": "modele-web"}
     expert_models: dict[str, str] = field(default_factory=dict)
+    # Politique de risque par classe (surcharge de DEFAULT_CLASS_POLICIES).
+    # {"exploitation": {"max_auto_risk": "low", "require_confirmation": true}}
+    expert_policies: dict[str, dict] = field(default_factory=dict)
+    # Routage: "heuristic" (defaut) ou "llm" (le LLM choisit l'expert).
+    routing: str = "heuristic"
 
     # --- Politique de controle de l'IA (niveau 2) ---
     # Risque maximal execute sans confirmation: low | medium | high | critical.
@@ -58,6 +63,18 @@ class Config:
         clone = Config(**self.to_dict())
         clone.model = model
         return clone
+
+    def with_dry_run(self, dry_run: bool) -> "Config":
+        """Copie de la config avec le mode apercu force."""
+        clone = Config(**self.to_dict())
+        clone.dry_run = dry_run
+        return clone
+
+    def class_policies(self) -> dict:
+        """Politiques de risque par classe (niveau 3), surcharges incluses."""
+        from .policies import parse_class_policies
+
+        return parse_class_policies(self.expert_policies)
 
     @classmethod
     def load(cls, path: Path | None = None) -> "Config":

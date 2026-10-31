@@ -24,9 +24,27 @@ timeout = 120.0
 dry_run = false      # true = n'execute jamais, affiche seulement la commande
 assume_yes = false   # true = ne demande pas confirmation
 
+# --- Niveau 2 : politique de controle ---
+auto_approve_risk = "low"   # low | medium | high | critical (risque max sans confirmation)
+max_targets = 16            # nombre max de cibles par commande
+deny_private_targets = false  # true = refuser les cibles privees/internes
+
+# --- Selection d'expert (routage) ---
+# "heuristic" (defaut, deterministe) ou "llm" (le LLM choisit la classe).
+routing = "heuristic"
+
 # --- IA dediee par expert (une IA entrainee par classe) ---
 # Chaque expert peut utiliser son propre modele; sinon `model` ci-dessus.
 # [expert_models]
 # dns = "aisec-dns:latest"
 # web = "aisec-web:latest"
 # password = "aisec-password:latest"
+
+# --- Niveau 3 : politique de risque par classe ---
+# Surcharge des politiques par defaut (classes offensives deja durcies).
+# Les cles absentes gardent la politique par defaut.
+# [expert_policies]
+# exploitation = { max_auto_risk = "low", require_confirmation = true }
+# wireless = { max_auto_risk = "medium", require_confirmation = true }
+# forensics = { require_confirmation = true }
+

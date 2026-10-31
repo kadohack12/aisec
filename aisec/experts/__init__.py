@@ -44,15 +44,28 @@ def all_experts() -> list[Expert]:
     return list(_EXPERTS.values())
 
 
-def select(text: str, provider=None) -> Expert:
+def select(text: str, provider=None, routing: str | None = None) -> Expert:
     """Choisit l'expert le plus pertinent pour une demande libre.
 
-    Heuristique par mots-cles (deterministe) : match sur mot entier (comme le
-    routage interne), pondere par la longueur du mot-cle. Un mot-cle qui est
-    aussi un nom d'outil de l'expert (invocation explicite, ex. "mimikatz")
-    pese plus qu'un terme generique (ex. "mots de passe"). Un LLM de routage
-    pourra etre branche plus tard pour affiner.
+    Deux modes :
+      - `heuristic` (defaut, deterministe) : match sur mot entier (comme le
+        routage interne), pondere par la longueur du mot-cle. Un mot-cle qui est
+        aussi un nom d'outil de l'expert (invocation explicite, ex. "mimikatz")
+        pese plus qu'un terme generique (ex. "mots de passe").
+      - `llm` : le LLM choisit la classe parmi les experts disponibles ; en cas
+        d'echec (provider absent, reponse invalide), repli sur l'heuristique.
+
+    `routing` vaut "heuristic" ou "llm" (defaut: heuristique). Un provider actif
+    est requis pour le mode `llm`.
     """
+    if routing == "llm" and provider is not None:
+        expert = _select_llm(text, provider)
+        if expert is not None:
+            return expert
+    return _select_heuristic(text)
+
+
+def _select_heuristic(text: str) -> Expert:
     low = text.lower()
     scores: dict[str, int] = {}
     for expert in _EXPERTS.values():
@@ -66,6 +79,36 @@ def select(text: str, provider=None) -> Expert:
         # Aucun mot-cle: on prend l'expert de reconnaissance (info) par defaut.
         return _EXPERTS.get("info") or next(iter(_EXPERTS.values()))
     return _EXPERTS[best]
+
+
+def _select_llm(text: str, provider) -> Expert | None:
+    """Routage LLM: le modele choisit la classe la plus adaptee.
+
+    Renvoie None si le provider est indisponible ou si la reponse ne designe pas
+    un expert connu (l'appelant retombe alors sur l'heuristique).
+    """
+    if not provider.available():
+        return None
+    catalog = "\n".join(f"- {e.name}: {e.description}" for e in _EXPERTS.values())
+    system = (
+        "Tu es un routeur. Choisis la classe d'outils de securite la plus adaptee "
+        "a la demande de l'utilisateur. Reponds en JSON strict: {\"expert\": \"<nom>\"}."
+    )
+    prompt = f"Classes disponibles:\n{catalog}\n\nDemande: \"{text}\""
+    try:
+        from .base import _extract_json
+
+        data = _extract_json(provider.complete(prompt, system=system))
+    except Exception:
+        return None
+    if not isinstance(data, dict):
+        return None
+    name = data.get("expert") or data.get("class") or data.get("classe")
+    if isinstance(name, str):
+        name = name.strip().lower()
+        if name in _EXPERTS:
+            return _EXPERTS[name]
+    return None
 
 
 register(DNS_EXPERT)

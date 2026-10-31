@@ -22,6 +22,7 @@ from .core.executor import ConfirmationRequired, ExecutionError
 from .experts import all_experts, get as get_expert, run_expert, select
 
 _PROVIDERS = ["ollama", "openai", "groq", "none"]
+_ROUTING = ["heuristic", "llm"]
 
 
 def _add_common(parser: argparse.ArgumentParser, suppress: bool = False) -> None:
@@ -32,6 +33,16 @@ def _add_common(parser: argparse.ArgumentParser, suppress: bool = False) -> None
     parser.add_argument("--model", help="Modele LLM a utiliser.")
     parser.add_argument("--dry-run", action="store_true", default=default, help="Afficher sans executer.")
     parser.add_argument("--json", action="store_true", default=default, help="Sortie d'analyse en JSON.")
+    parser.add_argument(
+        "--report",
+        metavar="FICHIER",
+        help="Enregistrer un rapport d'audit (.json, .md ou .html).",
+    )
+    parser.add_argument(
+        "--routing",
+        choices=_ROUTING,
+        help="Mode de selection d'expert: heuristic (defaut) ou llm.",
+    )
     parser.add_argument(
         "--yes", action="store_true", default=default,
         help="Auto-approuver les actions (confirmation).",
@@ -56,6 +67,20 @@ def build_parser() -> argparse.ArgumentParser:
     ask = sub.add_parser("ask", help="Demande libre: le routeur choisit l'expert.")
     ask.add_argument("prompt", nargs="+")
     _add_common(ask, suppress=True)
+
+    report_cmd = sub.add_parser(
+        "report",
+        help="Execute plusieurs demandes et ecrit un rapport d'audit.",
+    )
+    report_cmd.add_argument("prompt", nargs="+", help="Demandes, separees par ';'.")
+    report_cmd.add_argument(
+        "--out", "-o", default="aisec-report.html",
+        help="Fichier de sortie (.json, .md ou .html).",
+    )
+    report_cmd.add_argument("--title", default="Rapport d'audit aisec")
+    report_cmd.add_argument("--target", default="", help="Cible de l'audit (entete du rapport).")
+    report_cmd.add_argument("--expert", help="Imposer un expert pour toutes les demandes.")
+    _add_common(report_cmd, suppress=True)
 
     experts_cmd = sub.add_parser("experts", help="Lister les experts (classes) disponibles.")
     experts_cmd.add_argument("--json", action="store_true")
@@ -137,7 +162,14 @@ def _apply_control_overrides(config: Config, args) -> Config:
         config.assume_yes = True
     if getattr(args, "dry_run", False):
         config.dry_run = True
+    if getattr(args, "routing", None):
+        config.routing = args.routing
     return config
+
+
+def _load_config(args) -> Config:
+    config = Config.load().apply_overrides(provider=args.provider, model=args.model)
+    return _apply_control_overrides(config, args)
 
 
 def _confirm_interactive(exc) -> bool:
@@ -160,8 +192,7 @@ def _confirm_interactive(exc) -> bool:
 
 def _run_expert_cmd(expert_name: str, args, prompt: str) -> int:
     expert = get_expert(expert_name)
-    config = Config.load().apply_overrides(provider=args.provider, model=args.model)
-    config = _apply_control_overrides(config, args)
+    config = _load_config(args)
     model = config.model_for(expert.name, expert.model)
     if model:
         config = config.with_model(model)
@@ -196,7 +227,26 @@ def _run_expert_cmd(expert_name: str, args, prompt: str) -> int:
             print(result.stdout)
     if analysis is not None:
         render.render_analysis(analysis)
+
+    _maybe_write_report(args, expert.name, tool_name, plan, result, analysis)
     return 0
+
+
+def _maybe_write_report(args, expert_name, tool_name, plan, result, analysis) -> None:
+    """Ecrit un rapport d'audit si `--report` a ete fourni (best effort)."""
+    out = getattr(args, "report", None)
+    if not out:
+        return
+    from .report import Report, record_from_run
+
+    report = Report(title=f"Rapport aisec - {expert_name or tool_name}")
+    report.add(record_from_run(expert_name, tool_name, plan, result, analysis))
+    try:
+        path = report.save(out)
+    except (ValueError, OSError) as exc:
+        print(f"Rapport non ecrit: {exc}", file=sys.stderr)
+        return
+    print(f"\nRapport ecrit: {path}")
 
 
 def _plan_payload(expert_name, tool_name, plan, result, analysis) -> dict:
@@ -225,6 +275,50 @@ def _plan_payload(expert_name, tool_name, plan, result, analysis) -> dict:
     return payload
 
 
+def _cmd_report(args) -> int:
+    """Execute plusieurs demandes et ecrit un rapport d'audit."""
+    from .core.orchestrator import Orchestrator
+    from .report import Report
+
+    config = _load_config(args)
+    requests: list[tuple[str, str | None]] = []
+    for chunk in " ".join(args.prompt).split(";"):
+        chunk = chunk.strip()
+        if chunk:
+            requests.append((chunk, getattr(args, "expert", None)))
+    if not requests:
+        print("Erreur: aucune demande fournie.", file=sys.stderr)
+        return 2
+
+    report = Report(title=args.title, target=args.target)
+    orchestrator = Orchestrator(config, report=report)
+    assume_yes = True if config.assume_yes else None
+    for text, expert_name in requests:
+        try:
+            record = orchestrator.run(text, expert_name=expert_name, assume_yes=assume_yes)
+        except ConfirmationRequired as exc:
+            if _confirm_interactive(exc):
+                record = orchestrator.run(text, expert_name=expert_name, assume_yes=True)
+            else:
+                print(f"Annule: {exc}", file=sys.stderr)
+                continue
+        except (ExecutionError, KeyError) as exc:
+            print(f"Erreur: {exc}", file=sys.stderr)
+            continue
+        status = "execute" if record.executed else "dry-run"
+        print(f"[{record.expert or 'direct'} -> {record.tool}] {record.command} ({status})")
+
+    try:
+        path = report.save(args.out)
+    except (ValueError, OSError) as exc:
+        print(f"Erreur: {exc}", file=sys.stderr)
+        return 1
+    counts = report.severity_counts()
+    summary = ", ".join(f"{k}={v}" for k, v in counts.items()) or "aucun constat"
+    print(f"\nRapport ecrit: {path} ({len(report.records)} execution(s), {summary})")
+    return 0
+
+
 def run_cli(tool_name: str | None, argv: list[str]) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -233,6 +327,8 @@ def run_cli(tool_name: str | None, argv: list[str]) -> int:
         return _cmd_experts(args)
     if args.command == "tools":
         return _cmd_tools(args)
+    if args.command == "report":
+        return _cmd_report(args)
 
     expert_names = {e.name for e in all_experts()}
     if tool_name is not None:
@@ -249,14 +345,14 @@ def run_cli(tool_name: str | None, argv: list[str]) -> int:
     prompt = " ".join(args.prompt)
 
     if command == "ask":
-        expert = select(prompt)
+        config = _load_config(args)
+        expert = select(prompt, provider=Engine(config).provider, routing=config.routing)
         return _run_expert_cmd(expert.name, args, prompt)
     if command in expert_names:
         return _run_expert_cmd(command, args, prompt)
 
     # Outil direct
-    config = Config.load().apply_overrides(provider=args.provider, model=args.model)
-    config = _apply_control_overrides(config, args)
+    config = _load_config(args)
     engine = Engine(config)
     assume_yes = None
     while True:
@@ -284,6 +380,8 @@ def run_cli(tool_name: str | None, argv: list[str]) -> int:
             print(result.stdout)
     if analysis is not None:
         render.render_analysis(analysis)
+
+    _maybe_write_report(args, None, command, plan, result, analysis)
     return 0
 
 

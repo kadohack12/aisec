@@ -51,6 +51,8 @@ class ControlPolicy:
     max_targets: int = 16
     # Refuser tout ce qui touche une cible privee/interne ?
     deny_private_targets: bool = False
+    # Toujours demander confirmation, quel que soit le risque (politique de classe).
+    require_confirmation: bool = False
 
 
 @dataclass
@@ -131,6 +133,10 @@ def evaluate(plan: CommandPlan, tool, policy: ControlPolicy) -> ControlVerdict:
                 return ControlVerdict(
                     Decision.DENY, risk, [f"cible privee interdite: {target}"]
                 )
+
+    if policy.require_confirmation:
+        reasons.append("confirmation exigee par la politique de classe")
+        return ControlVerdict(Decision.CONFIRM, risk, reasons)
 
     if risk > policy.max_auto_risk:
         reasons.append(
