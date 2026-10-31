@@ -41,6 +41,7 @@ def all_tools() -> list[Tool]:
 def _load_builtins() -> None:
     # Importe les modules pour declencher leur enregistrement.
     from ..tools import dns as _dns  # noqa: F401
+    from ..tools import exploitation as _exploitation  # noqa: F401
     from ..tools import nmap as _nmap  # noqa: F401
     from ..tools import tshark as _tshark  # noqa: F401
 
