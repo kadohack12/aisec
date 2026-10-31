@@ -50,8 +50,11 @@ def _load_builtins() -> None:
     from ..tools import sslscan as _sslscan  # noqa: F401
     from ..tools import wafw00f as _wafw00f  # noqa: F401
     # Classe 2 - Vulnerability Analysis
-    from ..tools import slowhttptest as _slowhttptest  # noqa: F401
-    from ..tools import testssl as _testssl  # noqa: F401
+    from ..tools import vuln_cisco as _vuln_cisco  # noqa: F401
+    from ..tools import vuln_fuzz as _vuln_fuzz  # noqa: F401
+    from ..tools import vuln_scan as _vuln_scan  # noqa: F401
+    from ..tools import vuln_stress as _vuln_stress  # noqa: F401
+    from ..tools import vuln_voip as _vuln_voip  # noqa: F401
     # Classe 3 - Web Application Analysis
     from ..tools import ffuf as _ffuf  # noqa: F401
     from ..tools import gobuster as _gobuster  # noqa: F401

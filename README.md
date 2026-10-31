@@ -195,7 +195,10 @@ aisec dns "tente un transfert de zone sur example.com"
 # Experts par classe (reconnaissance, vulnerabilites, web, mots de passe, sniffing)
 infoAI "découverte des hôtes sur 192.168.1.0/24"
 infoAI "détecte le waf devant https://example.com"
-vulnAI "audit tls complet de example.com"
+vulnerabilityAI "audite le tls de example.com:443"
+aisec vulnerability "audite le routeur cisco 10.0.0.1"
+aisec vulnerability "enumere les extensions sip de 10.0.0.1"
+aisec vulnerability "fuzz le binaire ./parser avec afl"
 webAI "brute force les répertoires de https://example.com avec gobuster"
 passwordAI "identifie le hash 5f4dcc3b5aa765d61d8327deb882cf99"
 sniffingAI "capture le trafic http sur eth0 pendant 100 paquets"
@@ -255,14 +258,16 @@ aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
-  experts/      experts par classe: base.py (socle) + dns, info, vuln, web,
-                password, sniffing
+  experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
+                web, password, sniffing
   providers/    backends LLM: ollama (local), openai-compatible (API)
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
                 sslscan, wafw00f, dnsrecon, testssl, slowhttptest, whatweb,
                 nikto, gobuster, ffuf, hydra, john, hashid, cewl, bettercap
-  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI, vulnAI,
-                webAI, passwordAI, sniffingAI)
+                + spec.py (base déclarative) et vuln_scan/cisco/stress/fuzz/voip
+                  (classe 02 : 46 outils)
+  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
+                vulnerabilityAI, webAI, passwordAI, sniffingAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

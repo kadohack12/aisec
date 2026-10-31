@@ -22,7 +22,7 @@ def _plan(argv, targets=None):
         ("web", "brute force les repertoires du site web", "web"),
         ("password", "casse ce hash de mot de passe", "password"),
         ("sniffing", "capture le trafic reseau en pcap", "sniffing"),
-        ("vuln", "audit de vulnerabilite tls", "vuln"),
+        ("vulnerability", "audit de vulnerabilite tls", "vulnerability"),
         ("info", "enumeration des hotes du reseau", "info"),
     ],
 )

@@ -307,8 +307,8 @@ def main_info() -> int:
     return run_cli("info", ["info", *sys.argv[1:]])
 
 
-def main_vuln() -> int:
-    return run_cli("vuln", ["vuln", *sys.argv[1:]])
+def main_vulnerability() -> int:
+    return run_cli("vulnerability", ["vulnerability", *sys.argv[1:]])
 
 
 def main_web() -> int:
