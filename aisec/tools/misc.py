@@ -17,7 +17,7 @@ from typing import Any
 from ..core.models import AnalysisResult, Finding, ParameterSpec
 from ..core.registry import register
 from .base import Tool, extract_any_path
-from .spec import Flag, Option, Pattern, Positional, Rule, SpecTool
+from .spec import Flag, Option, Positional, SpecTool
 
 _ACTION_FLAGS = ("start", "stop", "restart", "reload", "status", "enable", "disable")
 _ACTION_WORDS = {
@@ -188,7 +188,6 @@ class PowershellTool(SpecTool):
     order = ("flags", "options")
 
     def parse_intent(self, text: str) -> dict[str, Any]:
-        low = text.lower()
         params: dict[str, Any] = {"no_profile": True, "no_logo": True}
         file_path = extract_any_path(text)
         if file_path and file_path.endswith((".ps1", ".psm1")):
