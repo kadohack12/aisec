@@ -235,6 +235,13 @@ automotiveAI "envoie la trame 123#DEADBEEF sur can0"
 aiAI "lance le serveur mcpwn sur le port 1337"
 aiAI "entraine un modele unsloth sur dataset.jsonl"
 
+# Expert maintien d'acces (C2, backdoors, tunnels, evasion)
+maintainingAI "cartographie active directory de corp.local avec bloodhound"
+maintainingAI "ecoute sur le port 4444 avec pwncat"
+maintainingAI "ouvre un tunnel iodine vers tunnel.example.com"
+maintainingAI "lance nmap via proxychains sur 10.0.0.5"
+maintainingAI "injecte un shellcode dans app.exe avec shellter"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -355,7 +362,7 @@ aisec/
                 executor, intent, analyzer, engine, orchestrator, registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
                 webapp, passwords, sniffing, exploitation, forensics, reverse,
-                post_exploit, reporting, wireless, ai, automotive
+                post_exploit, reporting, wireless, ai, automotive, maintaining
   providers/    backends LLM: ollama (local), openai-compatible (API)
   report.py     rapport d'audit: agregation + export JSON / Markdown / HTML
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
@@ -380,10 +387,16 @@ aisec/
                   canconfig, canconvert, isotpdump)
                 + outils IA (classe 14 : hexstrike-ai, mcpwn, opencode, pi-dev,
                   unsloth)
+                + outils maintien d'acces (classe 10 : bloodhound, dnscat2,
+                  villain, starkiller, convoc2, windows-binaries, powershell-empire,
+                  pwncat, cryptcat, sbd, sliver, weevely, webacoo, laudanum,
+                  nishang, webshells, htshells, iodine, dns2tcp, godoh, miredo,
+                  proxychains, proxychains4, proxytunnel, ptunnel, pwnat, socat,
+                  stunnel4, udptunnel, shellter, veil-evasion, hyperion, exe2hexbat)
   cli.py        CLI unifiée + commande `report` + alias (nmapAI, tsharkAI, dnsAI,
                 infoAI, vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
                 exploitationAI, forensicsAI, reverseAI, postExploitAI,
-                reportingAI, wirelessAI, aiAI, automotiveAI)
+                reportingAI, wirelessAI, aiAI, automotiveAI, maintainingAI)
 ```
 
 Flux : `intention → routeur → expert → outil → params → argv → garde-fous →

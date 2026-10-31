@@ -451,6 +451,8 @@ def main_ai() -> int:
 
 def main_automotive() -> int:
     return run_cli("automotive", ["automotive", *sys.argv[1:]])
+def main_maintaining() -> int:
+    return run_cli("maintaining", ["maintaining", *sys.argv[1:]])
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | agent-sniffing | **livre (jalon 1)** |
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | agent-forensics | **livre (jalon 1)** |
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | agent-wireless | **livre (jalon 4)** |
-| 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
+| 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | agent-maintaining | **livre (jalon 5)** |
 | 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | agent-exploitation | **livre (jalon 1)** |
 | 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **livre (jalon 1)** |
 | 11 | Post Exploitation | `08-post-exploit` | 16 | basse | agent-post-exploit | **livre (jalon 3)** |
@@ -126,6 +126,32 @@ Reste a couvrir dans les jalons suivants pour ces classes : Wi-Fi restant
 `btscanner`, `redfang`, `spooftooph`), SDR (`gnuradio`, `hackrf`, `gqrx-sdr`,
 `inspectrum`, `ubertooth`, `rtlsdr-scanner`), RFID/NFC (`libfreefare-bin`,
 `libnfc-bin`, `mfterm`) et modes avances des agents IA.
+
+## Jalon 5 : Maintaining Access (`10-maintaining-access`)
+
+34 outils et un expert `maintaining` fonctionnel. Le lot couvre la
+reconnaissance AD et les frameworks C2 (`bloodhound`, `dnscat2`, `villain`,
+`starkiller`, `convoc2`, `sliver`), les backdoors systeme
+(`powershell-empire`, `pwncat`, `cryptcat`, `sbd`), les backdoors web
+(`weevely`, `webacoo`, `laudanum`, `nishang`, `webshells`, `htshells`), la
+tunnellisation / exfiltration (`iodine`, `dns2tcp`, `godoh`, `miredo`,
+`proxychains`, `proxytunnel`, `ptunnel`, `pwnat`, `socat`, `stunnel4`,
+`udptunnel`) et l'evasion antivirus (`shellter`, `veil-evasion`, `hyperion`,
+`exe2hexbat`).
+
+| Sous-categorie | Outils du jalon 5 |
+|----------------|-------------------|
+| C2 / AD | `bloodhound`, `dnscat2-client`, `dnscat2-server`, `starkiller`, `villain`, `windows-binaries` |
+| Backdoors systeme | `convoc2`, `cryptcat`, `powershell-empire`, `pwncat`, `sbd`, `sliver` |
+| Backdoors web | `htshells`, `laudanum`, `nishang`, `webacoo`, `webshells`, `weevely` |
+| Tunnelling / exfiltration | `dns2tcp`, `godoh`, `iodine`, `miredo`, `proxychains`, `proxychains4`, `proxytunnel`, `ptunnel`, `pwnat`, `socat`, `stunnel4`, `udptunnel` |
+| Evasion AV | `exe2hexbat`, `hyperion`, `shellter`, `veil-evasion` |
+
+Tests : `tests/test_maintaining_access.py` (routage, argv, analyse, politique de
+controle). Politique : la reconnaissance et la configuration de proxy sont en
+`medium` ; tout ce qui met en place un acces persistant (serveur d'ecoute,
+backdoor, implant, tunnel, charge obfusquee) est en `high` et exige une
+confirmation.
 
 ## Contrat d'un agent (une classe)
 
