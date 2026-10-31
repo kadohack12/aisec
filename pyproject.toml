@@ -33,6 +33,7 @@ reportingAI = "aisec.cli:main_reporting"
 wirelessAI = "aisec.cli:main_wireless"
 aiAI = "aisec.cli:main_ai"
 automotiveAI = "aisec.cli:main_automotive"
+maintainingAI = "aisec.cli:main_maintaining"
 
 [tool.hatch.build.targets.wheel]
 packages = ["aisec"]
