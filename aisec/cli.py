@@ -455,5 +455,9 @@ def main_maintaining() -> int:
     return run_cli("maintaining", ["maintaining", *sys.argv[1:]])
 
 
+def main_misc() -> int:
+    return run_cli("misc", ["misc", *sys.argv[1:]])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

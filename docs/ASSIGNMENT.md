@@ -20,7 +20,7 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 12 | Reporting Tools | `12-reporting` | 4 | basse | agent-reporting | **livre (jalon 3)** |
 | 13 | Automotive | `13-automotive` | 1 | basse | agent-automotive | **livre (jalon 4)** |
 | 14 | AI Tools | `14-ai-tools` | 5 | basse | agent-ai | **livre (jalon 4)** |
-| 15 | Autres (System/Utility/...) | `misc` | 21 | basse | | a faire |
+| 15 | Autres (System/Utility/...) | `misc` | 21 | basse | openhands | **livre (jalon 5)** |
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.

@@ -95,6 +95,8 @@ def _load_builtins() -> None:
     from ..tools import ai_tools as _ai_tools  # noqa: F401
     # Classe 10 - Maintaining Access
     from ..tools import maintaining_access as _maintaining_access  # noqa: F401
+    # Classe 15 - Autres (System Services / Utility / ...)
+    from ..tools import misc as _misc  # noqa: F401
 
 
 _load_builtins()

@@ -85,7 +85,7 @@ Le socle est complet ; la suite consiste à **approfondir** les classes existant
 - [ ] 10 Maintaining Access
 - [x] 11 Digital Forensics (`forensics`, 22 outils)
 - [x] 12 Reporting (`reporting`, 4 outils)
-- [x] 13 Automotive (`automotive`, 6 outils) · [x] 14 AI Tools (`ai`, 5 outils) · [ ] `misc`
+- [x] 13 Automotive (`automotive`, 6 outils) · [x] 14 AI Tools (`ai`, 5 outils) · [x] `misc` (`misc`, 21 outils)
 
 ### Jalon 4 — orchestrateur & IA par expert ✅
 - [x] Orchestrateur unique (`core/orchestrator.py`) : routeur -> expert -> outil -> exécution
