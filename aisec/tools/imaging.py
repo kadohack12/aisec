@@ -7,7 +7,7 @@ from typing import Any
 
 from ..core.models import AnalysisResult, Finding, ParameterSpec
 from ..core.registry import register
-from .base import Tool, extract_path
+from .base import Tool
 
 _PROGRESS_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(?:MB|GB|bytes)\s", re.IGNORECASE)
 _RESCUED_RE = re.compile(r"rescued:\s*(\d+)\s*B", re.IGNORECASE)

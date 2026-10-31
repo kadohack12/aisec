@@ -14,7 +14,7 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-from ..core.models import AnalysisResult, Finding, ParameterSpec
+from ..core.models import AnalysisResult, Finding
 from .base import Tool, extract_hosts, extract_url
 
 # Valeurs considerees comme "parametre absent".

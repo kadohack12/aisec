@@ -25,7 +25,7 @@ from typing import Any
 
 from ..core.models import ParameterSpec
 from ..core.registry import register
-from .spec import Flag, Number, Option, Pattern, Positional, Rule, SpecTool
+from .spec import Flag, Option, Pattern, Positional, Rule, SpecTool
 
 
 class AmapTool(SpecTool):

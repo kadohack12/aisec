@@ -16,7 +16,7 @@ from typing import Any
 
 from ..core.models import AnalysisResult, Finding, ParameterSpec
 from ..core.registry import register
-from .base import Tool, extract_any_path, extract_hosts
+from .base import Tool
 
 _IFACE_RE = re.compile(r"\b(wlan\d+\w*|mon\d+|wlan\d+mon|ath\d+|phy\d+)\b", re.IGNORECASE)
 _BSSID_RE = re.compile(r"\b([0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2}){5})\b")

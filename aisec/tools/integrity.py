@@ -7,7 +7,7 @@ from typing import Any
 
 from ..core.models import AnalysisResult, Finding, ParameterSpec
 from ..core.registry import register
-from .base import Tool, extract_any_path, extract_path
+from .base import Tool, extract_any_path
 
 # hashdeep: "hash,hash,size,path"
 _HASHDEEP_RE = re.compile(r"^([0-9a-f]{16,}),([0-9a-f]{16,}),(\d+),(.+)$", re.IGNORECASE)

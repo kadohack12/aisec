@@ -6,7 +6,7 @@ import pytest
 
 from aisec.core import registry
 from aisec.core.config import Config
-from aisec.core.control import ControlPolicy, Decision, Risk, evaluate
+from aisec.core.control import ControlPolicy, Decision, evaluate
 from aisec.core.engine import Engine
 from aisec.core.models import CommandPlan
 from aisec.experts import get as get_expert, select

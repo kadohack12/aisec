@@ -6,7 +6,6 @@ nipper-ng, yersinia.
 
 from __future__ import annotations
 
-from typing import Any
 
 from ..core.models import ParameterSpec
 from ..core.registry import register

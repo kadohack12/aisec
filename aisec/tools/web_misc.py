@@ -7,11 +7,10 @@ wpscan, zaproxy, paros, webscarab), CMS (joomscan) et les proxies web
 
 from __future__ import annotations
 
-from typing import Any
 
 from ..core.models import ParameterSpec
 from ..core.registry import register
-from .spec import Flag, Number, Option, Pattern, Positional, Rule, SpecTool
+from .spec import Flag, Option, Pattern, Positional, Rule, SpecTool
 
 
 class HttrackTool(SpecTool):

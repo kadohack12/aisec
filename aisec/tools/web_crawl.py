@@ -6,13 +6,12 @@ ffuf, gobuster, gospider, uniscan, wfuzz.
 
 from __future__ import annotations
 
-import re
 from typing import Any
 
 from ..core.models import ParameterSpec
 from ..core.registry import register
 from .base import extract_hosts
-from .spec import Flag, Number, Option, Pattern, Positional, Rule, SpecTool
+from .spec import Flag, Option, Pattern, Positional, Rule, SpecTool
 
 
 class ApacheUsersTool(SpecTool):

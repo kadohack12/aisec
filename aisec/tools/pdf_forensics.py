@@ -7,7 +7,7 @@ from typing import Any
 
 from ..core.models import AnalysisResult, Finding, ParameterSpec
 from ..core.registry import register
-from .base import Tool, extract_offset, extract_path
+from .base import Tool, extract_path
 
 # pdfid: "  /JS                 2" (mot-cle + nombre).
 _KEYWORD_RE = re.compile(r"^\s*/([A-Za-z0-9]+)\s+(\d+)\s*$", re.MULTILINE)

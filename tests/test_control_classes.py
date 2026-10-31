@@ -9,7 +9,7 @@ from aisec.core.engine import Engine
 from aisec.core.config import Config
 from aisec.core.executor import ExecutionError
 from aisec.core.models import CommandPlan
-from aisec.experts import get as get_expert, select
+from aisec.experts import select
 
 
 def _plan(argv, targets=None):
