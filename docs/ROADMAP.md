@@ -14,17 +14,20 @@ Trois agents avaient produit des branches parallèles se recouvrant. Elles ont
 | `feat/experts-5-classes` | — | experts `info` (classe 01) et `sniffing` (classe 09), socle `tools/base.py` |
 | `expert-02-vulnerability-analysis` | #2 | classe 02 : expert `vulnerability` (46 outils) + base déclarative `tools/spec.py` |
 | `feat/experts-web-vuln-passwords` | #1 | classe 03 : `webapp` (18 outils) ; classe 05 : `passwords` (13 outils) |
+| `feat/experts-exploitation` | #3 | classe 04 : expert `exploitation` (18 outils) |
+| `expert-03-webapp-analysis` | — | classe 03 complète : `webapp` (38 outils via web_crawl/web_vuln/web_misc) |
 
 **Règle d'arbitrage** : quand deux branches livraient la même classe, on a gardé
 l'implémentation la plus **complète**, puis supprimé les doublons.
 
 - Classe 02 : `vulnerability` (46 outils, PR #2) > `vuln` (11 outils) → `vuln` retiré.
-- Classe 03 : `webapp` (18 outils, PR #1) > `web` (4 outils) → `web` retiré.
+- Classe 03 : `webapp` 38 outils (expert-03) > `webapp` 18 outils (PR #1) → `tools/webapp.py` retiré.
 - Classe 05 : `passwords` (13 outils, PR #1) > `password` (4 outils) → `password` retiré.
 - Classes 01 et 09 : seuls `info` et `sniffing` (lot 5-classes) existaient.
+- Classe 04 : `exploitation` (PR #3), aucun recouvrement.
 
-Résultat : **6 experts**, **88 outils uniques**, **aucune collision de nom**,
-**133 tests** verts.
+Résultat : **7 experts**, **126 outils uniques**, **aucune collision de nom**,
+**184 tests** verts.
 
 ---
 
@@ -46,12 +49,12 @@ fusionnée par-dessus (branche `consolidate/experts`).
 - [x] Répartition en 15 classes (`docs/CLASSES.md`, `docs/classes.json`)
 - [x] 43 tests
 
-### Jalon 1 — 5 experts ✅ (fusionnés sur `consolidate/experts`)
-- [x] Consolider les 3 branches d'agents en **une** base propre
+### Jalon 1 — 7 experts ✅ (fusionnés sur `consolidate/experts`)
+- [x] Consolider les branches d'agents en **une** base propre
 - [x] Dédupliquer les outils partagés (une seule classe `Tool` par binaire)
-- [x] Experts `info`, `vulnerability`, `webapp`, `passwords`, `sniffing`
+- [x] Experts `info`, `vulnerability`, `webapp`, `passwords`, `sniffing`, `exploitation`
 - [x] Adopter `tools/spec.py` (base déclarative) comme standard
-- [x] 133 tests (6 experts, 88 outils)
+- [x] 184 tests (7 experts, 126 outils)
 
 ### Jalon 2 — profondeur des classes amorcées
 - [ ] Classe 01 : sous-catégories OSINT, SMTP, SMB, SNMP, SSL, IDS/IPS, Route
