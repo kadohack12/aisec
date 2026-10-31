@@ -15,7 +15,7 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
 | 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | | a faire |
-| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | | a faire |
+| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **en cours (jalon 1)** |
 | 11 | Post Exploitation | `08-post-exploit` | 16 | basse | | a faire |
 | 12 | Reporting Tools | `12-reporting` | 4 | basse | | a faire |
 | 13 | Automotive | `13-automotive` | 1 | basse | | a faire |
@@ -24,6 +24,28 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
+
+## Jalon 1 : Reverse Engineering (`07-reverseengineer`)
+
+17 outils et un expert `reverse` fonctionnel. Le lot est domine par l'analyse
+statique en lecture seule (`low`) ; `gdb` (execution/debogage) et `smali`
+(assemblage) sont en `medium` et exigent une confirmation.
+
+| Sous-categorie | Outils du jalon 1 |
+|----------------|-------------------|
+| Suite Radare2 | `rabin2`, `radare2`, `rahash2`, `rasm2`, `radiff2` |
+| Suite Rizin | `rizin`, `rz-hash`, `rz-find` |
+| Debogueurs | `gdb` |
+| Desassembleurs | `bddisasm` |
+| Identification | `die` (detect-it-easy) |
+| Android / Java | `apktool`, `dex2jar`, `jadx`, `androguard`, `baksmali`, `smali` |
+
+Tests : `tests/test_reverse.py` (routage, argv, analyse, politique de controle).
+
+Reste a couvrir dans les jalons suivants : `ghidra`, `edb-debugger`,
+`ollydbg`, `rizin-cutter`, `bytecode-viewer`, `jd-gui`, `recstudio`,
+`javasnoop`, `gdb-gef`, `android-sdk`, `libsmali-java` (interface graphique
+ou SDK; a exposer via leurs binaires CLI quand ils existent).
 
 ## Contrat d'un agent (une classe)
 

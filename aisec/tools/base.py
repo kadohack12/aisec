@@ -106,3 +106,47 @@ def extract_hosts(text: str) -> list[str]:
         if cand not in found:
             found.append(cand)
     return found
+
+
+# Binaires et paquets manipules par les outils de reverse engineering.
+_BINARY_EXT = (
+    "exe|dll|sys|so|dylib|elf|bin|o|obj|class|jar|apk|dex|smali|"
+    "pyc|pyo|wasm|a|lib|ko|hex|rom|com|elf"
+)
+_BINARY_RE = re.compile(
+    rf"(?<![\w./-])([\w./-]*[\w-]+\.(?:{_BINARY_EXT}))\b", re.IGNORECASE
+)
+# Offset / adresse: 0x1A2B ou decimal >= 4 chiffres.
+_OFFSET_RE = re.compile(r"0x[0-9A-Fa-f]+|\b\d{4,}\b")
+# Symbole/fonction: "sym.main", "main", "func_00401a2b".
+_SYMBOL_RE = re.compile(r"\b(?:sym\.|fcn\.|func_|sub_)?([A-Za-z_][\w.]{1,80})\b")
+_SYMBOL_STOP = {
+    "le", "la", "les", "un", "une", "des", "du", "de", "dans", "avec", "pour",
+    "sur", "par", "et", "ou", "the", "a", "an", "of", "in", "to", "with",
+    "analyse", "analyser", "desassemble", "desassembler", "decompile",
+    "decompiler", "extrait", "extraire", "liste", "lister", "trouve",
+    "trouver", "cherche", "chercher", "montre", "affiche", "bin", "file",
+}
+
+
+def extract_binary(text: str) -> str:
+    """Extrait le chemin d'un binaire/paquet (exe, elf, apk, dex, jar...)."""
+    match = _BINARY_RE.search(text)
+    return match.group(1) if match else ""
+
+
+def extract_offset(text: str) -> str:
+    """Extrait un offset/adresse (hexadecimal ou decimal) d'un texte."""
+    match = _OFFSET_RE.search(text)
+    return match.group(0) if match else ""
+
+
+def extract_symbol(text: str) -> str:
+    """Extrait un nom de fonction/symbole probable (main, sym.foo, fcn.0040)."""
+    for cand in _SYMBOL_RE.findall(text):
+        if cand.lower() in _SYMBOL_STOP or len(cand) < 2:
+            continue
+        if _BINARY_RE.search(cand):
+            continue
+        return cand
+    return ""

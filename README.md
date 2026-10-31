@@ -192,6 +192,12 @@ dnsAI "qui possede example.com"
 aisec dns "résolution inverse de 8.8.8.8"
 aisec dns "tente un transfert de zone sur example.com"
 
+# Expert reverse engineering (analyse statique en lecture seule)
+reverseAI "liste les imports de malware.dll"
+reverseAI "identifie sample.exe avec detect-it-easy"
+reverseAI "desassemble la fonction main de sample.exe avec radare2"
+reverseAI "decompile app.apk avec jadx"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -247,10 +253,13 @@ aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
-  experts/      experts par classe: base.py (socle) + dns.py (expert DNS)
+  experts/      experts par classe: base.py (socle) + dns, reverse
   providers/    backends LLM: ollama (local), openai-compatible (API)
-  tools/        plugins: nmap, tshark, dig, host, whois
-  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI)
+  tools/        plugins: nmap, tshark, dig, host, whois + reverse engineering
+                (rabin2, radare2, rahash2, rasm2, radiff2, rizin, rz-hash,
+                rz-find, gdb, bddisasm, die, apktool, dex2jar, jadx,
+                androguard, baksmali, smali)
+  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, reverseAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

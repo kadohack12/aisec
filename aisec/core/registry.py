@@ -43,6 +43,12 @@ def _load_builtins() -> None:
     from ..tools import dns as _dns  # noqa: F401
     from ..tools import nmap as _nmap  # noqa: F401
     from ..tools import tshark as _tshark  # noqa: F401
+    # Classe 07 - Reverse Engineering
+    from ..tools import android as _android  # noqa: F401
+    from ..tools import die as _die  # noqa: F401
+    from ..tools import gdb as _gdb  # noqa: F401
+    from ..tools import radare2 as _radare2  # noqa: F401
+    from ..tools import rizin as _rizin  # noqa: F401
 
 
 _load_builtins()
