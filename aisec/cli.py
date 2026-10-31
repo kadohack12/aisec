@@ -303,5 +303,9 @@ def main_dns() -> int:
     return run_cli("dns", ["dns", *sys.argv[1:]])
 
 
+def main_vulnerability() -> int:
+    return run_cli("vulnerability", ["vulnerability", *sys.argv[1:]])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

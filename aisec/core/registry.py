@@ -43,6 +43,12 @@ def _load_builtins() -> None:
     from ..tools import dns as _dns  # noqa: F401
     from ..tools import nmap as _nmap  # noqa: F401
     from ..tools import tshark as _tshark  # noqa: F401
+    # Classe 02: Vulnerability Analysis.
+    from ..tools import vuln_cisco as _vuln_cisco  # noqa: F401
+    from ..tools import vuln_fuzz as _vuln_fuzz  # noqa: F401
+    from ..tools import vuln_scan as _vuln_scan  # noqa: F401
+    from ..tools import vuln_stress as _vuln_stress  # noqa: F401
+    from ..tools import vuln_voip as _vuln_voip  # noqa: F401
 
 
 _load_builtins()

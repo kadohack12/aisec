@@ -192,6 +192,12 @@ dnsAI "qui possede example.com"
 aisec dns "résolution inverse de 8.8.8.8"
 aisec dns "tente un transfert de zone sur example.com"
 
+# Expert Vulnerability Analysis (classe 02 : audit TLS, Cisco, fuzzing, charge, VoIP)
+vulnAI "audite le tls de example.com:443"
+aisec vulnerability "audite le routeur cisco 10.0.0.1"
+aisec vulnerability "enumere les extensions sip de 10.0.0.1"
+aisec vulnerability "fuzz le binaire ./parser avec afl"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -247,10 +253,12 @@ aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
-  experts/      experts par classe: base.py (socle) + dns.py (expert DNS)
+  experts/      experts par classe: base.py (socle), dns.py, vulnerability.py
   providers/    backends LLM: ollama (local), openai-compatible (API)
-  tools/        plugins: nmap, tshark, dig, host, whois
-  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI)
+  tools/        plugins: nmap, tshark, dig, host, whois, spec.py (base déclarative)
+                + vuln_scan.py, vuln_cisco.py, vuln_stress.py, vuln_fuzz.py,
+                  vuln_voip.py (classe 02 : 46 outils)
+  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, vulnAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →
