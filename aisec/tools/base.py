@@ -106,3 +106,53 @@ def extract_hosts(text: str) -> list[str]:
         if cand not in found:
             found.append(cand)
     return found
+
+
+_TARGET_RE = re.compile(
+    r"\b(?:\d{1,3}(?:\.\d{1,3}){3}(?:/\d{1,2})?|[a-z0-9][a-z0-9\-]*(?:\.[a-z0-9\-]+)+(?:/\d{1,2})?)\b",
+    re.IGNORECASE,
+)
+
+
+def extract_targets(text: str) -> list[str]:
+    """Comme extract_hosts, mais conserve le prefixe CIDR (ex: 10.0.0.0/24)."""
+    ignore = {"http", "https", "tcp", "udp", "com", "net", "org"}
+    found: list[str] = []
+    for cand in _TARGET_RE.findall(text):
+        low = cand.lower()
+        if low in ignore or low.endswith((".pcap", ".pcapng", ".cap")):
+            continue
+        if cand not in found:
+            found.append(cand)
+    return found
+
+
+_URL_RE = re.compile(
+    r"\b(https?://[^\s\"']+|[a-z0-9][a-z0-9\-]*(?:\.[a-z0-9\-]+)+(?::\d+)?(?:/[^\s\"']*)?)",
+    re.IGNORECASE,
+)
+
+
+def extract_url(text: str) -> str:
+    """Extrait une URL (schema + domaine + chemin) ou un domaine d'un texte."""
+    match = _URL_RE.search(text)
+    return match.group(1).rstrip(".,;") if match else ""
+
+
+def url_host(url: str) -> str:
+    """Hote d'une URL: sans schema, sans chemin, sans port."""
+    value = url.split("://", 1)[-1]
+    return value.split("/", 1)[0].split(":", 1)[0]
+
+
+def extract_ports(text: str, default: str = "80,443") -> str:
+    """Extrait une liste de ports ('22,80,8080' ou '1-1024') d'un texte."""
+    explicit = re.search(r"\bports?\s*([\d,\s]+\d)", text, re.IGNORECASE)
+    if explicit:
+        ports = ",".join(re.findall(r"\d+", explicit.group(1)))
+        if ports:
+            return ports
+    found = re.findall(r"\bports?\s*[:=]?\s*(\d{1,5})\b", text, re.IGNORECASE)
+    if found:
+        return ",".join(dict.fromkeys(found))
+    return default

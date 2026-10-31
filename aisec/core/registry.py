@@ -43,6 +43,27 @@ def _load_builtins() -> None:
     from ..tools import dns as _dns  # noqa: F401
     from ..tools import nmap as _nmap  # noqa: F401
     from ..tools import tshark as _tshark  # noqa: F401
+    # Classe 1 - Information Gathering
+    from ..tools import arp_scan as _arp_scan  # noqa: F401
+    from ..tools import dnsrecon as _dnsrecon  # noqa: F401
+    from ..tools import masscan as _masscan  # noqa: F401
+    from ..tools import sslscan as _sslscan  # noqa: F401
+    from ..tools import wafw00f as _wafw00f  # noqa: F401
+    # Classe 2 - Vulnerability Analysis
+    from ..tools import slowhttptest as _slowhttptest  # noqa: F401
+    from ..tools import testssl as _testssl  # noqa: F401
+    # Classe 3 - Web Application Analysis
+    from ..tools import ffuf as _ffuf  # noqa: F401
+    from ..tools import gobuster as _gobuster  # noqa: F401
+    from ..tools import nikto as _nikto  # noqa: F401
+    from ..tools import whatweb as _whatweb  # noqa: F401
+    # Classe 5 - Password Attacks
+    from ..tools import cewl as _cewl  # noqa: F401
+    from ..tools import hashid as _hashid  # noqa: F401
+    from ..tools import hydra as _hydra  # noqa: F401
+    from ..tools import john as _john  # noqa: F401
+    # Classe 9 - Sniffing & Spoofing
+    from ..tools import bettercap as _bettercap  # noqa: F401
 
 
 _load_builtins()
