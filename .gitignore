@@ -9,3 +9,4 @@ venv/
 aisec.toml
 *.pcap
 *.pcapng
+.openhands/
