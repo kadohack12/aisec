@@ -7,12 +7,14 @@ orchestrateur unique pourra router vers tous les experts.
 
 from __future__ import annotations
 
-from .base import Expert, route, run_expert
+from .base import Expert, _kw_match, route, run_expert
 from .dns import DNS_EXPERT
 from .exploitation import EXPLOITATION_EXPERT
 from .forensics import FORENSICS_EXPERT
 from .info import INFO_EXPERT
 from .passwords import PASSWORDS_EXPERT
+from .post_exploit import POST_EXPLOIT_EXPERT
+from .reporting import REPORTING_EXPERT
 from .sniffing import SNIFFING_EXPERT
 from .vulnerability import VULNERABILITY_EXPERT
 from .webapp import WEBAPP_EXPERT
@@ -42,19 +44,24 @@ def all_experts() -> list[Expert]:
 def select(text: str, provider=None) -> Expert:
     """Choisit l'expert le plus pertinent pour une demande libre.
 
-    Heuristique par mots-cles (deterministe). Un LLM de routage pourra etre
-    branche plus tard pour affiner.
+    Heuristique par mots-cles (deterministe) : match sur mot entier (comme le
+    routage interne), pondere par la longueur du mot-cle. Un mot-cle qui est
+    aussi un nom d'outil de l'expert (invocation explicite, ex. "mimikatz")
+    pese plus qu'un terme generique (ex. "mots de passe"). Un LLM de routage
+    pourra etre branche plus tard pour affiner.
     """
     low = text.lower()
     scores: dict[str, int] = {}
     for expert in _EXPERTS.values():
-        # Un mot-cle long (ex. "injection sql") est plus specifique qu'un mot
-        # generique (ex. "http"): on pondere par sa longueur pour departager.
-        scores[expert.name] = sum(len(kw) for kw in expert.keywords if kw in low)
+        total = 0
+        for kw in expert.keywords:
+            if _kw_match(kw, low):
+                total += len(kw) * (3 if kw in expert.tool_names else 1)
+        scores[expert.name] = total
     best = max(scores, key=scores.get)
     if scores[best] == 0:
-        # Aucun mot-cle: on prend le premier expert (DNS) comme defaut.
-        return next(iter(_EXPERTS.values()))
+        # Aucun mot-cle: on prend l'expert de reconnaissance (info) par defaut.
+        return _EXPERTS.get("info") or next(iter(_EXPERTS.values()))
     return _EXPERTS[best]
 
 
@@ -67,5 +74,7 @@ register(SNIFFING_EXPERT)
 register(EXPLOITATION_EXPERT)
 register(FORENSICS_EXPERT)
 register(REVERSE_EXPERT)
+register(POST_EXPLOIT_EXPERT)
+register(REPORTING_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]

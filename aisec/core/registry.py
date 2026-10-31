@@ -64,6 +64,10 @@ def _load_builtins() -> None:
     from ..tools import passwords as _passwords  # noqa: F401
     # Classe 9 - Sniffing & Spoofing
     from ..tools import bettercap as _bettercap  # noqa: F401
+    # Classe 8 - Post Exploitation
+    from ..tools import post_exploit as _post_exploit  # noqa: F401
+    # Classe 12 - Reporting Tools
+    from ..tools import reporting as _reporting  # noqa: F401
     # Classe 11 - Digital Forensics
     from ..tools import binwalk as _binwalk  # noqa: F401
     from ..tools import bulk_extractor as _bulk_extractor  # noqa: F401

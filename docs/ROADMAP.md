@@ -18,6 +18,7 @@ Trois agents avaient produit des branches parallèles se recouvrant. Elles ont
 | `expert-03-webapp-analysis` | #4 | classe 03 complète : `webapp` (38 outils via web_crawl/web_vuln/web_misc) |
 | `feat/experts-forensics` | #6 | classe 11 : expert `forensics` (22 outils) |
 | `feat/experts-reverse` | #7 | classe 07 : expert `reverse` (17 outils) |
+| `feat/experts-jalon3` | #8 | classes 08 : `post-exploit` (15 outils) et 12 : `reporting` (4 outils) |
 
 **Règle d'arbitrage** : quand deux branches livraient la même classe, on a gardé
 l'implémentation la plus **complète**, puis supprimé les doublons.
@@ -29,9 +30,10 @@ l'implémentation la plus **complète**, puis supprimé les doublons.
 - Classe 04 : `exploitation` (PR #3), aucun recouvrement.
 - Classe 11 : `forensics` (PR #6), aucun recouvrement.
 - Classe 07 : `reverse` (PR #7), aucun recouvrement.
+- Classes 08 et 12 : `post-exploit` et `reporting` (PR #8), aucun recouvrement.
 
-Résultat sur `main` : **9 experts**, **165 outils uniques**, **aucune collision
-de nom**, **245 tests** verts.
+Résultat sur `main` : **11 experts** (dont `dns`), **184 outils uniques**,
+**aucune collision de nom**, **292 tests** verts.
 
 ---
 
@@ -53,12 +55,12 @@ fusionnée par-dessus (branche `consolidate/experts`).
 - [x] Répartition en 15 classes (`docs/CLASSES.md`, `docs/classes.json`)
 - [x] 43 tests
 
-### Jalon 1 — 9 experts ✅ (fusionnés sur `main`)
+### Jalon 1 — 11 experts ✅ (fusionnés sur `main`)
 - [x] Consolider les branches d'agents en **une** base propre
 - [x] Dédupliquer les outils partagés (une seule classe `Tool` par binaire)
-- [x] Experts `info`, `vulnerability`, `webapp`, `exploitation`, `passwords`, `reverse`, `sniffing`, `forensics`
+- [x] Experts `info`, `vulnerability`, `webapp`, `exploitation`, `passwords`, `reverse`, `post-exploit`, `sniffing`, `forensics`, `reporting`
 - [x] Adopter `tools/spec.py` (base déclarative) comme standard
-- [x] 245 tests (9 experts, 165 outils)
+- [x] 292 tests (11 experts, 184 outils)
 
 ### Jalon 2 — profondeur des classes amorcées
 - [ ] Classe 01 : sous-catégories OSINT, SMTP, SMB, SNMP, SSL, IDS/IPS, Route
@@ -70,13 +72,13 @@ fusionnée par-dessus (branche `consolidate/experts`).
 - [ ] Classe 09 : sniffers dédiés + spoofing/MITM (hors `tshark`)
 
 ### Jalon 3 — nouvelles classes
-- [ ] 04 Exploitation Tools
+- [x] 04 Exploitation Tools (`exploitation`, 18 outils)
 - [ ] 06 Wireless Testing
-- [ ] 07 Reverse Engineering
-- [ ] 08 Post Exploitation
+- [x] 07 Reverse Engineering (`reverse`, 17 outils)
+- [x] 08 Post Exploitation (`post-exploit`, 15 outils)
 - [ ] 10 Maintaining Access
-- [ ] 11 Digital Forensics
-- [ ] 12 Reporting · 13 Automotive · 14 AI Tools · `misc`
+- [x] 11 Digital Forensics (`forensics`, 22 outils)
+- [x] 12 Reporting (`reporting`, 4 outils) · [ ] 13 Automotive · [ ] 14 AI Tools · [ ] `misc`
 
 ### Jalon 4 — orchestrateur & IA par expert
 - [ ] Orchestrateur unique : le routeur choisit **la classe** puis l'expert
