@@ -106,3 +106,70 @@ def extract_hosts(text: str) -> list[str]:
         if cand not in found:
             found.append(cand)
     return found
+
+
+# Extensions/artefacts manipules par les outils de forensique.
+_ARTIFACT_EXT = (
+    "dd|raw|img|001|e01|ex01|l01|aff|vhd|vmdk|iso|"
+    "mem|dmp|vmem|core|dump|"
+    "pcap|pcapng|cap|evtx|evt|hive|dat|reg|yar|yara|"
+    "pdf|doc|docx|xls|xlsx|ppt|pptx|rtf|odt|"
+    "jpg|jpeg|png|gif|bmp|tif|tiff|zip|rar|7z|tar|gz|"
+    "eml|mbox|pst|ost|db|sqlite|log|txt|bin"
+)
+_ARTIFACT_RE = re.compile(
+    rf"(?<![\w./-])([\w./-]*[\w-]+\.(?:{_ARTIFACT_EXT}))\b",
+    re.IGNORECASE,
+)
+# Offset / adresse: 0x1A2B, 12345, 0x1A2B-0x3C4D.
+_OFFSET_RE = re.compile(
+    r"\b(0x[0-9A-Fa-f]+|\d+)\s*(?:-\s*(0x[0-9A-Fa-f]+|\d+))?\b"
+)
+
+
+def extract_path(text: str) -> str:
+    """Extrait un chemin de fichier/artefact (disque, pcap, pdf, registre...)."""
+    match = _ARTIFACT_RE.search(text)
+    return match.group(1) if match else ""
+
+
+def extract_offset(text: str) -> str:
+    """Extrait un offset/adresse (hexadecimal ou decimal) d'un texte."""
+    match = re.search(r"0x[0-9A-Fa-f]+|\b\d{4,}\b", text)
+    return match.group(0) if match else ""
+
+
+# Chemin explicite: /evidence, ./out, ../img (sans exiger d'extension).
+_BARE_PATH_RE = re.compile(r"(?<![\w:./-])((?:\.\.?/|/)[\w./-]*[\w-])")
+
+
+def extract_any_path(text: str) -> str:
+    """Comme extract_path, mais accepte aussi les chemins de repertoires."""
+    found = extract_path(text)
+    if found:
+        return found
+    match = _BARE_PATH_RE.search(text)
+    return match.group(1) if match else ""
+
+
+# Ruches de registre Windows courantes, souvent citees sans extension.
+_HIVES = (
+    "NTUSER.DAT",
+    "USRCLASS.DAT",
+    "Amcache.hve",
+    "SYSTEM",
+    "SOFTWARE",
+    "SAM",
+    "SECURITY",
+    "DEFAULT",
+)
+
+
+def extract_hive(text: str) -> str:
+    """Extrait le nom d'une ruche de registre Windows d'un texte."""
+    upper = text.upper()
+    for hive in _HIVES:
+        match = re.search(rf"(?<![\w./-]){re.escape(hive)}(?![\w./-])", upper)
+        if match:
+            return text[match.start() : match.end()]
+    return extract_any_path(text)

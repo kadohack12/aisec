@@ -20,6 +20,7 @@ aisec = "aisec.cli:main"
 nmapAI = "aisec.cli:main_nmap"
 tsharkAI = "aisec.cli:main_tshark"
 dnsAI = "aisec.cli:main_dns"
+forensicsAI = "aisec.cli:main_forensics"
 
 [tool.hatch.build.targets.wheel]
 packages = ["aisec"]

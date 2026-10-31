@@ -192,6 +192,12 @@ dnsAI "qui possede example.com"
 aisec dns "résolution inverse de 8.8.8.8"
 aisec dns "tente un transfert de zone sur example.com"
 
+# Expert forensique (analyse en lecture seule)
+forensicsAI "analyse le firmware firmware.bin avec binwalk"
+forensicsAI "analyse suspect.pdf avec pdfid"
+forensicsAI "liste les processus de dump.mem avec volatility3"
+forensicsAI "recupere les fichiers de disk.img avec foremost"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -247,10 +253,14 @@ aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
-  experts/      experts par classe: base.py (socle) + dns.py (expert DNS)
+  experts/      experts par classe: base.py (socle) + dns, forensics
   providers/    backends LLM: ollama (local), openai-compatible (API)
-  tools/        plugins: nmap, tshark, dig, host, whois
-  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI)
+  tools/        plugins: nmap, tshark, dig, host, whois + outils forensiques
+                (fls, mmls, icat, foremost, scalpel, binwalk, bulk_extractor,
+                pdfid, pdf-parser, yara, volatility3, regripper, reglookup,
+                galleta, vinetto, hashdeep, ssdeep, rkhunter, chkrootkit,
+                extundelete, dc3dd, ddrescue)
+  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, forensicsAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

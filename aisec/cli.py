@@ -303,5 +303,9 @@ def main_dns() -> int:
     return run_cli("dns", ["dns", *sys.argv[1:]])
 
 
+def main_forensics() -> int:
+    return run_cli("forensics", ["forensics", *sys.argv[1:]])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

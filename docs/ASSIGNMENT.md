@@ -11,7 +11,7 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | | a faire |
 | 4 | Password Attacks | `05-password-attacks` | 45 | haute | | a faire |
 | 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | | a faire |
-| 6 | Digital Forensics | `11-forensics` | 46 | moyenne | | a faire |
+| 6 | Digital Forensics | `11-forensics` | 46 | moyenne | agent-forensics | **en cours (jalon 1)** |
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
 | 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | | a faire |
@@ -24,6 +24,37 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
+
+## Jalon 1 : Digital Forensics (`11-forensics`)
+
+Premier lot de la classe 11 : 22 outils et un expert `forensics` fonctionnel
+(routage + argv + analyse heuristique). Les outils sont volontairement
+majoritairement en lecture seule ; seuls `dc3dd` et `ddrescue` sont classes
+`high` (acquisition/ecriture), et `icat`/`extundelete`/`rkhunter`/`chkrootkit`
+en `medium`.
+
+| Sous-categorie | Outils du jalon 1 |
+|----------------|-------------------|
+| Sleuth Kit | `fls`, `mmls`, `icat` |
+| Carving | `foremost`, `scalpel`, `binwalk`, `bulk_extractor` |
+| PDF Forensics | `pdfid`, `pdf-parser` |
+| Detection | `yara` |
+| Memoire vive | `volatility3` |
+| Artefacts Windows | `regripper`, `reglookup`, `galleta`, `vinetto` |
+| Integrite / rootkits | `hashdeep`, `ssdeep`, `rkhunter`, `chkrootkit` |
+| Recuperation | `extundelete` |
+| Imagerie | `dc3dd`, `ddrescue` |
+
+Tests : `tests/test_forensics.py` (routage, argv, analyse, politique de
+controle).
+
+Reste a couvrir dans les jalons suivants : imagerie et conteneurs (`autopsy`,
+`guymager`, `ewf-tools`, `afflib-tools`, `dcfldd`), carving complementaire
+(`magicrescue`, `safecopy`, `rifiuti2`, `pev`, `pasco`, `ext3grep`,
+`ext4magic`, `myrescue`, `recoverdm`, `recoverjpeg`, `scrounge-ntfs`,
+`undbx`), systeme et journaux (`grokevt`, `chkrootkit` deja livre, `unhide`,
+`procdump`, `pst-utils`, `mc`, `missidentify`) et reseau (`xplico`,
+`inetsim`).
 
 ## Contrat d'un agent (une classe)
 
