@@ -14,7 +14,7 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | | a faire |
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
-| 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | | a faire |
+| 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | openhands | **livre** (`aisec/experts/exploitation.py`) |
 | 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | | a faire |
 | 11 | Post Exploitation | `08-post-exploit` | 16 | basse | | a faire |
 | 12 | Reporting Tools | `12-reporting` | 4 | basse | | a faire |

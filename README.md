@@ -259,14 +259,15 @@ aisec/
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
-                webapp, passwords, sniffing
+                webapp, passwords, sniffing, exploitation
   providers/    backends LLM: ollama (local), openai-compatible (API)
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
                 sslscan, wafw00f, dnsrecon, bettercap, webapp (18 outils),
-                passwords (13 outils) + spec.py (base déclarative) et
-                vuln_scan/cisco/stress/fuzz/voip (classe 02 : 46 outils)
+                passwords (13 outils), exploitation (18 outils) + spec.py
+                (base déclarative) et vuln_scan/cisco/stress/fuzz/voip (classe 02)
   cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
-                vulnerabilityAI, webappAI, passwordsAI, sniffingAI)
+                vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
+                exploitationAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

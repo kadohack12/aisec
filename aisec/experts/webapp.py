@@ -118,6 +118,5 @@ WEBAPP_EXPERT = Expert(
         "brute force",
         "parametres",
         "vulnerabilite web",
-        "injection sql",
     ),
 )

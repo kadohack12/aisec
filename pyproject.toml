@@ -25,6 +25,7 @@ vulnerabilityAI = "aisec.cli:main_vulnerability"
 webappAI = "aisec.cli:main_webapp"
 passwordsAI = "aisec.cli:main_passwords"
 sniffingAI = "aisec.cli:main_sniffing"
+exploitationAI = "aisec.cli:main_exploitation"
 
 [tool.hatch.build.targets.wheel]
 packages = ["aisec"]

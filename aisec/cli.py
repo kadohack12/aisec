@@ -323,5 +323,9 @@ def main_sniffing() -> int:
     return run_cli("sniffing", ["sniffing", *sys.argv[1:]])
 
 
+def main_exploitation() -> int:
+    return run_cli("exploitation", ["exploitation", *sys.argv[1:]])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())
