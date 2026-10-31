@@ -11,10 +11,10 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | agent-web | **livre (jalon 1)** |
 | 4 | Password Attacks | `05-password-attacks` | 45 | haute | agent-password | **livre (jalon 1)** |
 | 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | agent-sniffing | **livre (jalon 1)** |
-| 6 | Digital Forensics | `11-forensics` | 46 | moyenne | | a faire |
+| 6 | Digital Forensics | `11-forensics` | 46 | moyenne | agent-forensics | **livre (jalon 1)** |
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
-| 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | openhands | **livre** (`aisec/experts/exploitation.py`) |
+| 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | agent-exploitation | **livre (jalon 1)** |
 | 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | | a faire |
 | 11 | Post Exploitation | `08-post-exploit` | 16 | basse | | a faire |
 | 12 | Reporting Tools | `12-reporting` | 4 | basse | | a faire |
@@ -25,24 +25,51 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
 
-## Jalon 1 : 5 experts livres (premier lot d'outils)
+## Jalon 1 : 7 experts livres (premier lot d'outils)
 
-Les classes 1, 2, 3, 5 et 9 sont amorcees avec un premier lot d'outils et un
+Les classes 1, 2, 3, 4, 5, 9 et 11 sont amorcees avec un premier lot d'outils et un
 expert fonctionnel (routage + construction d'argv + analyse heuristique).
 
 | Expert | `class_id` | Outils du jalon 1 | Tests |
 |--------|-----------|-------------------|-------|
 | `info` | `01-info-gathering` | nmap, masscan, arp-scan, sslscan, wafw00f, dnsrecon | `tests/test_info.py` |
 | `vulnerability` | `02-vulnerability-analysis` | 46 outils (spec.py + vuln_scan/cisco/stress/fuzz/voip) | `tests/test_vulnerability.py` |
-| `webapp` | `03-webapp-analysis` | nikto, whatweb, wpscan, gobuster, ffuf, wapiti, ... (18) | `tests/test_webapp.py` |
+| `webapp` | `03-webapp-analysis` | 38 outils (web_crawl/web_vuln/web_misc : nikto, whatweb, wpscan, gobuster, ffuf, wapiti, ...) | `tests/test_webapp.py` |
+| `exploitation` | `04-exploitation-tools` | 18 outils (sqlmap, msfconsole, searchsploit, ...) | `tests/test_exploitation.py` |
 | `passwords` | `05-password-attacks` | hydra, medusa, ncrack, john, hashcat, ... (13) | `tests/test_passwords.py` |
 | `sniffing` | `09-sniffing-spoofing` | tshark (reutilise), bettercap | `tests/test_sniffing.py` |
+| `forensics` | `11-forensics` | 22 outils (fls, mmls, icat, foremost, scalpel, binwalk, bulk_extractor, pdfid, pdf-parser, yara, volatility3, regripper, reglookup, galleta, vinetto, hashdeep, ssdeep, rkhunter, chkrootkit, extundelete, dc3dd, ddrescue) | `tests/test_forensics.py` |
 
 Note : l'expert `dns` (`01-01-dns-analysis`) reste la reference pour
 dig/host/whois et n'a pas ete refait ; l'expert `info` couvre le reste de la
 classe 1.
 
-Les sous-categories restantes de chaque classe (OSINT, SMTP, SMB, SNMP, Cisco,
+### Detail classe 11 (forensique)
+
+Les outils sont volontairement majoritairement en lecture seule ; seuls `dc3dd`
+et `ddrescue` sont classes `high` (acquisition/ecriture), et
+`icat`/`extundelete`/`rkhunter`/`chkrootkit` en `medium`.
+
+| Sous-categorie | Outils du jalon 1 |
+|----------------|-------------------|
+| Sleuth Kit | `fls`, `mmls`, `icat` |
+| Carving | `foremost`, `scalpel`, `binwalk`, `bulk_extractor` |
+| PDF Forensics | `pdfid`, `pdf-parser` |
+| Detection | `yara` |
+| Memoire vive | `volatility3` |
+| Artefacts Windows | `regripper`, `reglookup`, `galleta`, `vinetto` |
+| Integrite / rootkits | `hashdeep`, `ssdeep`, `rkhunter`, `chkrootkit` |
+| Recuperation | `extundelete` |
+| Imagerie | `dc3dd`, `ddrescue` |
+
+Reste a couvrir dans les jalons suivants : imagerie et conteneurs (`autopsy`,
+`guymager`, `ewf-tools`, `afflib-tools`, `dcfldd`), carving complementaire
+(`magicrescue`, `safecopy`, `rifiuti2`, `pev`, `pasco`, `ext3grep`,
+`ext4magic`, `myrescue`, `recoverdm`, `recoverjpeg`, `scrounge-ntfs`,
+`undbx`), systeme et journaux (`grokevt`, `unhide`, `procdump`, `pst-utils`,
+`mc`, `missidentify`) et reseau (`xplico`, `inetsim`).
+
+Les sous-categories restantes des autres classes (OSINT, SMTP, SMB, SNMP, Cisco,
 fuzzing, VoIP, stress, CMS, proxies, attaques hors ligne/locales, sniffers
 dedies, spoofing MITM, ...) sont a traiter dans les jalons suivants.
 

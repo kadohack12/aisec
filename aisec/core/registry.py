@@ -64,6 +64,19 @@ def _load_builtins() -> None:
     from ..tools import passwords as _passwords  # noqa: F401
     # Classe 9 - Sniffing & Spoofing
     from ..tools import bettercap as _bettercap  # noqa: F401
+    # Classe 11 - Digital Forensics
+    from ..tools import binwalk as _binwalk  # noqa: F401
+    from ..tools import bulk_extractor as _bulk_extractor  # noqa: F401
+    from ..tools import extundelete as _extundelete  # noqa: F401
+    from ..tools import foremost as _foremost  # noqa: F401
+    from ..tools import imaging as _imaging  # noqa: F401
+    from ..tools import integrity as _integrity  # noqa: F401
+    from ..tools import pdf_forensics as _pdf_forensics  # noqa: F401
+    from ..tools import scalpel as _scalpel  # noqa: F401
+    from ..tools import sleuthkit as _sleuthkit  # noqa: F401
+    from ..tools import volatility as _volatility  # noqa: F401
+    from ..tools import windows_artifacts as _windows_artifacts  # noqa: F401
+    from ..tools import yara as _yara  # noqa: F401
 
 
 _load_builtins()

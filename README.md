@@ -209,6 +209,12 @@ aisec webapp "identifie les technologies de example.com"
 aisec webapp "bruteforce les répertoires de http://cible"
 aisec webapp "teste les failles xss sur http://cible"
 
+# Expert forensique (analyse en lecture seule)
+forensicsAI "analyse le firmware firmware.bin avec binwalk"
+forensicsAI "analyse suspect.pdf avec pdfid"
+forensicsAI "liste les processus de dump.mem avec volatility3"
+forensicsAI "recupere les fichiers de disk.img avec foremost"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -265,16 +271,20 @@ aisec/
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
-                webapp, passwords, sniffing, exploitation
+                webapp, passwords, sniffing, exploitation, forensics
   providers/    backends LLM: ollama (local), openai-compatible (API)
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
                 sslscan, wafw00f, dnsrecon, bettercap, passwords (13 outils),
                 exploitation (18 outils) + spec.py (base déclarative)
                 + vuln_scan/cisco/stress/fuzz/voip (classe 02 : 46 outils)
                 + web_crawl/web_vuln/web_misc + webapp (classe 03 : 38 outils)
+                + outils forensiques (classe 11 : fls, mmls, icat, foremost,
+                  scalpel, binwalk, bulk_extractor, pdfid, pdf-parser, yara,
+                  volatility3, regripper, reglookup, galleta, vinetto, hashdeep,
+                  ssdeep, rkhunter, chkrootkit, extundelete, dc3dd, ddrescue)
   cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
                 vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
-                exploitationAI)
+                exploitationAI, forensicsAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

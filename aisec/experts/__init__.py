@@ -10,6 +10,7 @@ from __future__ import annotations
 from .base import Expert, route, run_expert
 from .dns import DNS_EXPERT
 from .exploitation import EXPLOITATION_EXPERT
+from .forensics import FORENSICS_EXPERT
 from .info import INFO_EXPERT
 from .passwords import PASSWORDS_EXPERT
 from .sniffing import SNIFFING_EXPERT
@@ -63,5 +64,6 @@ register(WEBAPP_EXPERT)
 register(PASSWORDS_EXPERT)
 register(SNIFFING_EXPERT)
 register(EXPLOITATION_EXPERT)
+register(FORENSICS_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]
