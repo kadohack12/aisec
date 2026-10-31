@@ -33,9 +33,9 @@ expert fonctionnel (routage + construction d'argv + analyse heuristique).
 | Expert | `class_id` | Outils du jalon 1 | Tests |
 |--------|-----------|-------------------|-------|
 | `info` | `01-info-gathering` | nmap, masscan, arp-scan, sslscan, wafw00f, dnsrecon | `tests/test_info.py` |
-| `vuln` | `02-vulnerability-analysis` | testssl, slowhttptest | `tests/test_vuln.py` |
-| `web` | `03-webapp-analysis` | whatweb, nikto, gobuster, ffuf | `tests/test_web.py` |
-| `password` | `05-password-attacks` | hydra, john, hashid, cewl | `tests/test_password.py` |
+| `vulnerability` | `02-vulnerability-analysis` | 46 outils (spec.py + vuln_scan/cisco/stress/fuzz/voip) | `tests/test_vulnerability.py` |
+| `webapp` | `03-webapp-analysis` | nikto, whatweb, wpscan, gobuster, ffuf, wapiti, ... (18) | `tests/test_webapp.py` |
+| `passwords` | `05-password-attacks` | hydra, medusa, ncrack, john, hashcat, ... (13) | `tests/test_passwords.py` |
 | `sniffing` | `09-sniffing-spoofing` | tshark (reutilise), bettercap | `tests/test_sniffing.py` |
 
 Note : l'expert `dns` (`01-01-dns-analysis`) reste la reference pour

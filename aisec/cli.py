@@ -311,12 +311,12 @@ def main_vulnerability() -> int:
     return run_cli("vulnerability", ["vulnerability", *sys.argv[1:]])
 
 
-def main_web() -> int:
-    return run_cli("web", ["web", *sys.argv[1:]])
+def main_webapp() -> int:
+    return run_cli("webapp", ["webapp", *sys.argv[1:]])
 
 
-def main_password() -> int:
-    return run_cli("password", ["password", *sys.argv[1:]])
+def main_passwords() -> int:
+    return run_cli("passwords", ["passwords", *sys.argv[1:]])
 
 
 def main_sniffing() -> int:

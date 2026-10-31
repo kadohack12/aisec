@@ -22,8 +22,8 @@ tsharkAI = "aisec.cli:main_tshark"
 dnsAI = "aisec.cli:main_dns"
 infoAI = "aisec.cli:main_info"
 vulnerabilityAI = "aisec.cli:main_vulnerability"
-webAI = "aisec.cli:main_web"
-passwordAI = "aisec.cli:main_password"
+webappAI = "aisec.cli:main_webapp"
+passwordsAI = "aisec.cli:main_passwords"
 sniffingAI = "aisec.cli:main_sniffing"
 
 [tool.hatch.build.targets.wheel]

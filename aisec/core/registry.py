@@ -56,15 +56,9 @@ def _load_builtins() -> None:
     from ..tools import vuln_stress as _vuln_stress  # noqa: F401
     from ..tools import vuln_voip as _vuln_voip  # noqa: F401
     # Classe 3 - Web Application Analysis
-    from ..tools import ffuf as _ffuf  # noqa: F401
-    from ..tools import gobuster as _gobuster  # noqa: F401
-    from ..tools import nikto as _nikto  # noqa: F401
-    from ..tools import whatweb as _whatweb  # noqa: F401
+    from ..tools import webapp as _webapp  # noqa: F401
     # Classe 5 - Password Attacks
-    from ..tools import cewl as _cewl  # noqa: F401
-    from ..tools import hashid as _hashid  # noqa: F401
-    from ..tools import hydra as _hydra  # noqa: F401
-    from ..tools import john as _john  # noqa: F401
+    from ..tools import passwords as _passwords  # noqa: F401
     # Classe 9 - Sniffing & Spoofing
     from ..tools import bettercap as _bettercap  # noqa: F401
 

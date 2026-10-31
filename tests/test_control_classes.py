@@ -19,8 +19,8 @@ def _plan(argv, targets=None):
 @pytest.mark.parametrize(
     "expert_name, text, expected",
     [
-        ("web", "brute force les repertoires du site web", "web"),
-        ("password", "casse ce hash de mot de passe", "password"),
+        ("webapp", "brute force les repertoires du site web", "webapp"),
+        ("passwords", "casse ce hash de mot de passe", "passwords"),
         ("sniffing", "capture le trafic reseau en pcap", "sniffing"),
         ("vulnerability", "audit de vulnerabilite tls", "vulnerability"),
         ("info", "enumeration des hotes du reseau", "info"),
@@ -30,17 +30,17 @@ def test_router_selects_expected_expert(expert_name, text, expected):
     assert select(text).name == expected
 
 
-def test_hydra_is_high_risk_and_needs_confirmation():
+def test_hydra_is_critical_risk_and_needs_confirmation():
     from aisec.core.registry import get
 
     tool = get("hydra")
-    assert tool.risk == "high"
+    assert tool.risk == "critical"
     verdict = evaluate(
         _plan(["hydra", "-L", "u.txt", "-P", "p.txt", "10.0.0.1", "ssh"], ["10.0.0.1"]),
         tool,
         ControlPolicy(),
     )
-    assert verdict.risk is Risk.HIGH
+    assert verdict.risk is Risk.CRITICAL
     assert verdict.decision is Decision.CONFIRM
 
 
