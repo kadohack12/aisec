@@ -12,16 +12,14 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 4 | Password Attacks | `05-password-attacks` | 45 | haute | agent-password | **livre (jalon 1)** |
 | 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | agent-sniffing | **livre (jalon 1)** |
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | agent-forensics | **livre (jalon 1)** |
-| 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
+| 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | agent-wireless | **livre (jalon 4)** |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
 | 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | agent-exploitation | **livre (jalon 1)** |
-| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | | a faire |
-| 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | | a faire |
-| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **en cours (jalon 1)** |
+| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **livre (jalon 1)** |
 | 11 | Post Exploitation | `08-post-exploit` | 16 | basse | | a faire |
 | 12 | Reporting Tools | `12-reporting` | 4 | basse | | a faire |
-| 13 | Automotive | `13-automotive` | 1 | basse | | a faire |
-| 14 | AI Tools | `14-ai-tools` | 5 | basse | | a faire |
+| 13 | Automotive | `13-automotive` | 1 | basse | agent-automotive | **livre (jalon 4)** |
+| 14 | AI Tools | `14-ai-tools` | 5 | basse | agent-ai | **livre (jalon 4)** |
 | 15 | Autres (System/Utility/...) | `misc` | 21 | basse | | a faire |
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
@@ -97,6 +95,31 @@ Reste a couvrir dans les jalons suivants : `ghidra`, `edb-debugger`,
 `ollydbg`, `rizin-cutter`, `bytecode-viewer`, `jd-gui`, `recstudio`,
 `javasnoop`, `gdb-gef`, `android-sdk`, `libsmali-java` (interface graphique
 ou SDK; a exposer via leurs binaires CLI quand ils existent).
+
+## Jalon 4 : Wireless Testing, Automotive et AI Tools
+
+Trois experts supplementaires (classes 6, 13 et 14), soit **11 experts livres** au
+total. Chaque classe a son module d'outils, son expert et ses tests.
+
+| Expert | `class_id` | Outils du jalon 4 | Tests |
+|--------|-----------|-------------------|-------|
+| `wireless` | `06-wireless-attacks` | 17 outils (airmon-ng, airodump-ng, aireplay-ng, aircrack-ng, reaver, wifite, mdk4, pixiewps, bully, cowpatty, asleap, bluesnarfer, blueranger, hcitool, mfoc, mfcuk, nfc-list) | `tests/test_wireless.py` |
+| `automotive` | `13-automotive` | 6 outils can-utils (candump, cansend, cangen, canconfig, canconvert, isotpdump) | `tests/test_automotive.py` |
+| `ai` | `14-ai-tools` | 5 outils (hexstrike-ai, mcpwn, opencode, pi-dev, unsloth) | `tests/test_ai_tools.py` |
+
+Detail classe 6 : la capture et le scan sont en `medium` (interface en mode
+moniteur) ; la desauthentification, l'injection et le cassage de cle sont en
+`high` (attaque active du reseau). Detail classe 13 : `candump`/`isotpdump` en
+`low` (lecture), `cansend`/`cangen`/`canconfig` en `medium` (ecriture sur le bus).
+Detail classe 14 : `mcpwn` en `high` (outils offensifs exposes au modele), les
+autres en `medium`.
+
+Reste a couvrir dans les jalons suivants pour ces classes : Wi-Fi restant
+(`fern-wifi-cracker`, `airgeddon`, `kismet`, `sparrow-wifi`, `wig-ng`,
+`freeradius`, `eapmd5pass`, `wifi-honey`, `bluelog`, `bluez-hcidump`,
+`btscanner`, `redfang`, `spooftooph`), SDR (`gnuradio`, `hackrf`, `gqrx-sdr`,
+`inspectrum`, `ubertooth`, `rtlsdr-scanner`), RFID/NFC (`libfreefare-bin`,
+`libnfc-bin`, `mfterm`) et modes avances des agents IA.
 
 ## Contrat d'un agent (une classe)
 
