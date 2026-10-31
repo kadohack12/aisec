@@ -12,37 +12,40 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 4 | Password Attacks | `05-password-attacks` | 45 | haute | agent-password | **livre (jalon 1)** |
 | 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | agent-sniffing | **livre (jalon 1)** |
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | agent-forensics | **livre (jalon 1)** |
-| 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
+| 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | agent-wireless | **livre (jalon 4)** |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
 | 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | agent-exploitation | **livre (jalon 1)** |
 | 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **livre (jalon 1)** |
 | 11 | Post Exploitation | `08-post-exploit` | 16 | basse | agent-post-exploit | **livre (jalon 3)** |
 | 12 | Reporting Tools | `12-reporting` | 4 | basse | agent-reporting | **livre (jalon 3)** |
-| 13 | Automotive | `13-automotive` | 1 | basse | | a faire |
-| 14 | AI Tools | `14-ai-tools` | 5 | basse | | a faire |
+| 13 | Automotive | `13-automotive` | 1 | basse | agent-automotive | **livre (jalon 4)** |
+| 14 | AI Tools | `14-ai-tools` | 5 | basse | agent-ai | **livre (jalon 4)** |
 | 15 | Autres (System/Utility/...) | `misc` | 21 | basse | | a faire |
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
 
-## Jalon 1 : 10 experts livres (premier lot d'outils)
+## Experts livres (13)
 
-Les classes 1, 2, 3, 4, 5, 7, 8, 9, 11 et 12 sont amorcees avec un premier lot
-d'outils et un expert fonctionnel (routage + construction d'argv + analyse
-heuristique).
+Les classes 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13 et 14 sont amorcees avec un
+premier lot d'outils et un expert fonctionnel (routage + construction d'argv +
+analyse heuristique).
 
-| Expert | `class_id` | Outils du jalon 1 | Tests |
+| Expert | `class_id` | Outils | Tests |
 |--------|-----------|-------------------|-------|
 | `info` | `01-info-gathering` | nmap, masscan, arp-scan, sslscan, wafw00f, dnsrecon | `tests/test_info.py` |
 | `vulnerability` | `02-vulnerability-analysis` | 46 outils (spec.py + vuln_scan/cisco/stress/fuzz/voip) | `tests/test_vulnerability.py` |
 | `webapp` | `03-webapp-analysis` | 38 outils (web_crawl/web_vuln/web_misc : nikto, whatweb, wpscan, gobuster, ffuf, wapiti, ...) | `tests/test_webapp.py` |
 | `exploitation` | `04-exploitation-tools` | 18 outils (sqlmap, msfconsole, searchsploit, ...) | `tests/test_exploitation.py` |
 | `passwords` | `05-password-attacks` | hydra, medusa, ncrack, john, hashcat, ... (13) | `tests/test_passwords.py` |
+| `wireless` | `06-wireless-attacks` | 17 outils (airmon-ng, airodump-ng, aireplay-ng, aircrack-ng, reaver, wifite, mdk4, pixiewps, bully, cowpatty, asleap, bluesnarfer, blueranger, hcitool, mfoc, mfcuk, nfc-list) | `tests/test_wireless.py` |
 | `reverse` | `07-reverseengineer` | 17 outils (rabin2, radare2, rahash2, rasm2, radiff2, rizin, rz-hash, rz-find, gdb, bddisasm, die, apktool, dex2jar, jadx, androguard, baksmali, smali) | `tests/test_reverse.py` |
 | `post-exploit` | `08-post-exploit` | 15 outils (chisel, lynis, linux-exploit-suggester, mimikatz, wce, dumpzilla, evil-winrm, powercat, ncat-w32, koadic, powersploit, ibombshell, freerdp3-x11, cymothoa, xspy) | `tests/test_post_exploit.py` |
 | `sniffing` | `09-sniffing-spoofing` | tshark (reutilise), bettercap | `tests/test_sniffing.py` |
 | `forensics` | `11-forensics` | 22 outils (fls, mmls, icat, foremost, scalpel, binwalk, bulk_extractor, pdfid, pdf-parser, yara, volatility3, regripper, reglookup, galleta, vinetto, hashdeep, ssdeep, rkhunter, chkrootkit, extundelete, dc3dd, ddrescue) | `tests/test_forensics.py` |
 | `reporting` | `12-reporting` | dradis, faraday, eyewitness, neo4j (4) | `tests/test_reporting.py` |
+| `automotive` | `13-automotive` | 6 outils can-utils (candump, cansend, cangen, canconfig, canconvert, isotpdump) | `tests/test_automotive.py` |
+| `ai` | `14-ai-tools` | 5 outils (hexstrike-ai, mcpwn, opencode, pi-dev, unsloth) | `tests/test_ai_tools.py` |
 
 Note : l'expert `dns` (`01-01-dns-analysis`) reste la reference pour
 dig/host/whois et n'a pas ete refait ; l'expert `info` couvre le reste de la
@@ -77,7 +80,7 @@ Les sous-categories restantes des autres classes (OSINT, SMTP, SMB, SNMP, Cisco,
 fuzzing, VoIP, stress, CMS, proxies, attaques hors ligne/locales, sniffers
 dedies, spoofing MITM, ...) sont a traiter dans les jalons suivants.
 
-## Jalon 1 : Reverse Engineering (`07-reverseengineer`)
+### Detail classe 07 (reverse engineering)
 
 17 outils et un expert `reverse` fonctionnel. Le lot est domine par l'analyse
 statique en lecture seule (`low`) ; `gdb` (execution/debogage) et `smali`
@@ -98,6 +101,31 @@ Reste a couvrir dans les jalons suivants : `ghidra`, `edb-debugger`,
 `ollydbg`, `rizin-cutter`, `bytecode-viewer`, `jd-gui`, `recstudio`,
 `javasnoop`, `gdb-gef`, `android-sdk`, `libsmali-java` (interface graphique
 ou SDK; a exposer via leurs binaires CLI quand ils existent).
+
+### Detail classes 06, 13 et 14
+
+Trois experts supplementaires (classes 6, 13 et 14).
+Chaque classe a son module d outils, son expert et ses tests.
+
+| Expert | `class_id` | Outils | Tests |
+|--------|-----------|-------------------|-------|
+| `wireless` | `06-wireless-attacks` | 17 outils (airmon-ng, airodump-ng, aireplay-ng, aircrack-ng, reaver, wifite, mdk4, pixiewps, bully, cowpatty, asleap, bluesnarfer, blueranger, hcitool, mfoc, mfcuk, nfc-list) | `tests/test_wireless.py` |
+| `automotive` | `13-automotive` | 6 outils can-utils (candump, cansend, cangen, canconfig, canconvert, isotpdump) | `tests/test_automotive.py` |
+| `ai` | `14-ai-tools` | 5 outils (hexstrike-ai, mcpwn, opencode, pi-dev, unsloth) | `tests/test_ai_tools.py` |
+
+Detail classe 6 : la capture et le scan sont en `medium` (interface en mode
+moniteur) ; la desauthentification, l'injection et le cassage de cle sont en
+`high` (attaque active du reseau). Detail classe 13 : `candump`/`isotpdump` en
+`low` (lecture), `cansend`/`cangen`/`canconfig` en `medium` (ecriture sur le bus).
+Detail classe 14 : `mcpwn` en `high` (outils offensifs exposes au modele), les
+autres en `medium`.
+
+Reste a couvrir dans les jalons suivants pour ces classes : Wi-Fi restant
+(`fern-wifi-cracker`, `airgeddon`, `kismet`, `sparrow-wifi`, `wig-ng`,
+`freeradius`, `eapmd5pass`, `wifi-honey`, `bluelog`, `bluez-hcidump`,
+`btscanner`, `redfang`, `spooftooph`), SDR (`gnuradio`, `hackrf`, `gqrx-sdr`,
+`inspectrum`, `ubertooth`, `rtlsdr-scanner`), RFID/NFC (`libfreefare-bin`,
+`libnfc-bin`, `mfterm`) et modes avances des agents IA.
 
 ## Contrat d'un agent (une classe)
 

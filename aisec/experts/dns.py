@@ -65,6 +65,6 @@ DNS_EXPERT = Expert(
         "axfr",
         "whois",
         "ptr",
-        "txt",
+        "enregistrement txt",
     ),
 )

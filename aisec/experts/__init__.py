@@ -7,6 +7,8 @@ orchestrateur unique pourra router vers tous les experts.
 
 from __future__ import annotations
 
+from .ai import AI_EXPERT
+from .automotive import AUTOMOTIVE_EXPERT
 from .base import Expert, _kw_match, route, run_expert
 from .dns import DNS_EXPERT
 from .exploitation import EXPLOITATION_EXPERT
@@ -19,6 +21,7 @@ from .sniffing import SNIFFING_EXPERT
 from .vulnerability import VULNERABILITY_EXPERT
 from .webapp import WEBAPP_EXPERT
 from .reverse import REVERSE_EXPERT
+from .wireless import WIRELESS_EXPERT
 
 _EXPERTS: dict[str, Expert] = {}
 
@@ -76,5 +79,8 @@ register(FORENSICS_EXPERT)
 register(REVERSE_EXPERT)
 register(POST_EXPLOIT_EXPERT)
 register(REPORTING_EXPERT)
+register(WIRELESS_EXPERT)
+register(AI_EXPERT)
+register(AUTOMOTIVE_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]

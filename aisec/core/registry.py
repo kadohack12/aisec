@@ -87,6 +87,12 @@ def _load_builtins() -> None:
     from ..tools import gdb as _gdb  # noqa: F401
     from ..tools import radare2 as _radare2  # noqa: F401
     from ..tools import rizin as _rizin  # noqa: F401
+    # Classe 06 - Wireless Testing
+    from ..tools import wireless as _wireless  # noqa: F401
+    # Classe 13 - Automotive
+    from ..tools import automotive as _automotive  # noqa: F401
+    # Classe 14 - AI Tools
+    from ..tools import ai_tools as _ai_tools  # noqa: F401
 
 
 _load_builtins()

@@ -221,6 +221,20 @@ reverseAI "identifie sample.exe avec detect-it-easy"
 reverseAI "desassemble la fonction main de sample.exe avec radare2"
 reverseAI "decompile app.apk avec jadx"
 
+# Expert wireless (tests Wi-Fi, Bluetooth, RFID/NFC)
+wirelessAI "capture les reseaux wifi sur wlan0mon"
+wirelessAI "casse le wpa de capture.cap avec rockyou.txt"
+wirelessAI "attaque le wps du bssid AA:BB:CC:DD:EE:FF sur wlan0mon"
+wirelessAI "scanne les peripheriques bluetooth"
+
+# Expert automotive (bus CAN)
+automotiveAI "capture les trames can sur can0"
+automotiveAI "envoie la trame 123#DEADBEEF sur can0"
+
+# Expert AI tools (orchestration MCP, agents de codage, entrainement)
+aiAI "lance le serveur mcpwn sur le port 1337"
+aiAI "entraine un modele unsloth sur dataset.jsonl"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -278,7 +292,7 @@ aisec/
                 analyzer, engine, registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
                 webapp, passwords, sniffing, exploitation, forensics, reverse,
-                post_exploit, reporting
+                post_exploit, reporting, wireless, ai, automotive
   providers/    backends LLM: ollama (local), openai-compatible (API)
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
                 sslscan, wafw00f, dnsrecon, bettercap, passwords (13 outils),
@@ -294,10 +308,18 @@ aisec/
                   dex2jar, jadx, androguard, baksmali, smali)
                 + post_exploit (classe 08 : 15 outils) + reporting (classe 12 :
                   4 outils)
+                + outils wireless (classe 06 : airmon-ng, airodump-ng,
+                  aireplay-ng, aircrack-ng, reaver, wifite, mdk4, pixiewps, bully,
+                  cowpatty, asleap, bluesnarfer, blueranger, hcitool, mfoc, mfcuk,
+                  nfc-list)
+                + outils automotive (classe 13 : candump, cansend, cangen,
+                  canconfig, canconvert, isotpdump)
+                + outils IA (classe 14 : hexstrike-ai, mcpwn, opencode, pi-dev,
+                  unsloth)
   cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
                 vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
                 exploitationAI, forensicsAI, reverseAI, postExploitAI,
-                reportingAI)
+                reportingAI, wirelessAI, aiAI, automotiveAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

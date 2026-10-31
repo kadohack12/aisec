@@ -33,6 +33,10 @@ from aisec.experts import select
         ("scanne le wordpress http://cible", "webapp"),
         # Classe 04 - Exploitation Tools
         ("teste une injection sql sur http://example.com", "exploitation"),
+        # Classe 06 - Wireless Testing
+        ("casse le wpa de capture.cap avec rockyou.txt", "wireless"),
+        ("capture le handshake wifi sur wlan0mon", "wireless"),
+        ("scanne les peripheriques bluetooth", "wireless"),
         # Classe 05 - Password Attacks
         ("crack le hash 5f4dcc3b5aa765d61d8327deb882cf99", "passwords"),
         ("craque ce hash md5 avec un dictionnaire", "passwords"),
@@ -50,6 +54,11 @@ from aisec.experts import select
         # Classe 12 - Reporting
         ("redige le rapport de l'audit", "reporting"),
         ("capture d'ecran des services web", "reporting"),
+        # Classe 13 - Automotive
+        ("capture les trames can sur can0", "automotive"),
+        # Classe 14 - AI Tools
+        ("lance hexstrike-ai sur la cible", "ai"),
+        ("utilise unsloth pour entrainer un modele", "ai"),
     ],
 )
 def test_select_routes_to_expected_expert(text, expected):
@@ -64,6 +73,11 @@ def test_select_falls_back_to_info_not_dns():
 def test_select_matches_whole_word_not_substring():
     # "port" ne doit pas matcher dans "important" (pas de faux positif info).
     assert select("c'est important de comprendre").name == "info"
+
+
+def test_file_extension_is_not_a_dns_keyword():
+    # "rockyou.txt" ne doit pas etre pris pour un enregistrement DNS TXT.
+    assert select("casse le wpa de capture.cap avec rockyou.txt").name == "wireless"
 
 
 def test_explicit_tool_name_outweighs_generic_keyword():

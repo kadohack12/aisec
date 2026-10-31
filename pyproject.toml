@@ -30,6 +30,9 @@ forensicsAI = "aisec.cli:main_forensics"
 reverseAI = "aisec.cli:main_reverse"
 postExploitAI = "aisec.cli:main_post_exploit"
 reportingAI = "aisec.cli:main_reporting"
+wirelessAI = "aisec.cli:main_wireless"
+aiAI = "aisec.cli:main_ai"
+automotiveAI = "aisec.cli:main_automotive"
 
 [tool.hatch.build.targets.wheel]
 packages = ["aisec"]

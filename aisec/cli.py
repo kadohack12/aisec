@@ -343,5 +343,17 @@ def main_reporting() -> int:
     return run_cli("reporting", ["reporting", *sys.argv[1:]])
 
 
+def main_wireless() -> int:
+    return run_cli("wireless", ["wireless", *sys.argv[1:]])
+
+
+def main_ai() -> int:
+    return run_cli("ai", ["ai", *sys.argv[1:]])
+
+
+def main_automotive() -> int:
+    return run_cli("automotive", ["automotive", *sys.argv[1:]])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

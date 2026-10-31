@@ -35,7 +35,6 @@ SNIFFING_EXPERT = Expert(
         "sniffer",
         "ecoute",
         "espionnage",
-        "capture",
         "pcap",
         "mitm",
         "spoofing",
