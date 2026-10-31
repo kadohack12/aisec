@@ -81,7 +81,7 @@ fusionnée par-dessus (branche `consolidate/experts`).
 - [ ] 10 Maintaining Access
 - [x] 11 Digital Forensics (`forensics`, 22 outils)
 - [x] 12 Reporting (`reporting`, 4 outils)
-- [x] 13 Automotive (`automotive`, 6 outils) · [x] 14 AI Tools (`ai`, 5 outils) · [ ] `misc`
+- [x] 13 Automotive (`automotive`, 6 outils) · [x] 14 AI Tools (`ai`, 5 outils) · [x] `misc` (`misc`, 21 outils)
 
 ### Jalon 4 — orchestrateur & IA par expert
 - [ ] Orchestrateur unique : le routeur choisit **la classe** puis l'expert
