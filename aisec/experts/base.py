@@ -157,13 +157,14 @@ def _kw_match(keyword: str, low: str) -> bool:
 
 
 def run_expert(
-    expert: Expert, text: str, provider: Provider | None, config
+    expert: Expert, text: str, provider: Provider | None, config, assume_yes: bool | None = None
 ) -> tuple[CommandPlan, ExecResult | None, AnalysisResult | None, str]:
-    """Route, construit, valide, execute et analyse.
+    """Route, construit, valide, controle, execute et analyse.
 
     Renvoie (plan, result, analysis, tool_name).
     """
-    from ..core.executor import ExecutionError, run as run_argv
+    from ..core.control import Decision, Risk, evaluate as evaluate_control
+    from ..core.executor import ConfirmationRequired, ExecutionError, run as run_argv
     from ..core.safety import validate_argv
 
     tool_name, params, source = route(expert, text, provider)
@@ -177,8 +178,30 @@ def run_expert(
             "Commande refusee par les garde-fous: " + "; ".join(report.errors)
         )
 
+    # Controle de l'IA (niveau 2): politique de risque + confirmation.
+    from ..core.control import ControlPolicy
+
+    policy = ControlPolicy(
+        max_auto_risk=Risk.parse(config.auto_approve_risk),
+        max_targets=config.max_targets,
+        deny_private_targets=config.deny_private_targets,
+    )
+    verdict = evaluate_control(plan, tool, policy)
+    plan.risk = verdict.risk.label
+    plan.reasons = list(verdict.reasons)
+    if verdict.decision is Decision.DENY:
+        raise ExecutionError(
+            "Commande refusee par la politique: " + "; ".join(verdict.reasons)
+        )
+    # En dry-run rien ne s'execute: pas besoin de confirmer.
     if config.dry_run:
         return plan, None, None, tool_name
+    if verdict.decision is Decision.CONFIRM:
+        yes = config.assume_yes if assume_yes is None else assume_yes
+        if not yes:
+            raise ConfirmationRequired(
+                "Confirmation requise: " + "; ".join(verdict.reasons), verdict, plan
+            )
 
     result = run_argv(argv, allowed_binary=tool.binary, timeout=config.timeout)
     analysis = expert.analyze(tool_name, result.stdout, plan.params, provider)

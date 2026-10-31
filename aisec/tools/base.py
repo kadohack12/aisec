@@ -24,6 +24,8 @@ class Tool(ABC):
     parameters: tuple[ParameterSpec, ...] = ()
     # Quelques exemples few-shot pour guider le LLM (intention -> params).
     examples: tuple[str, ...] = ()
+    # Risque intrinseque: low | medium | high | critical (politique de controle).
+    risk: str = "medium"
 
     def __init__(self) -> None:
         if not self.name or not self.binary:

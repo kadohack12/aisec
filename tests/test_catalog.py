@@ -12,9 +12,12 @@ def test_catalog_loads_parrot_tools():
     assert len(catalog.tools) > 400
     names = {t.name for t in catalog.tools}
     assert {"nmap", "wireshark", "gobuster", "hydra", "sqlmap"} <= names
-    # nmap est installe ici: la detection doit ecarter les libelles de menu.
-    assert catalog.by_name("nmap").installed is True
-    assert catalog.by_name("nmap").binaries == ["nmap"]
+    # La detection d'installation doit ecarter les libelles de menu.
+    import shutil
+
+    nmap = catalog.by_name("nmap")
+    assert nmap.binaries == ["nmap"]
+    assert nmap.installed == (shutil.which("nmap") is not None)
 
 
 def test_catalog_search_and_category():

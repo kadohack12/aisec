@@ -8,7 +8,8 @@ from ..providers.base import get_provider
 from ..tools.base import Tool
 from . import analyzer, intent, registry
 from .config import Config
-from .executor import ExecutionError, run as run_argv
+from .control import ControlPolicy, Decision, Risk, evaluate as evaluate_control
+from .executor import ConfirmationRequired, ExecutionError, run as run_argv
 from .models import AnalysisResult, CommandPlan, ExecResult
 from .safety import scan_guardrails, validate_argv
 
@@ -40,11 +41,17 @@ class Engine:
         return plan
 
     def run(
-        self, tool_name: str, text: str, dry_run: bool | None = None
+        self,
+        tool_name: str,
+        text: str,
+        dry_run: bool | None = None,
+        assume_yes: bool | None = None,
     ) -> tuple[CommandPlan, ExecResult | None, AnalysisResult | None]:
         tool = registry.get(tool_name)
         plan = self.plan(tool_name, text)
         effective_dry = self.config.dry_run if dry_run is None else dry_run
+
+        self._control(plan, tool, assume_yes, effective_dry)
 
         if effective_dry:
             return plan, None, None
@@ -56,6 +63,36 @@ class Engine:
         )
         analysis = analyzer.analyze(tool, result.stdout, plan.params, self.provider)
         return plan, result, analysis
+
+    # ---- Controle de l'IA (niveau 2) ---------------------------------------
+
+    def policy(self) -> ControlPolicy:
+        return ControlPolicy(
+            max_auto_risk=Risk.parse(self.config.auto_approve_risk),
+            max_targets=self.config.max_targets,
+            deny_private_targets=self.config.deny_private_targets,
+        )
+
+    def _control(
+        self, plan: CommandPlan, tool, assume_yes: bool | None, dry_run: bool
+    ) -> None:
+        """Applique la politique de controle a une commande proposee."""
+        verdict = evaluate_control(plan, tool, self.policy())
+        plan.risk = verdict.risk.label
+        plan.reasons = list(verdict.reasons)
+        if verdict.decision is Decision.DENY:
+            raise ExecutionError(
+                "Commande refusee par la politique: " + "; ".join(verdict.reasons)
+            )
+        # En dry-run rien ne s'execute: pas besoin de confirmer.
+        if dry_run:
+            return
+        if verdict.decision is Decision.CONFIRM:
+            yes = self.config.assume_yes if assume_yes is None else assume_yes
+            if not yes:
+                raise ConfirmationRequired(
+                    "Confirmation requise: " + "; ".join(verdict.reasons), verdict, plan
+                )
 
     # ---- Utilitaires -------------------------------------------------------
 

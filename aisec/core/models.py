@@ -59,6 +59,8 @@ class CommandPlan:
     argv: list[str]
     reasoning: str = ""
     source: str = "heuristic"  # llm | heuristic | merged
+    risk: str = ""  # niveau de risque attribue par la politique de controle
+    reasons: list[str] = field(default_factory=list)  # motifs de la decision
 
     def render(self) -> str:
         import shlex

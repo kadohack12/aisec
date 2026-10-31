@@ -37,6 +37,7 @@ class DigTool(Tool):
     name = "dig"
     aliases = ()
     binary = "dig"
+    risk = "low"
     description = "Interrogation DNS: enregistrements A, MX, NS, TXT, zone transfer."
     examples = (
         "resous les enregistrements A et MX de example.com",
@@ -116,6 +117,7 @@ class HostTool(Tool):
     name = "host"
     aliases = ()
     binary = "host"
+    risk = "low"
     description = "Resolution DNS simple (A, PTR, MX)."
     examples = (
         "trouve l ip de example.com",
@@ -167,6 +169,7 @@ class WhoisTool(Tool):
     name = "whois"
     aliases = ()
     binary = "whois"
+    risk = "low"
     description = "Informations d'enregistrement de domaine (proprietaire, dates, serveurs)."
     examples = (
         "qui possede example.com",

@@ -18,17 +18,29 @@ from .catalog import get_catalog
 from .core import registry
 from .core.config import Config
 from .core.engine import Engine
-from .core.executor import ExecutionError
+from .core.executor import ConfirmationRequired, ExecutionError
 from .experts import all_experts, get as get_expert, run_expert, select
 
 _PROVIDERS = ["ollama", "openai", "groq", "none"]
 
 
-def _add_common(parser: argparse.ArgumentParser) -> None:
+def _add_common(parser: argparse.ArgumentParser, suppress: bool = False) -> None:
+    # `suppress=True` sur les sous-parseurs: leurs defauts ne doivent pas ecraser
+    # les options placees avant la sous-commande (ex: `aisec --dry-run dns ...`).
+    default = argparse.SUPPRESS if suppress else False
     parser.add_argument("--provider", choices=_PROVIDERS, help="Backend LLM (defaut: ollama).")
     parser.add_argument("--model", help="Modele LLM a utiliser.")
-    parser.add_argument("--dry-run", action="store_true", help="Afficher sans executer.")
-    parser.add_argument("--json", action="store_true", help="Sortie d'analyse en JSON.")
+    parser.add_argument("--dry-run", action="store_true", default=default, help="Afficher sans executer.")
+    parser.add_argument("--json", action="store_true", default=default, help="Sortie d'analyse en JSON.")
+    parser.add_argument(
+        "--yes", action="store_true", default=default,
+        help="Auto-approuver les actions (confirmation).",
+    )
+    parser.add_argument(
+        "--auto-approve-risk",
+        choices=["low", "medium", "high", "critical"],
+        help="Risque maximal execute sans confirmation.",
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -43,7 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     ask = sub.add_parser("ask", help="Demande libre: le routeur choisit l'expert.")
     ask.add_argument("prompt", nargs="+")
-    _add_common(ask)
+    _add_common(ask, suppress=True)
 
     experts_cmd = sub.add_parser("experts", help="Lister les experts (classes) disponibles.")
     experts_cmd.add_argument("--json", action="store_true")
@@ -56,13 +68,13 @@ def build_parser() -> argparse.ArgumentParser:
     for expert in all_experts():
         ep = sub.add_parser(expert.name, help=f"Expert: {expert.description}")
         ep.add_argument("prompt", nargs="+")
-        _add_common(ep)
+        _add_common(ep, suppress=True)
 
     for name in registry.all_names():
         tool = registry.get(name)
         sp = sub.add_parser(name, help=tool.description)
         sp.add_argument("prompt", nargs="+")
-        _add_common(sp)
+        _add_common(sp, suppress=True)
 
     return parser
 
@@ -118,21 +130,59 @@ def _cmd_tools(args) -> int:
     return 0
 
 
+def _apply_control_overrides(config: Config, args) -> Config:
+    if getattr(args, "auto_approve_risk", None):
+        config.auto_approve_risk = args.auto_approve_risk
+    if getattr(args, "yes", False):
+        config.assume_yes = True
+    if getattr(args, "dry_run", False):
+        config.dry_run = True
+    return config
+
+
+def _confirm_interactive(exc) -> bool:
+    """Demande confirmation a l'utilisateur (TTY uniquement)."""
+    import sys
+
+    if not sys.stdin.isatty():
+        return False
+    plan = getattr(exc, "plan", None)
+    if plan is not None:
+        print(f"$ {plan.render()}  [risk: {plan.risk}]")
+        for reason in plan.reasons:
+            print(f"  - {reason}")
+    try:
+        answer = input("Executer cette commande ? [y/N] ").strip().lower()
+    except EOFError:
+        return False
+    return answer in {"y", "yes", "o", "oui"}
+
+
 def _run_expert_cmd(expert_name: str, args, prompt: str) -> int:
     expert = get_expert(expert_name)
     config = Config.load().apply_overrides(provider=args.provider, model=args.model)
-    if args.dry_run:
-        config.dry_run = True
+    config = _apply_control_overrides(config, args)
     model = config.model_for(expert.name, expert.model)
     if model:
         config = config.with_model(model)
     provider = Engine(config).provider
 
-    try:
-        plan, result, analysis, tool_name = run_expert(expert, prompt, provider, config)
-    except (ExecutionError, KeyError) as exc:
-        print(f"Erreur: {exc}", file=sys.stderr)
-        return 1
+    assume_yes = None
+    while True:
+        try:
+            plan, result, analysis, tool_name = run_expert(
+                expert, prompt, provider, config, assume_yes=assume_yes
+            )
+            break
+        except ConfirmationRequired as exc:
+            if _confirm_interactive(exc):
+                assume_yes = True
+                continue
+            print(f"Annule: {exc}", file=sys.stderr)
+            return 3
+        except (ExecutionError, KeyError) as exc:
+            print(f"Erreur: {exc}", file=sys.stderr)
+            return 1
 
     if args.json:
         _emit_json(_plan_payload(expert.name, tool_name, plan, result, analysis))
@@ -206,12 +256,24 @@ def run_cli(tool_name: str | None, argv: list[str]) -> int:
 
     # Outil direct
     config = Config.load().apply_overrides(provider=args.provider, model=args.model)
+    config = _apply_control_overrides(config, args)
     engine = Engine(config)
-    try:
-        plan, result, analysis = engine.run(command, prompt, dry_run=args.dry_run)
-    except (ExecutionError, KeyError) as exc:
-        print(f"Erreur: {exc}", file=sys.stderr)
-        return 1
+    assume_yes = None
+    while True:
+        try:
+            plan, result, analysis = engine.run(
+                command, prompt, dry_run=args.dry_run, assume_yes=assume_yes
+            )
+            break
+        except ConfirmationRequired as exc:
+            if _confirm_interactive(exc):
+                assume_yes = True
+                continue
+            print(f"Annule: {exc}", file=sys.stderr)
+            return 3
+        except (ExecutionError, KeyError) as exc:
+            print(f"Erreur: {exc}", file=sys.stderr)
+            return 1
     if args.json:
         _emit_json(_plan_payload(None, command, plan, result, analysis))
         return 0

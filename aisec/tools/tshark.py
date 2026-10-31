@@ -14,6 +14,7 @@ class TsharkTool(Tool):
     name = "tshark"
     aliases = ("tsharkAI", "wireshark")
     binary = "tshark"
+    risk = "low"
     description = (
         "Analyse de trafic: capture live ou lecture de pcap, filtres d'affichage."
     )

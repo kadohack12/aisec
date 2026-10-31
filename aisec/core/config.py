@@ -41,6 +41,14 @@ class Config:
     # IA dediee par expert: {"dns": "modele-dns", "web": "modele-web"}
     expert_models: dict[str, str] = field(default_factory=dict)
 
+    # --- Politique de controle de l'IA (niveau 2) ---
+    # Risque maximal execute sans confirmation: low | medium | high | critical.
+    auto_approve_risk: str = "low"
+    # Nombre maximal de cibles par commande.
+    max_targets: int = 16
+    # Refuser toute cible privee/interne (au lieu d'un simple avertissement).
+    deny_private_targets: bool = False
+
     def model_for(self, expert_name: str, default: str | None = None) -> str:
         """Modele a utiliser pour un expert (IA dediee) ou le modele global."""
         return self.expert_models.get(expert_name) or default or self.model

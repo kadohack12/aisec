@@ -19,6 +19,15 @@ class ExecutionError(RuntimeError):
     pass
 
 
+class ConfirmationRequired(ExecutionError):
+    """La politique de controle exige une confirmation humaine avant execution."""
+
+    def __init__(self, message: str, verdict=None, plan=None) -> None:
+        super().__init__(message)
+        self.verdict = verdict
+        self.plan = plan
+
+
 def binary_available(binary: str) -> bool:
     return shutil.which(binary) is not None
 

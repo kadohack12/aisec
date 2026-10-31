@@ -40,6 +40,7 @@ class NmapTool(Tool):
     name = "nmap"
     aliases = ("nmapAI",)
     binary = "nmap"
+    risk = "medium"
     description = (
         "Scanner reseau: decouverte d'hotes, de ports ouverts et de services."
     )

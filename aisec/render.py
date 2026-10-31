@@ -22,17 +22,18 @@ def _rich():
 
 def render_plan(plan: CommandPlan, console=None) -> None:
     line = f"$ {plan.render()}"
+    risk = f" [risk: {plan.risk}]" if plan.risk else ""
     if _rich():
         from rich.console import Console
 
         console = console or Console()
-        console.print("[bold green]$[/]", plan.render())
+        console.print("[bold green]$[/]", plan.render() + risk)
         if plan.reasoning:
             console.print(f"[yellow]{plan.reasoning}[/]")
         if plan.source != "heuristic":
             console.print(f"[dim]params via {plan.source}[/]")
         return
-    print(line)
+    print(line + risk)
     if plan.reasoning:
         print(plan.reasoning)
 
