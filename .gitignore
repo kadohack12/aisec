@@ -10,3 +10,4 @@ aisec.toml
 *.pcap
 *.pcapng
 .openhands/
+datasets/

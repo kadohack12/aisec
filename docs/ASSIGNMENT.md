@@ -13,23 +13,23 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | agent-sniffing | **livre (jalon 1)** |
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | agent-forensics | **livre (jalon 1)** |
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | agent-wireless | **livre (jalon 4)** |
-| 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | agent-maintaining | **livre (jalon 5)** |
+| 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | agent-maintaining | **livre (jalon 3)** |
 | 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | agent-exploitation | **livre (jalon 1)** |
 | 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **livre (jalon 1)** |
 | 11 | Post Exploitation | `08-post-exploit` | 16 | basse | agent-post-exploit | **livre (jalon 3)** |
 | 12 | Reporting Tools | `12-reporting` | 4 | basse | agent-reporting | **livre (jalon 3)** |
 | 13 | Automotive | `13-automotive` | 1 | basse | agent-automotive | **livre (jalon 4)** |
 | 14 | AI Tools | `14-ai-tools` | 5 | basse | agent-ai | **livre (jalon 4)** |
-| 15 | Autres (System/Utility/...) | `misc` | 21 | basse | openhands | **livre (jalon 5)** |
+| 15 | Autres (System/Utility/...) | `misc` | 21 | basse | openhands | **livre (jalon 3)** |
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
 
-## Experts livres (13)
+## Experts livres (16)
 
-Les classes 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13 et 14 sont amorcees avec un
-premier lot d'outils et un expert fonctionnel (routage + construction d'argv +
-analyse heuristique).
+Les 15 classes sont amorcees avec un premier lot d'outils et un expert
+fonctionnel (routage + construction d'argv + analyse heuristique), plus l'expert
+`dns` dedie.
 
 | Expert | `class_id` | Outils | Tests |
 |--------|-----------|-------------------|-------|
@@ -46,6 +46,8 @@ analyse heuristique).
 | `reporting` | `12-reporting` | dradis, faraday, eyewitness, neo4j (4) | `tests/test_reporting.py` |
 | `automotive` | `13-automotive` | 6 outils can-utils (candump, cansend, cangen, canconfig, canconvert, isotpdump) | `tests/test_automotive.py` |
 | `ai` | `14-ai-tools` | 5 outils (hexstrike-ai, mcpwn, opencode, pi-dev, unsloth) | `tests/test_ai_tools.py` |
+| `maintaining` | `10-maintaining-access` | 34 outils (bloodhound, dnscat2, sliver, powershell-empire, weevely, iodine, proxychains, socat, stunnel4, shellter, ...) | `tests/test_maintaining_access.py` |
+| `misc` | `misc` | 21 outils (services systeme, arduino, powershell, chirp, nyx, firefox, coreutils, gpa, keepassxc, mat2, sirikali, zulucrypt, woeusb-ng) | `tests/test_misc.py` |
 
 Note : l'expert `dns` (`01-01-dns-analysis`) reste la reference pour
 dig/host/whois et n'a pas ete refait ; l'expert `info` couvre le reste de la

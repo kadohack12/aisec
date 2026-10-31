@@ -89,6 +89,31 @@ def _extract_json(raw: str) -> dict | None:
     return None
 
 
+def tool_router_system(expert: Expert) -> str:
+    """Prompt systeme du routeur d'outil au sein d'un expert.
+
+    Source unique de verite: reutilise par l'inference (`route`) ET par la
+    generation du jeu d'entrainement (`scripts/build_dataset.py`), pour que le
+    modele soit entraine sur exactement le prompt qu'il verra en production.
+    """
+    return (
+        f"Tu es l'expert '{expert.name}' ({expert.description}). "
+        "Tu choisis l'outil le plus adapte et tu extrais ses parametres. "
+        'Reponds en JSON strict: {"tool": "<nom>", "params": {...}}.'
+    )
+
+
+EXPERT_ROUTER_SYSTEM = (
+    "Tu es un routeur. Choisis la classe d'outils de securite la plus adaptee "
+    "a la demande de l'utilisateur. Reponds en JSON strict: {\"expert\": \"<nom>\"}."
+)
+
+
+def expert_router_system() -> str:
+    """Prompt systeme du routeur de classe (expert). Cf. `tool_router_system`."""
+    return EXPERT_ROUTER_SYSTEM
+
+
 def route(expert: Expert, text: str, provider: Provider | None) -> tuple[str, dict[str, Any], str]:
     """Choisit l'outil et les parametres au sein d'un expert.
 
@@ -98,13 +123,8 @@ def route(expert: Expert, text: str, provider: Provider | None) -> tuple[str, di
     if provider is None or not provider.available() or not expert.tool_names:
         return fallback_tool, fallback_params, "heuristic"
 
-    system = (
-        f"Tu es l'expert '{expert.name}' ({expert.description}). "
-        "Tu choisis l'outil le plus adapte et tu extrais ses parametres. "
-        'Reponds en JSON strict: {"tool": "<nom>", "params": {...}}.'
-    )
     try:
-        raw = provider.complete(expert.prompt(text), system=system)
+        raw = provider.complete(expert.prompt(text), system=tool_router_system(expert))
         data = _extract_json(raw)
     except Exception:
         return fallback_tool, fallback_params, "heuristic"

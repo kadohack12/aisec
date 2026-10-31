@@ -42,12 +42,13 @@ Résultat sur `main` : **14 experts** (dont `dns`), **214 outils uniques**,
 ## 1. État de `main`
 
 `main` = branche courante (socle + expert `dns` + contrôle niveau 2 + catalogue
-445 outils + répartition en 15 classes + 14 experts + orchestrateur + rapports).
+445 outils + répartition en 15 classes + **16 experts** + orchestrateur +
+rapports + **générateur de jeux d'entraînement**).
 La consolidation des branches d'agents est **terminée** : toutes les PR sont
 fusionnées et fermées, il ne reste que `main`.
 
 Le socle est complet ; la suite consiste à **approfondir** les classes existantes
-(jalon 2) et à couvrir les classes restantes (classe 10, `misc`).
+(jalon 2) et à couvrir le reste du catalogue (jalon 5).
 
 ---
 
@@ -82,10 +83,10 @@ Le socle est complet ; la suite consiste à **approfondir** les classes existant
 - [x] 06 Wireless Testing (`wireless`, 19 outils)
 - [x] 07 Reverse Engineering (`reverse`, 17 outils)
 - [x] 08 Post Exploitation (`post-exploit`, 15 outils)
-- [ ] 10 Maintaining Access
+- [x] 10 Maintaining Access (`maintaining`, 34 outils)
 - [x] 11 Digital Forensics (`forensics`, 22 outils)
 - [x] 12 Reporting (`reporting`, 4 outils)
-- [x] 13 Automotive (`automotive`, 6 outils) · [x] 14 AI Tools (`ai`, 5 outils) · [x] `misc` (`misc`, 21 outils)
+- [x] 13 Automotive (`automotive`, 6 outils) · [x] 14 AI Tools (`ai`, 5 outils) · [x] 15 Autres (`misc`, 21 outils)
 
 ### Jalon 4 — orchestrateur & IA par expert ✅
 - [x] Orchestrateur unique (`core/orchestrator.py`) : routeur -> expert -> outil -> exécution
@@ -93,14 +94,20 @@ Le socle est complet ; la suite consiste à **approfondir** les classes existant
 - [x] Routage LLM optionnel (`--routing llm`), repli heuristique déterministe
 - [x] Sortie rapport (classe 12) + export JSON / Markdown / HTML (`report.py`, `aisec report`)
 - [x] Politique de risque par classe (`core/policies.py`, niveau 3, `[expert_policies]`)
-- [x] 381 tests (14 experts, 214 outils)
+- [x] 465 tests (16 experts, 270 outils)
+
+### Jalon 4bis — mise en place & entraînement des IA ✅
+- [x] Générateur de jeux d'entraînement (`scripts/build_dataset.py`) : routage de
+      classe + routage d'outil, formats openai / chatml / alpaca
+- [x] Prompts de production réutilisés (source unique : `aisec.experts.base`)
+- [x] `--modelfiles` : un Modelfile Ollama par expert (adaptation locale, sans GPU)
+- [x] `--eval` : mesure de l'exactitude JSON d'un modèle
+- [x] Guide `docs/AI_TRAINING.md`
 
 ### Jalon 5 — couverture complète du catalogue
-- [ ] Classe 10 `maintaining-access` (34 outils : bloodhound, dnscat2, iodine,
-      proxychains, socat, stunnel4, weevely, nishang, veil, shellter, pwncat...)
-- [ ] Classe `misc` (21 outils : mariadb, postgresql, nginx, apache2, gvm...)
 - [ ] Compléter les classes amorcées : la couverture actuelle est d'environ
-      **40 % du catalogue** (180/445 outils exposés).
+      **60 % du catalogue** (270/445 outils exposés).
+- [ ] Enrichir les `examples` des outils (levier n°1 de l'entraînement).
 
 ---
 

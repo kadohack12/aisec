@@ -242,6 +242,13 @@ maintainingAI "ouvre un tunnel iodine vers tunnel.example.com"
 maintainingAI "lance nmap via proxychains sur 10.0.0.5"
 maintainingAI "injecte un shellcode dans app.exe avec shellter"
 
+# Expert systeme/utilitaires (services, dev, radio, navigation)
+miscAI "arrete le service nginx"
+miscAI "efface ce fichier de facon irreversible"
+miscAI "nettoie les metadonnees de photo.jpg"
+miscAI "cree une cle usb windows avec woeusb-ng"
+miscAI "monte le volume chiffre /dev/sdb1 avec sirikali"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -333,6 +340,26 @@ l'orchestrateur l'applique automatiquement à l'expert sélectionné.
 [expert_models]
 dns = "aisec-dns:latest"
 ```
+
+### Mettre en place et entraîner les IA
+
+Guide complet : **[docs/AI_TRAINING.md](docs/AI_TRAINING.md)**. En bref :
+
+```bash
+# 1. générer les jeux d'entraînement depuis le code (experts + outils)
+python scripts/build_dataset.py --out datasets
+
+# 2. adapter un modèle local par classe (Modelfile Ollama, sans GPU)
+python scripts/build_dataset.py --modelfiles --out datasets --base-model llama3.1
+ollama create aisec-info -f datasets/Modelfile.info
+
+# 3. évaluer l'exactitude JSON d'un modèle
+python scripts/build_dataset.py --eval datasets/expert_routing.val.jsonl --provider ollama
+```
+
+Le savoir est **déjà dans le code** (`system_prompt`, `examples` de chaque
+outil) : le script réutilise les prompts de production, donc un modèle adapté
+colle au comportement réel. Ajouter des `examples` est le levier n°1.
 
 ---
 
@@ -434,4 +461,5 @@ pytest -q
 ```
 
 Couverture : moteur, garde-fous, catalogue Parrot, routage d'expert,
-construction d'argv DNS, **politique de contrôle (niveau 2)**.
+construction d'argv DNS, **politique de contrôle (niveau 2)**, politiques par
+classe (niveau 3), orchestrateur, rapports, et générateur de jeux d'entraînement.

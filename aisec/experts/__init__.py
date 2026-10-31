@@ -83,6 +83,15 @@ def _select_heuristic(text: str) -> Expert:
     return _EXPERTS[best]
 
 
+def router_catalog() -> str:
+    """Liste 'expert: description' utilisee par le routeur de classe.
+
+    Source unique: l'inference (`_select_llm`) et le generateur de dataset
+    d'entrainement partagent exactement ce texte.
+    """
+    return "\n".join(f"- {e.name}: {e.description}" for e in _EXPERTS.values())
+
+
 def _select_llm(text: str, provider) -> Expert | None:
     """Routage LLM: le modele choisit la classe la plus adaptee.
 
@@ -91,16 +100,12 @@ def _select_llm(text: str, provider) -> Expert | None:
     """
     if not provider.available():
         return None
-    catalog = "\n".join(f"- {e.name}: {e.description}" for e in _EXPERTS.values())
-    system = (
-        "Tu es un routeur. Choisis la classe d'outils de securite la plus adaptee "
-        "a la demande de l'utilisateur. Reponds en JSON strict: {\"expert\": \"<nom>\"}."
-    )
+    catalog = router_catalog()
+    from .base import _extract_json, expert_router_system
+
     prompt = f"Classes disponibles:\n{catalog}\n\nDemande: \"{text}\""
     try:
-        from .base import _extract_json
-
-        data = _extract_json(provider.complete(prompt, system=system))
+        data = _extract_json(provider.complete(prompt, system=expert_router_system()))
     except Exception:
         return None
     if not isinstance(data, dict):
