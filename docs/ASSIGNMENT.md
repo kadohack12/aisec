@@ -6,11 +6,11 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 
 | # | Classe | `class_id` | Outils | Priorite | Agent | Statut |
 |---|--------|-----------|--------|----------|-------|--------|
-| 1 | Information Gathering | `01-info-gathering` | 82 | haute | | a faire |
-| 2 | Vulnerability Analysis | `02-vulnerability-analysis` | 42 | haute | | a faire |
-| 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | | a faire |
-| 4 | Password Attacks | `05-password-attacks` | 45 | haute | | a faire |
-| 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | | a faire |
+| 1 | Information Gathering | `01-info-gathering` | 82 | haute | agent-info | **PR a ouvrir** (branche `feat/experts-5-classes`) |
+| 2 | Vulnerability Analysis | `02-vulnerability-analysis` | 42 | haute | agent-vuln | **2 PR en conflit** (#1 et #2) — a arbitrer |
+| 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | agent-web | **PR a ouvrir** (`feat/experts-5-classes` / #1) |
+| 4 | Password Attacks | `05-password-attacks` | 45 | haute | agent-password | **PR a ouvrir** (`feat/experts-5-classes` / #1) |
+| 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | agent-sniffing | **PR a ouvrir** (`feat/experts-5-classes`) |
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | | a faire |
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
@@ -24,6 +24,10 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
+
+> **Etat au 2026-10-31** : 3 branches d'agents existent et passent leurs tests,
+> mais se **recouvrent** (classes 02/03/05/09 en double). Consolidation et
+> ordre de fusion : voir `docs/ROADMAP.md`.
 
 ## Contrat d'un agent (une classe)
 
