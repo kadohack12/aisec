@@ -307,5 +307,9 @@ def main_vulnerability() -> int:
     return run_cli("vulnerability", ["vulnerability", *sys.argv[1:]])
 
 
+def main_webapp() -> int:
+    return run_cli("webapp", ["webapp", *sys.argv[1:]])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

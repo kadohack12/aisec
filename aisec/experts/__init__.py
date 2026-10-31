@@ -10,6 +10,7 @@ from __future__ import annotations
 from .base import Expert, route, run_expert
 from .dns import DNS_EXPERT
 from .vulnerability import VULNERABILITY_EXPERT
+from .webapp import WEBAPP_EXPERT
 
 _EXPERTS: dict[str, Expert] = {}
 
@@ -51,5 +52,6 @@ def select(text: str, provider=None) -> Expert:
 
 register(DNS_EXPERT)
 register(VULNERABILITY_EXPERT)
+register(WEBAPP_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]

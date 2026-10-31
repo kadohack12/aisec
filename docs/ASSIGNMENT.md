@@ -8,7 +8,7 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 |---|--------|-----------|--------|----------|-------|--------|
 | 1 | Information Gathering | `01-info-gathering` | 82 | haute | | a faire |
 | 2 | Vulnerability Analysis | `02-vulnerability-analysis` | 42 | haute | openhands | **livre** (`aisec/experts/vulnerability.py`) |
-| 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | | a faire |
+| 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | openhands | **livre** (`aisec/experts/webapp.py`) |
 | 4 | Password Attacks | `05-password-attacks` | 45 | haute | | a faire |
 | 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | | a faire |
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | | a faire |

@@ -198,6 +198,12 @@ aisec vulnerability "audite le routeur cisco 10.0.0.1"
 aisec vulnerability "enumere les extensions sip de 10.0.0.1"
 aisec vulnerability "fuzz le binaire ./parser avec afl"
 
+# Expert Web Application Analysis (classe 03 : empreinte, bruteforce, scanners, CMS, proxies)
+webappAI "scanne le wordpress http://cible"
+aisec webapp "identifie les technologies de example.com"
+aisec webapp "bruteforce les répertoires de http://cible"
+aisec webapp "teste les failles xss sur http://cible"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -253,12 +259,14 @@ aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
-  experts/      experts par classe: base.py (socle), dns.py, vulnerability.py
+  experts/      experts par classe: base.py (socle), dns.py, vulnerability.py,
+                webapp.py
   providers/    backends LLM: ollama (local), openai-compatible (API)
   tools/        plugins: nmap, tshark, dig, host, whois, spec.py (base déclarative)
                 + vuln_scan.py, vuln_cisco.py, vuln_stress.py, vuln_fuzz.py,
                   vuln_voip.py (classe 02 : 46 outils)
-  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, vulnAI)
+                + web_crawl.py, web_vuln.py, web_misc.py (classe 03 : 38 outils)
+  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, vulnAI, webappAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

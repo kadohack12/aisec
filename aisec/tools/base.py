@@ -94,6 +94,16 @@ _HOST_RE = re.compile(
     re.IGNORECASE,
 )
 
+_URL_RE = re.compile(r"\bhttps?://[^\s\"'<>]+", re.IGNORECASE)
+
+
+def extract_url(text: str) -> str | None:
+    """Extrait la premiere URL http(s) d'un texte, sans ponctuation finale."""
+    match = _URL_RE.search(text)
+    if not match:
+        return None
+    return match.group(0).rstrip(".,;:!?)")
+
 
 def extract_hosts(text: str) -> list[str]:
     """Extrait les domaines/IPs d'un texte, sans doublon ni bruit."""

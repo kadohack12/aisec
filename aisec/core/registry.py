@@ -49,6 +49,10 @@ def _load_builtins() -> None:
     from ..tools import vuln_scan as _vuln_scan  # noqa: F401
     from ..tools import vuln_stress as _vuln_stress  # noqa: F401
     from ..tools import vuln_voip as _vuln_voip  # noqa: F401
+    # Classe 03: Web Application Analysis.
+    from ..tools import web_crawl as _web_crawl  # noqa: F401
+    from ..tools import web_misc as _web_misc  # noqa: F401
+    from ..tools import web_vuln as _web_vuln  # noqa: F401
 
 
 _load_builtins()
