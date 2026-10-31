@@ -15,11 +15,9 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
 | 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | agent-exploitation | **livre (jalon 1)** |
-| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | | a faire |
-| 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | | a faire |
-| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **en cours (jalon 1)** |
-| 11 | Post Exploitation | `08-post-exploit` | 16 | basse | | a faire |
-| 12 | Reporting Tools | `12-reporting` | 4 | basse | | a faire |
+| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **livre (jalon 1)** |
+| 11 | Post Exploitation | `08-post-exploit` | 16 | basse | openhands | **livre** (`aisec/experts/post_exploit.py`) |
+| 12 | Reporting Tools | `12-reporting` | 4 | basse | openhands | **livre** (`aisec/experts/reporting.py`) |
 | 13 | Automotive | `13-automotive` | 1 | basse | | a faire |
 | 14 | AI Tools | `14-ai-tools` | 5 | basse | | a faire |
 | 15 | Autres (System/Utility/...) | `misc` | 21 | basse | | a faire |

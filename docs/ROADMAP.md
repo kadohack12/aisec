@@ -70,13 +70,13 @@ fusionnée par-dessus (branche `consolidate/experts`).
 - [ ] Classe 09 : sniffers dédiés + spoofing/MITM (hors `tshark`)
 
 ### Jalon 3 — nouvelles classes
-- [ ] 04 Exploitation Tools
+- [x] 04 Exploitation Tools (`exploitation`, 18 outils)
 - [ ] 06 Wireless Testing
-- [ ] 07 Reverse Engineering
-- [ ] 08 Post Exploitation
+- [x] 07 Reverse Engineering (`reverse`, 17 outils)
+- [x] 08 Post Exploitation (`post-exploit`, 15 outils)
 - [ ] 10 Maintaining Access
-- [ ] 11 Digital Forensics
-- [ ] 12 Reporting · 13 Automotive · 14 AI Tools · `misc`
+- [x] 11 Digital Forensics (`forensics`, 22 outils)
+- [x] 12 Reporting (`reporting`, 4 outils) · [ ] 13 Automotive · [ ] 14 AI Tools · [ ] `misc`
 
 ### Jalon 4 — orchestrateur & IA par expert
 - [ ] Orchestrateur unique : le routeur choisit **la classe** puis l'expert

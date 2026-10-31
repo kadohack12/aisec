@@ -277,7 +277,8 @@ aisec/
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
-                webapp, passwords, sniffing, exploitation, forensics, reverse
+                webapp, passwords, sniffing, exploitation, forensics, reverse,
+                post_exploit, reporting
   providers/    backends LLM: ollama (local), openai-compatible (API)
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
                 sslscan, wafw00f, dnsrecon, bettercap, passwords (13 outils),
@@ -291,9 +292,12 @@ aisec/
                 + outils reverse (classe 07 : rabin2, radare2, rahash2, rasm2,
                   radiff2, rizin, rz-hash, rz-find, gdb, bddisasm, die, apktool,
                   dex2jar, jadx, androguard, baksmali, smali)
+                + post_exploit (classe 08 : 15 outils) + reporting (classe 12 :
+                  4 outils)
   cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
                 vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
-                exploitationAI, forensicsAI, reverseAI)
+                exploitationAI, forensicsAI, reverseAI, postExploitAI,
+                reportingAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

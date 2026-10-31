@@ -13,6 +13,8 @@ from .exploitation import EXPLOITATION_EXPERT
 from .forensics import FORENSICS_EXPERT
 from .info import INFO_EXPERT
 from .passwords import PASSWORDS_EXPERT
+from .post_exploit import POST_EXPLOIT_EXPERT
+from .reporting import REPORTING_EXPERT
 from .sniffing import SNIFFING_EXPERT
 from .vulnerability import VULNERABILITY_EXPERT
 from .webapp import WEBAPP_EXPERT
@@ -67,5 +69,7 @@ register(SNIFFING_EXPERT)
 register(EXPLOITATION_EXPERT)
 register(FORENSICS_EXPERT)
 register(REVERSE_EXPERT)
+register(POST_EXPLOIT_EXPERT)
+register(REPORTING_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]
