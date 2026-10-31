@@ -1,86 +1,231 @@
-"""Tests de l'expert Web Application Analysis (classe `03-webapp-analysis`).
+"""Tests de l'expert Web Application Analysis (classe 03).
 
-Verifie l'enregistrement des outils, le routage heuristique (sans LLM) et la
-construction d'argv des principaux outils web.
+Couvre le routage, la construction d'argv, l'extraction d'URL, l'analyse
+heuristique, et la politique de controle (niveau 2) pour les outils intrusifs.
 """
 
 from __future__ import annotations
 
+import pytest
+
+from aisec.core.config import Config
+from aisec.core.control import ControlPolicy, Decision, Risk, evaluate
+from aisec.core.engine import Engine
+from aisec.core.executor import ConfirmationRequired
 from aisec.core.registry import get
-from aisec.experts import get as get_expert, select
+from aisec.experts import all_experts, get as get_expert, select
 from aisec.experts.base import route
 
-
-def test_webapp_expert_registered():
-    expert = get_expert("webapp")
-    assert "nikto" in expert.tool_names
-    assert "gobuster" in expert.tool_names
-    assert "whatweb" in expert.tool_names
+EXPERT = get_expert("webapp")
 
 
-def test_webapp_tools_are_registered():
-    for name in ("nikto", "whatweb", "wpscan", "joomscan", "gobuster", "ffuf", "dirb"):
-        assert get(name).binary
+# ---- Enregistrement et perimetre -----------------------------------------
 
 
-def test_router_selects_webapp_for_web_request():
-    expert = select("analyse l'application web http://example.com")
-    assert expert.name == "webapp"
+def test_webapp_expert_is_registered():
+    assert "webapp" in {e.name for e in all_experts()}
+    assert len(EXPERT.tool_names) == 38
+    assert EXPERT.available_tools() == EXPERT.tool_names
 
 
-def test_router_prefers_wpscan_for_wordpress():
-    tool_name, params, source = route(get_expert("webapp"), "scanne le wordpress de http://example.com", None)
-    assert tool_name == "wpscan"
-    assert params["target"] == "http://example.com"
+def test_every_tool_of_the_class_is_registered():
+    from aisec.core import registry
+
+    assert set(EXPERT.tool_names) <= set(registry.all_names())
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "scanne le wordpress http://target",
+        "fuzz http://target/FUZZ",
+        "teste les xss sur http://target",
+        "identifie les technologies de example.com",
+        "bruteforce les repertoires de http://target",
+    ],
+)
+def test_router_selects_webapp(query):
+    assert select(query).name == "webapp"
+
+
+# ---- Routage interne ------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "query,expected",
+    [
+        ("scanne le wordpress http://target", "wpscan"),
+        ("scanne le joomla http://target", "joomscan"),
+        ("identifie les technologies de http://target", "whatweb"),
+        ("fuzz http://target/FUZZ avec la liste common.txt", "ffuf"),
+        ("bruteforce les repertoires de http://target", "gobuster"),
+        ("enumere les sous-domaines de example.com", "gobuster"),
+        ("crawle http://target", "gospider"),
+        ("decouvre les parametres caches de http://target", "arjun"),
+        ("aspire le site http://target en miroir", "httrack"),
+        ("scanne le serveur web example.com", "nikto"),
+        ("scanne les vulnerabilites de http://target", "wapiti"),
+        ("teste les failles xss sur http://target", "xsser"),
+        ("teste l injection sql sur http://target", "jsql-injection"),
+        ("teste le webdav de http://target", "davtest"),
+        ("teste la faille heartbleed de example.com", "heartleech"),
+        ("cherche les buckets s3 exposes", "s3scanner"),
+        ("analyse le robots.txt de http://target", "parsero"),
+    ],
+)
+def test_routing_rules(query, expected):
+    tool_name, _, source = route(EXPERT, query, None)
+    assert tool_name == expected
     assert source == "heuristic"
 
 
-def test_router_prefers_whatweb_for_technologies():
-    tool_name, _, _ = route(get_expert("webapp"), "identifie les technologies de http://example.com", None)
-    assert tool_name == "whatweb"
+# ---- Construction d'argv --------------------------------------------------
 
 
-def test_router_prefers_gobuster_for_directory_bruteforce():
-    tool_name, params, _ = route(
-        get_expert("webapp"), "bruteforce les repertoires de http://example.com", None
+def test_ffuf_builds_fuzz_command():
+    argv = get("ffuf").build_argv(
+        {"url": "http://target/FUZZ", "wordlist": "common.txt", "filter_codes": "404", "extensions": "php"}
     )
-    assert tool_name == "gobuster"
-    assert params["mode"] == "dir"
-
-
-def test_router_prefers_nikto_for_server_scan():
-    tool_name, _, _ = route(get_expert("webapp"), "scanne le serveur web http://example.com", None)
-    assert tool_name == "nikto"
-
-
-def test_nikto_build_argv():
-    argv = get("nikto").build_argv({"target": "http://example.com", "port": 8443, "ssl": True})
-    assert argv == ["nikto", "-h", "http://example.com", "-p", "8443", "-ssl"]
-
-
-def test_gobuster_build_argv_extensions():
-    argv = get("gobuster").build_argv(
-        {"mode": "dir", "target": "http://example.com", "wordlist": "/tmp/wl.txt", "extensions": ["php", "html"]}
-    )
-    assert argv == ["gobuster", "dir", "-u", "http://example.com", "-w", "/tmp/wl.txt", "-x", "php,html"]
-
-
-def test_ffuf_build_argv_adds_fuzz_keyword():
-    tool = get("ffuf")
-    params = tool.parse_intent("fuzz http://example.com/ avec ffuf")
-    argv = tool.build_argv(params)
     assert argv[0] == "ffuf"
-    assert "-u" in argv
-    assert "FUZZ" in argv[argv.index("-u") + 1]
+    assert argv[argv.index("-u") + 1] == "http://target/FUZZ"
+    assert argv[argv.index("-fc") + 1] == "404"
 
 
-def test_wpscan_build_argv_enumerate():
-    argv = get("wpscan").build_argv(
-        {"target": "http://example.com", "enumerate": "vp,u"}
+def test_gobuster_puts_mode_first():
+    argv = get("gobuster").build_argv(
+        {"mode": "dir", "url": "http://target", "wordlist": "common.txt", "extensions": "php"}
     )
-    assert argv == ["wpscan", "--url", "http://example.com", "--enumerate", "vp,u"]
+    assert argv[:2] == ["gobuster", "dir"]
+    assert argv[argv.index("-u") + 1] == "http://target"
 
 
-def test_webapp_expert_is_available_tools():
-    expert = get_expert("webapp")
-    assert set(expert.available_tools()) == set(expert.tool_names)
+def test_gobuster_defaults_to_dir_mode():
+    argv = get("gobuster").build_argv({"url": "http://target"})
+    assert argv[:2] == ["gobuster", "dir"]
+
+
+def test_wpscan_builds_url_and_enumeration():
+    argv = get("wpscan").build_argv({"url": "http://target", "enumerate": "u"})
+    assert argv == ["wpscan", "--url", "http://target", "-e", "u"]
+
+
+def test_nikto_builds_ssl_scan():
+    argv = get("nikto").build_argv({"host": "example.com", "port": "443", "ssl": True})
+    assert argv == ["nikto", "-h", "example.com", "-p", "443", "-ssl"]
+
+
+def test_cutycapt_joins_option_values():
+    argv = get("cutycapt").build_argv({"url": "http://target", "output": "page.png"})
+    assert argv == ["cutycapt", "--url=http://target", "--out=page.png"]
+
+
+def test_xsser_includes_url_option():
+    argv = get("xsser").build_argv({"url": "http://target"})
+    assert argv == ["xsser", "-u", "http://target"]
+
+
+# ---- Extraction d'intention ----------------------------------------------
+
+
+def test_url_is_extracted_for_ffuf():
+    params = get("ffuf").parse_intent("fuzz http://target/FUZZ avec la liste common.txt")
+    assert params["url"] == "http://target/FUZZ"
+
+
+def test_gobuster_dns_mode_maps_url_to_domain():
+    params = get("gobuster").parse_intent("enumere les sous-domaines de example.com")
+    assert params["mode"] == "dns"
+    assert params["domain"] == "example.com"
+    assert "url" not in params
+
+
+def test_wpscan_intent_maps_enumerate_users():
+    params = get("wpscan").parse_intent("scanne le wordpress http://target et enumere les utilisateurs")
+    assert params["url"] == "http://target"
+    assert params["enumerate"] == "u"
+
+
+def test_whatweb_accepts_bare_host():
+    params = get("whatweb").parse_intent("identifie les technologies de example.com")
+    assert params["target"] == "example.com"
+
+
+# ---- Analyse heuristique --------------------------------------------------
+
+
+def test_nikto_reports_findings():
+    output = "+ /admin/: Directory indexing found.\n+ Server leaks inodes via ETags\n"
+    analysis = get("nikto").analyze(output, {})
+    assert analysis.findings
+
+
+def test_wpscan_flags_vulnerability_and_version():
+    output = "[!] Title: WordPress 5.0 - XSS\nWordPress version 5.0 identified\n"
+    analysis = get("wpscan").analyze(output, {})
+    assert any(f.severity == "high" for f in analysis.findings)
+
+
+def test_s3scanner_flags_public_bucket():
+    analysis = get("s3scanner").analyze("bucket exists\nPUBLIC: listable\n", {})
+    assert any(f.severity == "high" for f in analysis.findings)
+
+
+def test_whatweb_detects_cms():
+    analysis = get("whatweb").analyze("http://target [WordPress, PHP/7.4, Apache/2.4]\n", {})
+    assert any("CMS" in f.title for f in analysis.findings)
+
+
+def test_uniscan_flags_injection():
+    analysis = get("uniscan").analyze("XSS found in /search\nSQL injection in /login\n", {})
+    assert any(f.severity == "high" for f in analysis.findings)
+
+
+def test_davtest_flags_executable_upload():
+    analysis = get("davtest").analyze("SUCCEED: php executable uploaded\n", {})
+    assert any(f.severity == "critical" for f in analysis.findings)
+
+
+# ---- Politique de controle (niveau 2) ------------------------------------
+
+
+def _plan(argv, targets=None):
+    from aisec.core.models import CommandPlan
+
+    return CommandPlan(tool=argv[0], params={"targets": targets or []}, argv=argv, source="heuristic")
+
+
+def test_fuzzing_tool_needs_confirmation():
+    verdict = evaluate(_plan(["ffuf", "-u", "http://target/FUZZ"]), get("ffuf"), ControlPolicy())
+    assert verdict.risk is Risk.HIGH
+    assert verdict.decision is Decision.CONFIRM
+
+
+def test_exploitation_tool_is_critical():
+    verdict = evaluate(
+        _plan(["jboss-autopwn", "10.0.0.1"]), get("jboss-autopwn"), ControlPolicy()
+    )
+    assert verdict.risk is Risk.CRITICAL
+    assert verdict.decision is Decision.CONFIRM
+
+
+def test_fingerprint_tool_is_allowed():
+    verdict = evaluate(
+        _plan(["whatweb", "example.com"]), get("whatweb"), ControlPolicy()
+    )
+    assert verdict.decision is Decision.ALLOW
+
+
+def test_engine_confirms_before_running_wpscan():
+    engine = Engine(Config(provider="none", auto_approve_risk="low"))
+    with pytest.raises(ConfirmationRequired):
+        engine.run("wpscan", "scanne le wordpress http://target")
+
+
+def test_engine_dry_run_skips_fuzzing():
+    engine = Engine(Config(provider="none", auto_approve_risk="low"))
+    plan, result, analysis = engine.run(
+        "ffuf", "fuzz http://target/FUZZ avec la liste common.txt", dry_run=True
+    )
+    assert result is None
+    assert analysis is None
+    assert plan.risk == "high"

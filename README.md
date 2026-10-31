@@ -203,6 +203,12 @@ webappAI "brute force les répertoires de https://example.com avec gobuster"
 passwordsAI "identifie le hash 5f4dcc3b5aa765d61d8327deb882cf99"
 sniffingAI "capture le trafic http sur eth0 pendant 100 paquets"
 
+# Expert Web Application Analysis (classe 03 : empreinte, bruteforce, scanners, CMS, proxies)
+webappAI "scanne le wordpress http://cible"
+aisec webapp "identifie les technologies de example.com"
+aisec webapp "bruteforce les répertoires de http://cible"
+aisec webapp "teste les failles xss sur http://cible"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -262,9 +268,10 @@ aisec/
                 webapp, passwords, sniffing, exploitation
   providers/    backends LLM: ollama (local), openai-compatible (API)
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
-                sslscan, wafw00f, dnsrecon, bettercap, webapp (18 outils),
-                passwords (13 outils), exploitation (18 outils) + spec.py
-                (base déclarative) et vuln_scan/cisco/stress/fuzz/voip (classe 02)
+                sslscan, wafw00f, dnsrecon, bettercap, passwords (13 outils),
+                exploitation (18 outils) + spec.py (base déclarative)
+                + vuln_scan/cisco/stress/fuzz/voip (classe 02 : 46 outils)
+                + web_crawl/web_vuln/web_misc + webapp (classe 03 : 38 outils)
   cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
                 vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
                 exploitationAI)

@@ -46,7 +46,7 @@ PASSWORDS_EXPERT = Expert(
         ("crunch", ("generer une liste", "genere une liste", "liste de mots", "generateur", "generer des mots", "combinaison")),
         (
             "hash-identifier",
-            ("identifie le hash", "identifier le hash", "type de hash", "quel hash", "hash"),
+            ("identifie le hash", "identifier le hash", "type de hash", "quel hash"),
         ),
         ("ophcrack", ("windows", "tables arc-en-ciel", "rainbow", "lm", "ntlm windows")),
         ("samdump2", ("ruche sam", "hive sam", "extraire les hashes", "sam")),

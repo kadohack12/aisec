@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from ..core.models import AnalysisResult, Finding, ParameterSpec
-from .base import Tool, extract_hosts
+from .base import Tool, extract_hosts, extract_url
 
 # Valeurs considerees comme "parametre absent".
 _EMPTY = (None, "", [], ())
@@ -81,7 +81,8 @@ class Pattern:
 
 def _kw_match(keyword: str, low: str) -> bool:
     if re.fullmatch(r"[a-z0-9 ]+", keyword):
-        return re.search(rf"\b{re.escape(keyword)}\b", low) is not None
+        # Tolere le pluriel simple (repertoire/repertoires, utilisateur/utilisateurs).
+        return re.search(rf"\b{re.escape(keyword)}(?:s|es)?\b", low) is not None
     return keyword in low
 
 
@@ -98,6 +99,8 @@ class SpecTool(Tool):
     order: tuple[str, ...] = ("options", "flags", "positionals")
     # Parametres qui designent une cible (alimentes par extract_hosts).
     target_params: tuple[str, ...] = ()
+    # Parametre qui recoit une URL complete (http/https), sinon un hote.
+    url_param: str | None = None
 
     # ---- Construction de la commande --------------------------------------
 
@@ -153,10 +156,16 @@ class SpecTool(Tool):
         low = text.lower()
         params: dict[str, Any] = {}
 
+        if self.url_param:
+            url = extract_url(text)
+            if url:
+                params[self.url_param] = url
+
         if self.target_params:
             hosts = extract_hosts(text)
-            if hosts:
-                first = self.target_params[0]
+            first = self.target_params[0]
+            # Une URL complete deja extraite prime sur l'hote nu.
+            if hosts and first not in params:
                 spec = {p.name: p for p in self.parameters}.get(first)
                 params[first] = hosts if (spec and spec.type == "list") else hosts[0]
 

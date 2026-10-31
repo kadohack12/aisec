@@ -1,8 +1,9 @@
-"""Expert Web Application Analysis (classe `03-webapp-analysis`).
+"""Expert Web Application Analysis (classe 03).
 
-Couvre les scanners de vulnerabilites web, le fingerprinting de technologies,
-les crawlers et le bruteforce de repertoires. Le prompt oriente le choix de
-l'outil et le routage heuristique (sans LLM) suit les memes regles.
+Classe Parrot `03-webapp-analysis` (38 outils): analyse directe, CMS, crawlers
+et bruteforce de repertoires, proxies, scanners de vulnerabilites web.
+L'expert choisit l'outil de sa classe et en extrait les parametres; les outils
+de fuzzing et d'exploitation restent soumis a la politique de controle (niveau 2).
 """
 
 from __future__ import annotations
@@ -11,112 +12,139 @@ from .base import Expert
 
 WEBAPP_EXPERT = Expert(
     name="webapp",
-    description="Analyse d'applications web: scanners, fingerprinting, crawlers, bruteforce.",
+    description="Analyse d'application web: empreinte, bruteforce, scanners, CMS, proxies.",
     system_prompt=(
         "Tu es un expert en analyse d'applications web. Tu choisis l'outil le plus "
-        "adapte parmi ceux de ton domaine et tu extrais les parametres exacts. "
-        "Pour un scan de vulnerabilites generaliste d'un serveur, utilise nikto ; "
-        "pour une application, wapiti. Pour identifier les technologies (CMS, "
-        "serveur, framework), utilise whatweb. Pour WordPress ou Joomla, utilise "
-        "wpscan ou joomscan. Pour decouvrir des repertoires ou fichiers, utilise "
-        "gobuster, ffuf, feroxbuster, dirb, dirsearch ou wfuzz. Pour decouvrir des "
-        "parametres HTTP caches, utilise arjun. Pour explorer les liens d'un site, "
-        "utilise gospider ou httrack. Pour tester les failles XSS, utilise xsser. "
-        "Pour tester un serveur WebDAV, utilise davtest. Pour verifier un bucket "
-        "S3, utilise s3scanner."
+        "adapte parmi ceux de ta classe et tu extrais les parametres exacts.\n"
+        "- Identifier les technologies/CMS d'un site -> whatweb, wig.\n"
+        "- WordPress -> wpscan ; Joomla -> joomscan.\n"
+        "- Bruteforce de repertoires et fichiers -> gobuster, ffuf, feroxbuster, "
+        "dirb, dirsearch, wfuzz.\n"
+        "- Decouvrir des parametres caches -> arjun ; crawler un site -> gospider, httrack.\n"
+        "- Scanner les vulnerabilites d'un serveur web -> nikto, wapiti, skipfish, "
+        "owasp-zap ; injections SQL -> jsql-injection, wapiti ; XSS -> xsser, wapiti.\n"
+        "- WebDAV -> cadaver, davtest ; padding oracle -> padbuster ; Heartbleed -> heartleech.\n"
+        "- Buckets S3 -> s3scanner ; robots.txt -> parsero.\n"
+        "- Proxies d'interception (analyse manuelle) -> burpsuite, caido, paros, webscarab.\n"
+        "Un scan actif ou un fuzzing est intrusif: ne le propose que si la demande "
+        "est explicite et sur une cible autorisee."
     ),
     tool_names=[
-        "nikto",
-        "whatweb",
-        "wpscan",
-        "joomscan",
-        "gobuster",
-        "ffuf",
-        "dirb",
-        "feroxbuster",
-        "wfuzz",
-        "arjun",
-        "gospider",
-        "dirsearch",
-        "wapiti",
-        "xsser",
-        "skipfish",
-        "s3scanner",
-        "davtest",
+        # Analyse directe
         "httrack",
+        "paros",
+        "parsero",
+        "s3scanner",
+        "skipfish",
+        "webscarab",
+        "wig",
+        "wpscan",
+        "zaproxy",
+        # CMS
+        "joomscan",
+        # Crawlers & bruteforce
+        "apache-users",
+        "arjun",
+        "cutycapt",
+        "dirb",
+        "dirbuster",
+        "dirsearch",
+        "feroxbuster",
+        "ffuf",
+        "gobuster",
+        "gospider",
+        "uniscan",
+        "wfuzz",
+        # Proxies
+        "burpsuite",
+        "caido",
+        "goshs",
+        # Scanners de vulnerabilites web
+        "cadaver",
+        "davtest",
+        "heartleech",
+        "jboss-autopwn",
+        "jsql-injection",
+        "nikto",
+        "owasp-mantra-ff",
+        "padbuster",
+        "wapiti",
+        "watobo",
+        "websploit",
+        "whatweb",
+        "xsser",
     ],
     routing_rules=(
-        ("wpscan", ("wordpress", "wp-", "wp admin", "wp-admin")),
+        ("wpscan", ("wordpress", "wp-", "wp ", "wpscan")),
         ("joomscan", ("joomla",)),
-        ("whatweb", ("technologie", "fingerprint", "empreinte", "cms", "quel serveur", "quelle techno")),
-        ("nikto", ("nikto", "serveur web", "erreurs de configuration", "mauvaise configuration")),
-        ("wapiti", ("vulnerabilite", "vulnerabilites", "injection", "ssrf", "scan complet")),
-        ("xsser", ("xss", "cross site scripting")),
-        ("davtest", ("webdav", "dav ")),
-        ("s3scanner", ("bucket", "s3", "stockage objet")),
-        ("arjun", ("parametre", "parametres", "query string", "hidden parameter")),
-        ("gospider", ("crawle", "crawler", "spider", "explorer les liens")),
-        ("httrack", ("miroir", "copie du site", "hors-ligne", "offline")),
-        ("gobuster", ("gobuster", "vhost", "sous-domaine", "subdomain")),
-        ("ffuf", ("ffuf", "fuzz", "fuzzing")),
-        ("feroxbuster", ("feroxbuster", "recursif", "recursive")),
-        ("dirsearch", ("dirsearch",)),
+        ("whatweb", ("technologie", "empreinte", "fingerprint", "cms", "framework", "identifie le site")),
+        ("wig", ("quel cms", "detecte le cms", "wig")),
+        ("ffuf", ("fuzz", "fuuf", "mot-cle fuzz")),
         ("wfuzz", ("wfuzz",)),
-        ("dirb", ("dirb",)),
+        ("gobuster", ("repertoire", "directory", "dossier", "gobuster", "sous-domaine", "subdomain", "vhost")),
+        ("feroxbuster", ("feroxbuster", "recursif rapide")),
+        ("dirsearch", ("dirsearch", "chemins caches", "fichiers caches")),
+        ("dirb", ("dirb", "bruteforce les dossiers")),
+        ("dirbuster", ("dirbuster",)),
+        ("arjun", ("parametre cache", "parametres caches", "arjun")),
+        ("gospider", ("crawle", "crawler", "spider", "explore le site")),
+        ("httrack", ("miroir", "aspire", "copie le site", "hors ligne", "httrack")),
+        ("nikto", ("nikto", "scanne le serveur web", "serveur web")),
+        ("wapiti", ("wapiti", "scanne les vulnerabilites", "scan complet web")),
         ("skipfish", ("skipfish",)),
-        (
-            "gobuster",
-            (
-                "bruteforce",
-                "brute force",
-                "repertoire",
-                "repertoires",
-                "directory",
-                "fichier",
-                "fichiers",
-                "chemins",
-                "chemin",
-            ),
-        ),
+        ("zaproxy", ("zap", "owasp zap", "zaproxy")),
+        ("xsser", ("xss", "cross site scripting")),
+        ("jsql-injection", ("injection sql", "sql injection", "jsql")),
+        ("davtest", ("webdav", "davtest")),
+        ("cadaver", ("cadaver", "client webdav")),
+        ("padbuster", ("padding oracle", "padbuster", "cookie chiffre")),
+        ("heartleech", ("heartbleed", "heartleech")),
+        ("jboss-autopwn", ("jboss",)),
+        ("s3scanner", ("bucket", "s3", "stockage objet")),
+        ("parsero", ("robots.txt", "robots", "parsero")),
+        ("apache-users", ("userdir", "utilisateurs apache", "apache-users")),
+        ("uniscan", ("uniscan",)),
+        ("cutycapt", ("capture", "screenshot", "image de la page")),
+        ("burpsuite", ("burp", "burpsuite")),
+        ("caido", ("caido",)),
+        ("paros", ("paros",)),
+        ("webscarab", ("webscarab",)),
+        ("watobo", ("watobo",)),
+        ("owasp-mantra-ff", ("mantra",)),
+        ("goshs", ("goshs", "partage de fichiers", "serveur http")),
+        ("websploit", ("websploit",)),
     ),
     keywords=(
         "web",
         "site",
-        "application web",
+        "url",
         "http",
         "https",
-        "url",
-        "nikto",
-        "whatweb",
-        "wpscan",
+        "application web",
+        "serveur web",
+        "technologie",
+        "empreinte",
+        "fingerprint",
+        "cms",
         "wordpress",
         "joomla",
-        "gobuster",
-        "ffuf",
-        "feroxbuster",
-        "dirb",
-        "dirsearch",
-        "wfuzz",
-        "arjun",
-        "gospider",
-        "crawler",
-        "crawle",
-        "spider",
-        "wapiti",
-        "xsser",
-        "xss",
-        "skipfish",
-        "s3scanner",
-        "bucket s3",
-        "webdav",
-        "davtest",
-        "httrack",
+        "drupal",
         "repertoire",
-        "repertoires",
         "directory",
+        "dossier",
         "bruteforce",
-        "brute force",
-        "parametres",
-        "vulnerabilite web",
+        "fuzz",
+        "crawler",
+        "spider",
+        "proxy",
+        "nikto",
+        "wpscan",
+        "xss",
+        "webdav",
+        "bucket",
+        "robots.txt",
+        "parametre",
+        "endpoint",
+        "formulaire",
     ),
 )
