@@ -9,6 +9,7 @@ Un `Tool` sait:
 
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -84,3 +85,22 @@ def _coerce_value(value: Any, type_name: str) -> Any:
             return list(value)
         return [part.strip() for part in str(value).split(",") if part.strip()]
     return str(value)
+
+
+_HOST_RE = re.compile(
+    r"\b(?:\d{1,3}(?:\.\d{1,3}){3}|[a-z0-9][a-z0-9\-]*(?:\.[a-z0-9\-]+)+)\b",
+    re.IGNORECASE,
+)
+
+
+def extract_hosts(text: str) -> list[str]:
+    """Extrait les domaines/IPs d'un texte, sans doublon ni bruit."""
+    ignore = {"http", "https", "tcp", "udp", "com", "net", "org"}
+    found: list[str] = []
+    for cand in _HOST_RE.findall(text):
+        low = cand.lower()
+        if low in ignore or low.endswith((".pcap", ".pcapng", ".cap")):
+            continue
+        if cand not in found:
+            found.append(cand)
+    return found

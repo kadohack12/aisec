@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import os
 import tomllib
-from dataclasses import asdict, dataclass, fields
+from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Any
 
@@ -38,6 +38,18 @@ class Config:
     dry_run: bool = False
     # Confirmation avant les actions sensibles (scan reseau prive, etc.)
     assume_yes: bool = False
+    # IA dediee par expert: {"dns": "modele-dns", "web": "modele-web"}
+    expert_models: dict[str, str] = field(default_factory=dict)
+
+    def model_for(self, expert_name: str, default: str | None = None) -> str:
+        """Modele a utiliser pour un expert (IA dediee) ou le modele global."""
+        return self.expert_models.get(expert_name) or default or self.model
+
+    def with_model(self, model: str) -> "Config":
+        """Copie de la config avec un modele donne (pour une IA dediee)."""
+        clone = Config(**self.to_dict())
+        clone.model = model
+        return clone
 
     @classmethod
     def load(cls, path: Path | None = None) -> "Config":

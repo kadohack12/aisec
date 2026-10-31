@@ -19,9 +19,13 @@ dev = ["pytest>=8"]
 aisec = "aisec.cli:main"
 nmapAI = "aisec.cli:main_nmap"
 tsharkAI = "aisec.cli:main_tshark"
+dnsAI = "aisec.cli:main_dns"
 
 [tool.hatch.build.targets.wheel]
 packages = ["aisec"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"aisec/catalog/data/parrot_tools.json" = "aisec/catalog/data/parrot_tools.json"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

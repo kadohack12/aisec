@@ -23,3 +23,10 @@ timeout = 120.0
 # Securite
 dry_run = false      # true = n'execute jamais, affiche seulement la commande
 assume_yes = false   # true = ne demande pas confirmation
+
+# --- IA dediee par expert (une IA entrainee par classe) ---
+# Chaque expert peut utiliser son propre modele; sinon `model` ci-dessus.
+# [expert_models]
+# dns = "aisec-dns:latest"
+# web = "aisec-web:latest"
+# password = "aisec-password:latest"
