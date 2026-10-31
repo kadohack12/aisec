@@ -9,6 +9,12 @@ from __future__ import annotations
 
 from .base import Expert, route, run_expert
 from .dns import DNS_EXPERT
+from .exploitation import EXPLOITATION_EXPERT
+from .info import INFO_EXPERT
+from .passwords import PASSWORDS_EXPERT
+from .sniffing import SNIFFING_EXPERT
+from .vulnerability import VULNERABILITY_EXPERT
+from .webapp import WEBAPP_EXPERT
 
 _EXPERTS: dict[str, Expert] = {}
 
@@ -40,7 +46,9 @@ def select(text: str, provider=None) -> Expert:
     low = text.lower()
     scores: dict[str, int] = {}
     for expert in _EXPERTS.values():
-        scores[expert.name] = sum(1 for kw in expert.keywords if kw in low)
+        # Un mot-cle long (ex. "injection sql") est plus specifique qu'un mot
+        # generique (ex. "http"): on pondere par sa longueur pour departager.
+        scores[expert.name] = sum(len(kw) for kw in expert.keywords if kw in low)
     best = max(scores, key=scores.get)
     if scores[best] == 0:
         # Aucun mot-cle: on prend le premier expert (DNS) comme defaut.
@@ -49,5 +57,11 @@ def select(text: str, provider=None) -> Expert:
 
 
 register(DNS_EXPERT)
+register(INFO_EXPERT)
+register(VULNERABILITY_EXPERT)
+register(WEBAPP_EXPERT)
+register(PASSWORDS_EXPERT)
+register(SNIFFING_EXPERT)
+register(EXPLOITATION_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]

@@ -192,6 +192,23 @@ dnsAI "qui possede example.com"
 aisec dns "résolution inverse de 8.8.8.8"
 aisec dns "tente un transfert de zone sur example.com"
 
+# Experts par classe (reconnaissance, vulnerabilites, web, mots de passe, sniffing)
+infoAI "découverte des hôtes sur 192.168.1.0/24"
+infoAI "détecte le waf devant https://example.com"
+vulnerabilityAI "audite le tls de example.com:443"
+aisec vulnerability "audite le routeur cisco 10.0.0.1"
+aisec vulnerability "enumere les extensions sip de 10.0.0.1"
+aisec vulnerability "fuzz le binaire ./parser avec afl"
+webappAI "brute force les répertoires de https://example.com avec gobuster"
+passwordsAI "identifie le hash 5f4dcc3b5aa765d61d8327deb882cf99"
+sniffingAI "capture le trafic http sur eth0 pendant 100 paquets"
+
+# Expert Web Application Analysis (classe 03 : empreinte, bruteforce, scanners, CMS, proxies)
+webappAI "scanne le wordpress http://cible"
+aisec webapp "identifie les technologies de example.com"
+aisec webapp "bruteforce les répertoires de http://cible"
+aisec webapp "teste les failles xss sur http://cible"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -247,10 +264,17 @@ aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
-  experts/      experts par classe: base.py (socle) + dns.py (expert DNS)
+  experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
+                webapp, passwords, sniffing, exploitation
   providers/    backends LLM: ollama (local), openai-compatible (API)
-  tools/        plugins: nmap, tshark, dig, host, whois
-  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI)
+  tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
+                sslscan, wafw00f, dnsrecon, bettercap, passwords (13 outils),
+                exploitation (18 outils) + spec.py (base déclarative)
+                + vuln_scan/cisco/stress/fuzz/voip (classe 02 : 46 outils)
+                + web_crawl/web_vuln/web_misc + webapp (classe 03 : 38 outils)
+  cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
+                vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
+                exploitationAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

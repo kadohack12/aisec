@@ -1,66 +1,41 @@
 # Feuille de route — aisec
 
-État vérifié le **2026-10-31** (branches, PR, tests réels). Dépôt :
-https://github.com/kadohack12/aisec
+État vérifié le **2026-10-31**. Dépôt : https://github.com/kadohack12/aisec
 
 ---
 
-## 1. État des branches et PR
+## 0. Consolidation des branches d'agents ✅
 
-`main` = `3d2b382` (catalogue 445 outils + expert DNS + contrôle niveau 2 + docs
-classes). **Toutes les branches d'agents partent de ce commit.**
+Trois agents avaient produit des branches parallèles se recouvrant. Elles ont
+été **fusionnées intelligemment** sur `consolidate/experts` :
 
-| Branche | PR | Contenu | Tests | Base |
-|---------|----|---------|-------|------|
-| `main` | — | socle + expert `dns` + contrôle L2 | 43 ✅ | — |
-| `feat/experts-web-vuln-passwords` | **#1** (draft) | 3 experts : `vuln` (11), `webapp` (18), `passwords` (13) | 80 ✅ | `3d2b382` |
-| `expert-02-vulnerability-analysis` | **#2** (draft) | classe 02 complète : 46 outils + base déclarative `tools/spec.py` | 79 ✅ | `3d2b382` |
-| `feat/experts-5-classes` | *aucune* | 5 experts : `info`, `vuln`, `web`, `password`, `sniffing` | 103 ✅ | `3d2b382` |
+| Branche d'origine | PR | Apport retenu |
+|-------------------|----|---------------|
+| `feat/experts-5-classes` | — | experts `info` (classe 01) et `sniffing` (classe 09), socle `tools/base.py` |
+| `expert-02-vulnerability-analysis` | #2 | classe 02 : expert `vulnerability` (46 outils) + base déclarative `tools/spec.py` |
+| `feat/experts-web-vuln-passwords` | #1 | classe 03 : `webapp` (18 outils) ; classe 05 : `passwords` (13 outils) |
+| `feat/experts-exploitation` | #3 | classe 04 : expert `exploitation` (18 outils) |
+| `expert-03-webapp-analysis` | — | classe 03 complète : `webapp` (38 outils via web_crawl/web_vuln/web_misc) |
 
-Les 3 branches **compilent et passent leurs tests** isolément. Aucune n'est
-fusionnée : les 2 PR sont en **draft**.
+**Règle d'arbitrage** : quand deux branches livraient la même classe, on a gardé
+l'implémentation la plus **complète**, puis supprimé les doublons.
 
-### Problème : recouvrement entre branches
+- Classe 02 : `vulnerability` (46 outils, PR #2) > `vuln` (11 outils) → `vuln` retiré.
+- Classe 03 : `webapp` 38 outils (expert-03) > `webapp` 18 outils (PR #1) → `tools/webapp.py` retiré.
+- Classe 05 : `passwords` (13 outils, PR #1) > `password` (4 outils) → `password` retiré.
+- Classes 01 et 09 : seuls `info` et `sniffing` (lot 5-classes) existaient.
+- Classe 04 : `exploitation` (PR #3), aucun recouvrement.
 
-Les agents ont travaillé en parallèle sans se coordonner et se **recouvrent** :
+Résultat : **7 experts**, **126 outils uniques**, **aucune collision de nom**,
+**184 tests** verts.
 
-| Classe | PR #1 | PR #2 | branche 5-classes |
-|--------|:-----:|:-----:|:-----------------:|
-| 01 Information Gathering | — | — | ✅ `info` |
-| 02 Vulnerability Analysis | ✅ `vuln` | ✅ `vulnerability` | ✅ `vuln` |
-| 03 Web Application | ✅ `webapp` | — | ✅ `web` |
-| 05 Password Attacks | ✅ `passwords` | — | ✅ `password` |
-| 09 Sniffing & Spoofing | — | — | ✅ `sniffing` |
+---
 
-**Outils enregistrés en double** (nom identique dans ≥ 2 branches) :
-`testssl`, `sfuzz`, `siege`, `slowhttptest`, `cisco-torch`, `nipper-ng`,
-`dhcpig`, `t50`, `unix-privesc-check`, `yersinia` — plus les socles partagés
-`nmap`, `tshark`, `dig`, `host`, `whois`.
+## 1. État de `main`
 
-**Fichiers de couture modifiés par les 3** (conflits garantis) :
-`README.md`, `aisec/cli.py`, `aisec/core/registry.py`,
-`aisec/experts/__init__.py`, `pyproject.toml`, `docs/ASSIGNMENT.md`.
-
-### Stratégie de consolidation recommandée
-
-Intégrer **séquentiellement** (jamais 2 PR en parallèle), dans cet ordre :
-
-1. **`feat/experts-5-classes`** d'abord (le plus large : 5 classes, 103 tests,
-   et il ajoute des helpers dans `aisec/tools/base.py` qui serviront de socle).
-   Ouvrir sa PR, la fusionner.
-2. **`expert-02-vulnerability-analysis`** (PR #2) ensuite : apporte
-   `aisec/tools/spec.py`, une **base déclarative** (flags/options/règles) —
-   à adopter comme standard pour tous les futurs plugins. Arbitrer les
-   doublons de la classe 02 en gardant la version la plus complète
-   (`spec.py` + 46 outils).
-3. **`feat/experts-web-vuln-passwords`** (PR #1) en dernier : récupérer
-   uniquement les outils **non déjà présents** (ex. `arjun`, `wpscan`,
-   `joomscan`, `hashcat`, `medusa`, `ncrack`, `chntpw`, `ophcrack`,
-   `wapiti`, `xsser`, `skipfish`, `httrack`, `dirb`, `dirsearch`,
-   `feroxbuster`, `gospider`...).
-
-Après chaque fusion : `pytest -q`, puis fermer/mettre à jour la PR suivante.
-Les 2 PR sont en **draft** → à passer en « ready for review » une par une.
+`main` = `8f2a743` (socle + expert `dns` + contrôle niveau 2 + catalogue 445
+outils + répartition en 15 classes). La consolidation est prête à être
+fusionnée par-dessus (branche `consolidate/experts`).
 
 ---
 
@@ -74,12 +49,12 @@ Les 2 PR sont en **draft** → à passer en « ready for review » une par une.
 - [x] Répartition en 15 classes (`docs/CLASSES.md`, `docs/classes.json`)
 - [x] 43 tests
 
-### Jalon 1 — 5 experts (en cours, à consolider)
-- [ ] Consolider les 3 branches ci-dessus en **une** base propre
-- [ ] Dédupliquer les outils partagés (une seule classe `Tool` par binaire)
-- [ ] Expert `info` (classe 01, hors `dns`) + `vuln` + `web` + `password` + `sniffing`
-- [ ] Adopter `tools/spec.py` (base déclarative) comme standard
-- [ ] Objectif : ~110+ tests sur `main`
+### Jalon 1 — 7 experts ✅ (fusionnés sur `consolidate/experts`)
+- [x] Consolider les branches d'agents en **une** base propre
+- [x] Dédupliquer les outils partagés (une seule classe `Tool` par binaire)
+- [x] Experts `info`, `vulnerability`, `webapp`, `passwords`, `sniffing`, `exploitation`
+- [x] Adopter `tools/spec.py` (base déclarative) comme standard
+- [x] 184 tests (7 experts, 126 outils)
 
 ### Jalon 2 — profondeur des classes amorcées
 - [ ] Classe 01 : sous-catégories OSINT, SMTP, SMB, SNMP, SSL, IDS/IPS, Route

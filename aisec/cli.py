@@ -303,5 +303,29 @@ def main_dns() -> int:
     return run_cli("dns", ["dns", *sys.argv[1:]])
 
 
+def main_info() -> int:
+    return run_cli("info", ["info", *sys.argv[1:]])
+
+
+def main_vulnerability() -> int:
+    return run_cli("vulnerability", ["vulnerability", *sys.argv[1:]])
+
+
+def main_webapp() -> int:
+    return run_cli("webapp", ["webapp", *sys.argv[1:]])
+
+
+def main_passwords() -> int:
+    return run_cli("passwords", ["passwords", *sys.argv[1:]])
+
+
+def main_sniffing() -> int:
+    return run_cli("sniffing", ["sniffing", *sys.argv[1:]])
+
+
+def main_exploitation() -> int:
+    return run_cli("exploitation", ["exploitation", *sys.argv[1:]])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

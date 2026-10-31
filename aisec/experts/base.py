@@ -150,9 +150,13 @@ def _heuristic_route(expert: Expert, text: str) -> tuple[str, dict[str, Any]]:
 
 
 def _kw_match(keyword: str, low: str) -> bool:
-    """Match sur mot entier si possible, sinon sous-chaine."""
+    """Match sur mot entier si possible, sinon sous-chaine.
+
+    Tolere le pluriel simple pour les mots-cles en minuscules
+    (repertoire/repertoires, utilisateur/utilisateurs).
+    """
     if re.fullmatch(r"[a-z0-9 ]+", keyword):
-        return re.search(rf"\b{re.escape(keyword)}\b", low) is not None
+        return re.search(rf"\b{re.escape(keyword)}(?:s|es)?\b", low) is not None
     return keyword in low
 
 
