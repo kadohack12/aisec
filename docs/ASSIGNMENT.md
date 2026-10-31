@@ -7,9 +7,9 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | # | Classe | `class_id` | Outils | Priorite | Agent | Statut |
 |---|--------|-----------|--------|----------|-------|--------|
 | 1 | Information Gathering | `01-info-gathering` | 82 | haute | | a faire |
-| 2 | Vulnerability Analysis | `02-vulnerability-analysis` | 42 | haute | | a faire |
-| 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | | a faire |
-| 4 | Password Attacks | `05-password-attacks` | 45 | haute | | a faire |
+| 2 | Vulnerability Analysis | `02-vulnerability-analysis` | 42 | haute | openhands | **livre** (`aisec/experts/vuln.py`) |
+| 3 | Web Application Analysis | `03-webapp-analysis` | 38 | haute | openhands | **livre** (`aisec/experts/webapp.py`) |
+| 4 | Password Attacks | `05-password-attacks` | 45 | haute | openhands | **livre** (`aisec/experts/passwords.py`) |
 | 5 | Sniffing & Spoofing | `09-sniffing-spoofing` | 29 | moyenne | | a faire |
 | 6 | Digital Forensics | `11-forensics` | 46 | moyenne | | a faire |
 | 7 | Wireless Testing | `06-wireless-attacks` | 38 | moyenne | | a faire |
@@ -24,6 +24,15 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
+
+## Livraisons
+
+| Expert | Classe | Module expert | Module outils | Tests |
+|--------|--------|---------------|---------------|-------|
+| `dns` | `01-info-gathering` | `aisec/experts/dns.py` | `aisec/tools/dns.py` | `tests/test_catalog.py` |
+| `vuln` | `02-vulnerability-analysis` | `aisec/experts/vuln.py` | `aisec/tools/vuln.py` | `tests/test_vuln.py` |
+| `webapp` | `03-webapp-analysis` | `aisec/experts/webapp.py` | `aisec/tools/webapp.py` | `tests/test_webapp.py` |
+| `passwords` | `05-password-attacks` | `aisec/experts/passwords.py` | `aisec/tools/passwords.py` | `tests/test_passwords.py` |
 
 ## Contrat d'un agent (une classe)
 

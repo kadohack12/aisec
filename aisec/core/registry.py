@@ -42,7 +42,10 @@ def _load_builtins() -> None:
     # Importe les modules pour declencher leur enregistrement.
     from ..tools import dns as _dns  # noqa: F401
     from ..tools import nmap as _nmap  # noqa: F401
+    from ..tools import passwords as _passwords  # noqa: F401
     from ..tools import tshark as _tshark  # noqa: F401
+    from ..tools import vuln as _vuln  # noqa: F401
+    from ..tools import webapp as _webapp  # noqa: F401
 
 
 _load_builtins()

@@ -247,9 +247,11 @@ aisec/
   catalog/      catalogue d'outils (445 outils Parrot) + recherche/installés
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
-  experts/      experts par classe: base.py (socle) + dns.py (expert DNS)
+  experts/      experts par classe: base.py (socle) + dns.py, vuln.py,
+                webapp.py, passwords.py
   providers/    backends LLM: ollama (local), openai-compatible (API)
-  tools/        plugins: nmap, tshark, dig, host, whois
+  tools/        plugins: nmap, tshark, dig, host, whois + outils web,
+                vulnerabilites et mots de passe
   cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI)
 ```
 
