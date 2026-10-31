@@ -1,0 +1,1000 @@
+{
+  "source": "https://tools.parrotsec.org/tools.json",
+  "total_tools": 445,
+  "classes": [
+    {
+      "class_id": "01-info-gathering",
+      "class": "Information Gathering",
+      "tool_count": 82,
+      "subcategories": [
+        {
+          "id": "01-info-gathering",
+          "label": "Information Gathering (direct)",
+          "tools": [
+            "amap",
+            "arp-scan",
+            "autorecon",
+            "clamav",
+            "dmitry",
+            "geoip-bin",
+            "ike-scan",
+            "kerberoast",
+            "legion",
+            "mac-robber",
+            "maltego",
+            "naabu",
+            "ndiff",
+            "netdiscover",
+            "nmap",
+            "nmapsi4",
+            "p0f",
+            "patchleaks",
+            "recon-ng",
+            "savi",
+            "syft",
+            "trufflehog",
+            "witnessme"
+          ]
+        },
+        {
+          "id": "01-01-dns-analysis",
+          "label": "DNS Analysis",
+          "tools": [
+            "amass",
+            "certgraph",
+            "dnsenum",
+            "dnsmap",
+            "dnsrecon",
+            "dnstracer",
+            "dnswalk",
+            "fierce",
+            "urlcrazy"
+          ]
+        },
+        {
+          "id": "01-11-smtp-analysis",
+          "label": "SMTP Analysis",
+          "tools": [
+            "ismtp",
+            "smtp-user-enum",
+            "swaks"
+          ]
+        },
+        {
+          "id": "01-07-osint-analysis",
+          "label": "OSINT Analysis",
+          "tools": [
+            "assetfinder",
+            "bing-ip2hosts",
+            "cloud-enum",
+            "emailharvester",
+            "goofile",
+            "inspy",
+            "instaloader",
+            "metagoofil",
+            "osrframework",
+            "python3-censys",
+            "python3-shodan",
+            "sherlock",
+            "spiderfoot",
+            "theharvester"
+          ]
+        },
+        {
+          "id": "01-10-smb-analysis",
+          "label": "SMB Analysis",
+          "tools": [
+            "enum4linux",
+            "enum4linux-ng",
+            "nbtscan",
+            "polenum",
+            "smbmap"
+          ]
+        },
+        {
+          "id": "01-08-route-analysis",
+          "label": "Route Analysis",
+          "tools": [
+            "0trace",
+            "intrace",
+            "irpas",
+            "netmask"
+          ]
+        },
+        {
+          "id": "01-02-identify-live-hosts",
+          "label": "Live Host Identification",
+          "tools": [
+            "arping",
+            "fping",
+            "hping3",
+            "iputils-arping",
+            "maryam",
+            "ncat"
+          ]
+        },
+        {
+          "id": "01-13-ssl-analysis",
+          "label": "SSL Analysis",
+          "tools": [
+            "ssldump",
+            "sslh",
+            "sslscan",
+            "sslyze",
+            "tlssled"
+          ]
+        },
+        {
+          "id": "01-03-ids-ips-identification",
+          "label": "IDS/IPS Identification",
+          "tools": [
+            "firewalk",
+            "fragrouter",
+            "ftester",
+            "lbd",
+            "wafw00f"
+          ]
+        },
+        {
+          "id": "01-12-snmp-analysis",
+          "label": "SNMP Analysis",
+          "tools": [
+            "braa",
+            "onesixtyone",
+            "snmpcheck"
+          ]
+        },
+        {
+          "id": "01-04-network-scanners",
+          "label": "Network & Port Scanners",
+          "tools": [
+            "2ping",
+            "dbd",
+            "masscan",
+            "netcat-openbsd",
+            "unicornscan"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "02-vulnerability-analysis",
+      "class": "Vulnerability Analysis",
+      "tool_count": 42,
+      "subcategories": [
+        {
+          "id": "02-vulnerability-analysis",
+          "label": "Vulnerability Analysis (direct)",
+          "tools": [
+            "afl++",
+            "defectdojo",
+            "hb-honeypot",
+            "peass",
+            "python3-bandit",
+            "sentrypeer",
+            "testssl.sh",
+            "tnscmd10g",
+            "unix-privesc-check"
+          ]
+        },
+        {
+          "id": "02-01-cisco-tools",
+          "label": "Cisco Tools",
+          "tools": [
+            "cisco-auditing-tool",
+            "cisco-ocs",
+            "cisco-torch",
+            "copy-router-config",
+            "nipper-ng",
+            "yersinia"
+          ]
+        },
+        {
+          "id": "02-07-stress-testing",
+          "label": "Stress Testing",
+          "tools": [
+            "dhcpig",
+            "siege",
+            "slowhttptest",
+            "t50",
+            "thc-ipv6",
+            "thc-ssl-dos"
+          ]
+        },
+        {
+          "id": "02-02-fuzzers",
+          "label": "Fuzzing Tools",
+          "tools": [
+            "bed",
+            "doona",
+            "sfuzz",
+            "siparmyknife",
+            "spike"
+          ]
+        },
+        {
+          "id": "02-03-voip-tools",
+          "label": "VoIP Tools",
+          "tools": [
+            "enumiax",
+            "iaxflood",
+            "inviteflood",
+            "ohrwurm",
+            "protos-sip",
+            "rtpbreak",
+            "rtpflood",
+            "rtpinsertsound",
+            "rtpmixsound",
+            "sctpscan",
+            "sipp",
+            "sipsak",
+            "sipvicious",
+            "twinkle",
+            "twinkle-console",
+            "voiphopper"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "03-webapp-analysis",
+      "class": "Web Application Analysis",
+      "tool_count": 38,
+      "subcategories": [
+        {
+          "id": "03-webapp-analysis",
+          "label": "Web Application Analysis (direct)",
+          "tools": [
+            "httrack",
+            "paros",
+            "parsero",
+            "s3scanner",
+            "skipfish",
+            "webscarab",
+            "wig",
+            "wpscan",
+            "zaproxy"
+          ]
+        },
+        {
+          "id": "03-01-cms-identification",
+          "label": "CMS & Framework Identification",
+          "tools": [
+            "joomscan"
+          ]
+        },
+        {
+          "id": "03-04-web-crawlers",
+          "label": "Web Crawlers & Directory Bruteforce",
+          "tools": [
+            "apache-users",
+            "arjun",
+            "cutycapt",
+            "dirb",
+            "dirbuster",
+            "dirsearch",
+            "feroxbuster",
+            "ffuf",
+            "gobuster",
+            "gospider",
+            "uniscan",
+            "wfuzz"
+          ]
+        },
+        {
+          "id": "03-06-web-application-proxies",
+          "label": "Web Application Proxies",
+          "tools": [
+            "burpsuite",
+            "caido",
+            "goshs"
+          ]
+        },
+        {
+          "id": "03-05-web-vulnerability-scanners",
+          "label": "Web Vulnerability Scanners",
+          "tools": [
+            "cadaver",
+            "davtest",
+            "heartleech",
+            "jboss-autopwn",
+            "jsql-injection",
+            "nikto",
+            "owasp-mantra-ff",
+            "padbuster",
+            "wapiti",
+            "watobo",
+            "websploit",
+            "whatweb",
+            "xsser"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "04-exploitation-tools",
+      "class": "Exploitation Tools",
+      "tool_count": 24,
+      "subcategories": [
+        {
+          "id": "04-exploitation-tools",
+          "label": "Exploitation Tools (direct)",
+          "tools": [
+            "hashrat",
+            "msfpc",
+            "netexec",
+            "pacu",
+            "pocsuite3",
+            "routersploit",
+            "termineter"
+          ]
+        },
+        {
+          "id": "04-01-metasploit-framework",
+          "label": "Metasploit Framework",
+          "tools": [
+            "armitage"
+          ]
+        },
+        {
+          "id": "04-02-social-engineering",
+          "label": "Social Engineering",
+          "tools": [
+            "beef-xss",
+            "set"
+          ]
+        },
+        {
+          "id": "04-03-exploit-search",
+          "label": "Exploit Search",
+          "tools": [
+            "exploitdb-tiny",
+            "pompem"
+          ]
+        },
+        {
+          "id": "04-04-payload-generator",
+          "label": "Payload Generators",
+          "tools": [
+            "phpggc",
+            "shellnoob",
+            "unicorn-magic"
+          ]
+        },
+        {
+          "id": "04-05-web-exploit",
+          "label": "Web Applications",
+          "tools": [
+            "commix",
+            "sqldict",
+            "sqlmap",
+            "sqlninja",
+            "sqlsus"
+          ]
+        },
+        {
+          "id": "04-06-db-exploit",
+          "label": "Database Exploit",
+          "tools": [
+            "mdbtools",
+            "odat",
+            "oscanner",
+            "sidguesser"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "05-password-attacks",
+      "class": "Password Attacks",
+      "tool_count": 45,
+      "subcategories": [
+        {
+          "id": "05-password-attacks",
+          "label": "Password Attacks (direct)",
+          "tools": [
+            "hash-identifier",
+            "hashid"
+          ]
+        },
+        {
+          "id": "05-01-online-attacks",
+          "label": "Online Attacks",
+          "tools": [
+            "brutespray",
+            "changeme",
+            "crowbar",
+            "device-pharmer",
+            "gpp-decrypt",
+            "hydra",
+            "hydra-gtk",
+            "maskprocessor",
+            "medusa",
+            "ncrack",
+            "patator",
+            "statsprocessor",
+            "thc-pptp-bruter"
+          ]
+        },
+        {
+          "id": "05-02-offline-attacks",
+          "label": "Offline Attacks",
+          "tools": [
+            "bruteforce-salted-openssl",
+            "crackle",
+            "fcrackzip",
+            "hashcat",
+            "john",
+            "johnny",
+            "multiforcer",
+            "pdfcrack",
+            "rainbowcrack",
+            "rarcrack",
+            "rcracki-mt",
+            "sipcrack",
+            "sucrack",
+            "truecrack"
+          ]
+        },
+        {
+          "id": "05-03-local-attacks",
+          "label": "Local Attacks",
+          "tools": [
+            "bruteforce-luks",
+            "chntpw",
+            "cmospwd",
+            "creddump7",
+            "ophcrack",
+            "ophcrack-cli",
+            "passing-the-hash",
+            "samdump2"
+          ]
+        },
+        {
+          "id": "05-05-profile",
+          "label": "Password Profiling & Wordlists",
+          "tools": [
+            "cewl",
+            "crunch",
+            "pipal",
+            "rsmangler",
+            "seclists",
+            "twofi",
+            "username-anarchy",
+            "wordlists"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "10-maintaining-access",
+      "class": "Maintaining Access",
+      "tool_count": 34,
+      "subcategories": [
+        {
+          "id": "10-maintaining-access",
+          "label": "Maintaining Access (direct)",
+          "tools": [
+            "bloodhound",
+            "dnscat2-client",
+            "dnscat2-server",
+            "starkiller",
+            "villain",
+            "windows-binaries"
+          ]
+        },
+        {
+          "id": "10-01-os-backdoors",
+          "label": "OS Backdoors",
+          "tools": [
+            "convoc2",
+            "cryptcat",
+            "powershell-empire",
+            "pwncat",
+            "sbd",
+            "sliver"
+          ]
+        },
+        {
+          "id": "10-03-web-backdoors",
+          "label": "Web Backdoors",
+          "tools": [
+            "htshells",
+            "laudanum",
+            "nishang",
+            "webacoo",
+            "webshells",
+            "weevely"
+          ]
+        },
+        {
+          "id": "10-02-tunneling",
+          "label": "Tunneling & Exfiltration",
+          "tools": [
+            "dns2tcp",
+            "godoh",
+            "iodine",
+            "miredo",
+            "proxychains",
+            "proxychains4",
+            "proxytunnel",
+            "ptunnel",
+            "pwnat",
+            "socat",
+            "stunnel4",
+            "udptunnel"
+          ]
+        },
+        {
+          "id": "10-04-av-bypass",
+          "label": "AV Evasion",
+          "tools": [
+            "exe2hexbat",
+            "hyperion",
+            "shellter",
+            "veil-evasion"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "08-post-exploit",
+      "class": "Post Exploitation",
+      "tool_count": 16,
+      "subcategories": [
+        {
+          "id": "08-post-exploit",
+          "label": "Post Exploitation (direct)",
+          "tools": [
+            "chisel",
+            "cymothoa",
+            "evil-winrm",
+            "evil-winrm-py",
+            "ibombshell",
+            "koadic",
+            "lynis",
+            "mimikatz",
+            "ncat-w32",
+            "powercat",
+            "powersploit",
+            "xspy"
+          ]
+        },
+        {
+          "id": "08-01-priv-esc",
+          "label": "Privilege Escalation",
+          "tools": [
+            "linux-exploit-suggester"
+          ]
+        },
+        {
+          "id": "08-02-hash-dump",
+          "label": "Hash & Password Dump",
+          "tools": [
+            "dumpzilla",
+            "wce"
+          ]
+        },
+        {
+          "id": "08-03-pth",
+          "label": "Passing the Hash Attack",
+          "tools": [
+            "freerdp3-x11"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "06-wireless-attacks",
+      "class": "Wireless Testing",
+      "tool_count": 38,
+      "subcategories": [
+        {
+          "id": "06-wireless-attacks",
+          "label": "Wireless Testing (direct)",
+          "tools": [
+            "fern-wifi-cracker",
+            "kismet-core",
+            "mdk3",
+            "pixiewps",
+            "reaver",
+            "wifite",
+            "wig-ng"
+          ]
+        },
+        {
+          "id": "06-01-wireless-tools",
+          "label": "802.11 Wireless Tools",
+          "tools": [
+            "aircrack-ng",
+            "airgeddon",
+            "asleap",
+            "bully",
+            "cowpatty",
+            "eapmd5pass",
+            "freeradius",
+            "freeradius-wpe",
+            "sparrow-wifi",
+            "wifi-honey"
+          ]
+        },
+        {
+          "id": "06-02-bluetooth-tools",
+          "label": "Bluetooth Tools",
+          "tools": [
+            "bluelog",
+            "blueranger",
+            "bluesnarfer",
+            "bluez-hcidump",
+            "btscanner",
+            "redfang",
+            "spooftooph"
+          ]
+        },
+        {
+          "id": "06-05-radio-tools",
+          "label": "Software Defined Radio",
+          "tools": [
+            "gqrx-sdr",
+            "gr-air-modes",
+            "inspectrum",
+            "rfcat",
+            "rtl-sdr",
+            "rtlsdr-scanner"
+          ]
+        },
+        {
+          "id": "06-03-rfid-nfc-tools",
+          "label": "RFID & NFC Tools",
+          "tools": [
+            "libfreefare-bin",
+            "libnfc-bin",
+            "mfcuk",
+            "mfoc",
+            "mfterm"
+          ]
+        },
+        {
+          "id": "06-04-other-wireless",
+          "label": "Other Wireless Tools",
+          "tools": [
+            "gnuradio",
+            "hackrf",
+            "ubertooth"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "07-reverseengineer",
+      "class": "Reverse Engineering",
+      "tool_count": 20,
+      "subcategories": [
+        {
+          "id": "07-reverseengineer",
+          "label": "Reverse Engineering (direct)",
+          "tools": [
+            "androguard",
+            "android-sdk",
+            "apktool",
+            "detect-it-easy",
+            "dex2jar",
+            "ghidra",
+            "rizin-cutter"
+          ]
+        },
+        {
+          "id": "07-01-disassemblers",
+          "label": "Disassemblers",
+          "tools": [
+            "bddisasm",
+            "libsmali-java"
+          ]
+        },
+        {
+          "id": "07-02-debuggers",
+          "label": "Debuggers",
+          "tools": [
+            "edb-debugger",
+            "gdb",
+            "gdb-gef",
+            "javasnoop",
+            "ollydbg"
+          ]
+        },
+        {
+          "id": "07-03-decompilers",
+          "label": "Decompilers",
+          "tools": [
+            "bytecode-viewer",
+            "jadx",
+            "jd-gui",
+            "recstudio"
+          ]
+        },
+        {
+          "id": "07-04-radare2",
+          "label": "Radare2 Framework",
+          "tools": [
+            "radare2"
+          ]
+        },
+        {
+          "id": "07-05-rizin",
+          "label": "Rizin Framework",
+          "tools": [
+            "rizin"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "09-sniffing-spoofing",
+      "class": "Sniffing & Spoofing",
+      "tool_count": 29,
+      "subcategories": [
+        {
+          "id": "09-sniffing-spoofing",
+          "label": "Sniffing & Spoofing (direct)",
+          "tools": [
+            "bettercap",
+            "etherape",
+            "etherwake",
+            "ettercap-graphical",
+            "ettercap-text-only",
+            "ferret-sidejack",
+            "hamster-sidejack",
+            "macchanger",
+            "mitmproxy",
+            "python3-impacket",
+            "python3-scapy",
+            "responder",
+            "wireshark"
+          ]
+        },
+        {
+          "id": "09-01-network-sniffers",
+          "label": "Network Sniffers",
+          "tools": [
+            "chaosreader",
+            "darkstat",
+            "driftnet",
+            "hexinject",
+            "netsniff-ng",
+            "sslsniff",
+            "tcpflow"
+          ]
+        },
+        {
+          "id": "09-02-network-spoofing",
+          "label": "Spoofing and MITM",
+          "tools": [
+            "dnschef",
+            "dsniff",
+            "evil-ssdp",
+            "fiked",
+            "isr-evilgrade",
+            "rebind",
+            "sniffjoke",
+            "sslsplit",
+            "tcpreplay"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "11-forensics",
+      "class": "Digital Forensics",
+      "tool_count": 46,
+      "subcategories": [
+        {
+          "id": "11-forensics",
+          "label": "Digital Forensics (direct)",
+          "tools": [
+            "autopsy",
+            "binwalk",
+            "bulk-extractor",
+            "chkrootkit",
+            "extundelete",
+            "foremost",
+            "galleta",
+            "hashdeep",
+            "inetsim",
+            "mc",
+            "missidentify",
+            "procdump",
+            "pst-utils",
+            "reglookup",
+            "regripper",
+            "rkhunter",
+            "ssdeep",
+            "undbx",
+            "unhide",
+            "vinetto",
+            "volatility3",
+            "xplico",
+            "yara"
+          ]
+        },
+        {
+          "id": "11-11-pdf-forensics-tools",
+          "label": "PDF Forensics Tools",
+          "tools": [
+            "pdf-parser",
+            "pdfid"
+          ]
+        },
+        {
+          "id": "11-08-forensic-suites",
+          "label": "Sleuth Kit Suite",
+          "tools": [
+            "grokevt",
+            "sleuthkit"
+          ]
+        },
+        {
+          "id": "11-05-forensic-carving-tools",
+          "label": "Forensic Carving Tools",
+          "tools": [
+            "ext3grep",
+            "ext4magic",
+            "magicrescue",
+            "myrescue",
+            "pasco",
+            "pev",
+            "recoverdm",
+            "recoverjpeg",
+            "rifiuti",
+            "rifiuti2",
+            "safecopy",
+            "scalpel",
+            "scrounge-ntfs"
+          ]
+        },
+        {
+          "id": "11-07-forensic-imaging-tools",
+          "label": "Forensic Imaging Tools",
+          "tools": [
+            "afflib-tools",
+            "dc3dd",
+            "dcfldd",
+            "ddrescue",
+            "ewf-tools",
+            "guymager"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "12-reporting",
+      "class": "Reporting Tools",
+      "tool_count": 4,
+      "subcategories": [
+        {
+          "id": "12-reporting",
+          "label": "Reporting Tools (direct)",
+          "tools": [
+            "dradis",
+            "eyewitness",
+            "faraday",
+            "neo4j"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "13-automotive",
+      "class": "Automotive",
+      "tool_count": 1,
+      "subcategories": [
+        {
+          "id": "13-01-can-utils",
+          "label": "Can Utils",
+          "tools": [
+            "can-utils"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "14-ai-tools",
+      "class": "AI Tools",
+      "tool_count": 5,
+      "subcategories": [
+        {
+          "id": "14-ai-tools",
+          "label": "AI Tools (direct)",
+          "tools": [
+            "hexstrike-ai",
+            "mcpwn",
+            "opencode",
+            "pi-dev",
+            "unsloth"
+          ]
+        }
+      ]
+    },
+    {
+      "class_id": "misc",
+      "class": "Autres (System Services / Utility / ...)",
+      "tool_count": 21,
+      "subcategories": [
+        {
+          "id": "misc",
+          "label": "Database",
+          "tools": [
+            "mariadb-server",
+            "postgresql"
+          ]
+        },
+        {
+          "id": "misc",
+          "label": "Development",
+          "tools": [
+            "arduino",
+            "powershell"
+          ]
+        },
+        {
+          "id": "misc",
+          "label": "Engineering",
+          "tools": [
+            "chirp"
+          ]
+        },
+        {
+          "id": "misc",
+          "label": "HTTP",
+          "tools": [
+            "apache2",
+            "nginx"
+          ]
+        },
+        {
+          "id": "misc",
+          "label": "Metasploit",
+          "tools": [
+            "metasploit-framework"
+          ]
+        },
+        {
+          "id": "misc",
+          "label": "Network",
+          "tools": [
+            "firefox",
+            "firefox-esr",
+            "nyx"
+          ]
+        },
+        {
+          "id": "misc",
+          "label": "OpenVas - Greenbone",
+          "tools": [
+            "gvm"
+          ]
+        },
+        {
+          "id": "misc",
+          "label": "SSH",
+          "tools": [
+            "openssh-server"
+          ]
+        },
+        {
+          "id": "misc",
+          "label": "Utility",
+          "tools": [
+            "coreutils",
+            "gpa",
+            "keepassxc",
+            "mat2",
+            "sirikali",
+            "woeusb-ng",
+            "zulucrypt-gui",
+            "zulumount-gui"
+          ]
+        }
+      ]
+    }
+  ]
+}
