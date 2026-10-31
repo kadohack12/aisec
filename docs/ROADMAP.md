@@ -17,6 +17,7 @@ Trois agents avaient produit des branches parallèles se recouvrant. Elles ont
 | `feat/experts-exploitation` | #3 | classe 04 : expert `exploitation` (18 outils) |
 | `expert-03-webapp-analysis` | #4 | classe 03 complète : `webapp` (38 outils via web_crawl/web_vuln/web_misc) |
 | `feat/experts-forensics` | #6 | classe 11 : expert `forensics` (22 outils) |
+| `feat/experts-reverse` | #7 | classe 07 : expert `reverse` (17 outils) |
 
 **Règle d'arbitrage** : quand deux branches livraient la même classe, on a gardé
 l'implémentation la plus **complète**, puis supprimé les doublons.
@@ -27,9 +28,10 @@ l'implémentation la plus **complète**, puis supprimé les doublons.
 - Classes 01 et 09 : seuls `info` et `sniffing` (lot 5-classes) existaient.
 - Classe 04 : `exploitation` (PR #3), aucun recouvrement.
 - Classe 11 : `forensics` (PR #6), aucun recouvrement.
+- Classe 07 : `reverse` (PR #7), aucun recouvrement.
 
-Résultat sur `main` : **8 experts**, **148 outils uniques**, **aucune collision
-de nom**, **216 tests** verts.
+Résultat sur `main` : **9 experts**, **165 outils uniques**, **aucune collision
+de nom**, **245 tests** verts.
 
 ---
 
@@ -51,16 +53,17 @@ fusionnée par-dessus (branche `consolidate/experts`).
 - [x] Répartition en 15 classes (`docs/CLASSES.md`, `docs/classes.json`)
 - [x] 43 tests
 
-### Jalon 1 — 8 experts ✅ (fusionnés sur `main`)
+### Jalon 1 — 9 experts ✅ (fusionnés sur `main`)
 - [x] Consolider les branches d'agents en **une** base propre
 - [x] Dédupliquer les outils partagés (une seule classe `Tool` par binaire)
-- [x] Experts `info`, `vulnerability`, `webapp`, `exploitation`, `passwords`, `sniffing`, `forensics`
+- [x] Experts `info`, `vulnerability`, `webapp`, `exploitation`, `passwords`, `reverse`, `sniffing`, `forensics`
 - [x] Adopter `tools/spec.py` (base déclarative) comme standard
-- [x] 216 tests (8 experts, 148 outils)
+- [x] 245 tests (9 experts, 165 outils)
 
 ### Jalon 2 — profondeur des classes amorcées
 - [ ] Classe 01 : sous-catégories OSINT, SMTP, SMB, SNMP, SSL, IDS/IPS, Route
 - [ ] Classe 11 : imagerie (autopsy, guymager, ewf-tools), carving complementaire, journaux
+- [ ] Classe 07 : ghidra, edb-debugger, rizin-cutter, bytecode-viewer, jd-gui (CLI)
 - [ ] Classe 02 : Cisco, Fuzzing, VoIP, Stress (couverture complète)
 - [ ] Classe 03 : CMS, Crawlers, Proxies, Scanners web (couverture complète)
 - [ ] Classe 05 : online / offline / local / wordlists

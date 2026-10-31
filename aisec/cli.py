@@ -329,6 +329,8 @@ def main_exploitation() -> int:
 
 def main_forensics() -> int:
     return run_cli("forensics", ["forensics", *sys.argv[1:]])
+def main_reverse() -> int:
+    return run_cli("reverse", ["reverse", *sys.argv[1:]])
 
 
 if __name__ == "__main__":

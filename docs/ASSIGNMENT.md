@@ -16,6 +16,8 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 | 8 | Maintaining Access | `10-maintaining-access` | 34 | basse | | a faire |
 | 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | agent-exploitation | **livre (jalon 1)** |
 | 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | | a faire |
+| 9 | Exploitation Tools | `04-exploitation-tools` | 24 | basse | | a faire |
+| 10 | Reverse Engineering | `07-reverseengineer` | 20 | basse | agent-reverse | **en cours (jalon 1)** |
 | 11 | Post Exploitation | `08-post-exploit` | 16 | basse | | a faire |
 | 12 | Reporting Tools | `12-reporting` | 4 | basse | | a faire |
 | 13 | Automotive | `13-automotive` | 1 | basse | | a faire |
@@ -25,9 +27,9 @@ fichier + `docs/CLASSES.md`. Chaque agent livre un `Expert` pour sa classe
 Note : l'expert `dns` (`01-01-dns-analysis`, dans Information Gathering) est
 deja livre — le decompte de la classe 1 pourra etre ajuste en consequence.
 
-## Jalon 1 : 7 experts livres (premier lot d'outils)
+## Jalon 1 : 8 experts livres (premier lot d'outils)
 
-Les classes 1, 2, 3, 4, 5, 9 et 11 sont amorcees avec un premier lot d'outils et un
+Les classes 1, 2, 3, 4, 5, 7, 9 et 11 sont amorcees avec un premier lot d'outils et un
 expert fonctionnel (routage + construction d'argv + analyse heuristique).
 
 | Expert | `class_id` | Outils du jalon 1 | Tests |
@@ -37,6 +39,7 @@ expert fonctionnel (routage + construction d'argv + analyse heuristique).
 | `webapp` | `03-webapp-analysis` | 38 outils (web_crawl/web_vuln/web_misc : nikto, whatweb, wpscan, gobuster, ffuf, wapiti, ...) | `tests/test_webapp.py` |
 | `exploitation` | `04-exploitation-tools` | 18 outils (sqlmap, msfconsole, searchsploit, ...) | `tests/test_exploitation.py` |
 | `passwords` | `05-password-attacks` | hydra, medusa, ncrack, john, hashcat, ... (13) | `tests/test_passwords.py` |
+| `reverse` | `07-reverseengineer` | 17 outils (rabin2, radare2, rahash2, rasm2, radiff2, rizin, rz-hash, rz-find, gdb, bddisasm, die, apktool, dex2jar, jadx, androguard, baksmali, smali) | `tests/test_reverse.py` |
 | `sniffing` | `09-sniffing-spoofing` | tshark (reutilise), bettercap | `tests/test_sniffing.py` |
 | `forensics` | `11-forensics` | 22 outils (fls, mmls, icat, foremost, scalpel, binwalk, bulk_extractor, pdfid, pdf-parser, yara, volatility3, regripper, reglookup, galleta, vinetto, hashdeep, ssdeep, rkhunter, chkrootkit, extundelete, dc3dd, ddrescue) | `tests/test_forensics.py` |
 
@@ -72,6 +75,28 @@ Reste a couvrir dans les jalons suivants : imagerie et conteneurs (`autopsy`,
 Les sous-categories restantes des autres classes (OSINT, SMTP, SMB, SNMP, Cisco,
 fuzzing, VoIP, stress, CMS, proxies, attaques hors ligne/locales, sniffers
 dedies, spoofing MITM, ...) sont a traiter dans les jalons suivants.
+
+## Jalon 1 : Reverse Engineering (`07-reverseengineer`)
+
+17 outils et un expert `reverse` fonctionnel. Le lot est domine par l'analyse
+statique en lecture seule (`low`) ; `gdb` (execution/debogage) et `smali`
+(assemblage) sont en `medium` et exigent une confirmation.
+
+| Sous-categorie | Outils du jalon 1 |
+|----------------|-------------------|
+| Suite Radare2 | `rabin2`, `radare2`, `rahash2`, `rasm2`, `radiff2` |
+| Suite Rizin | `rizin`, `rz-hash`, `rz-find` |
+| Debogueurs | `gdb` |
+| Desassembleurs | `bddisasm` |
+| Identification | `die` (detect-it-easy) |
+| Android / Java | `apktool`, `dex2jar`, `jadx`, `androguard`, `baksmali`, `smali` |
+
+Tests : `tests/test_reverse.py` (routage, argv, analyse, politique de controle).
+
+Reste a couvrir dans les jalons suivants : `ghidra`, `edb-debugger`,
+`ollydbg`, `rizin-cutter`, `bytecode-viewer`, `jd-gui`, `recstudio`,
+`javasnoop`, `gdb-gef`, `android-sdk`, `libsmali-java` (interface graphique
+ou SDK; a exposer via leurs binaires CLI quand ils existent).
 
 ## Contrat d'un agent (une classe)
 

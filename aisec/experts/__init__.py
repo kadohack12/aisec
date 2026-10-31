@@ -16,6 +16,7 @@ from .passwords import PASSWORDS_EXPERT
 from .sniffing import SNIFFING_EXPERT
 from .vulnerability import VULNERABILITY_EXPERT
 from .webapp import WEBAPP_EXPERT
+from .reverse import REVERSE_EXPERT
 
 _EXPERTS: dict[str, Expert] = {}
 
@@ -65,5 +66,6 @@ register(PASSWORDS_EXPERT)
 register(SNIFFING_EXPERT)
 register(EXPLOITATION_EXPERT)
 register(FORENSICS_EXPERT)
+register(REVERSE_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]

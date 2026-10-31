@@ -215,6 +215,12 @@ forensicsAI "analyse suspect.pdf avec pdfid"
 forensicsAI "liste les processus de dump.mem avec volatility3"
 forensicsAI "recupere les fichiers de disk.img avec foremost"
 
+# Expert reverse engineering (analyse statique en lecture seule)
+reverseAI "liste les imports de malware.dll"
+reverseAI "identifie sample.exe avec detect-it-easy"
+reverseAI "desassemble la fonction main de sample.exe avec radare2"
+reverseAI "decompile app.apk avec jadx"
+
 # nmap / tshark (outils directs)
 nmapAI "découverte des hôtes vivants sur 192.168.1.0/24"
 tsharkAI "lis capture.pcap et affiche les requêtes dns"
@@ -271,7 +277,7 @@ aisec/
   core/         moteur: config, safety, control, executor, intent,
                 analyzer, engine, registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
-                webapp, passwords, sniffing, exploitation, forensics
+                webapp, passwords, sniffing, exploitation, forensics, reverse
   providers/    backends LLM: ollama (local), openai-compatible (API)
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
                 sslscan, wafw00f, dnsrecon, bettercap, passwords (13 outils),
@@ -282,9 +288,12 @@ aisec/
                   scalpel, binwalk, bulk_extractor, pdfid, pdf-parser, yara,
                   volatility3, regripper, reglookup, galleta, vinetto, hashdeep,
                   ssdeep, rkhunter, chkrootkit, extundelete, dc3dd, ddrescue)
+                + outils reverse (classe 07 : rabin2, radare2, rahash2, rasm2,
+                  radiff2, rizin, rz-hash, rz-find, gdb, bddisasm, die, apktool,
+                  dex2jar, jadx, androguard, baksmali, smali)
   cli.py        CLI unifiée + alias (nmapAI, tsharkAI, dnsAI, infoAI,
                 vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
-                exploitationAI, forensicsAI)
+                exploitationAI, forensicsAI, reverseAI)
 ```
 
 Flux : `intention → expert → outil → params → argv → garde-fous → politique →

@@ -77,6 +77,12 @@ def _load_builtins() -> None:
     from ..tools import volatility as _volatility  # noqa: F401
     from ..tools import windows_artifacts as _windows_artifacts  # noqa: F401
     from ..tools import yara as _yara  # noqa: F401
+    # Classe 07 - Reverse Engineering
+    from ..tools import android as _android  # noqa: F401
+    from ..tools import die as _die  # noqa: F401
+    from ..tools import gdb as _gdb  # noqa: F401
+    from ..tools import radare2 as _radare2  # noqa: F401
+    from ..tools import rizin as _rizin  # noqa: F401
 
 
 _load_builtins()

@@ -27,6 +27,7 @@ passwordsAI = "aisec.cli:main_passwords"
 sniffingAI = "aisec.cli:main_sniffing"
 exploitationAI = "aisec.cli:main_exploitation"
 forensicsAI = "aisec.cli:main_forensics"
+reverseAI = "aisec.cli:main_reverse"
 
 [tool.hatch.build.targets.wheel]
 packages = ["aisec"]
