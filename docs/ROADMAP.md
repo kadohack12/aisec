@@ -113,13 +113,15 @@ Le socle est complet ; la suite consiste à **approfondir** les classes existant
 - [x] `--eval` : mesure de l'exactitude JSON d'un modèle
 - [x] Guide `docs/AI_TRAINING.md`
 
-### Jalon 5 — couverture complète du catalogue
+### Jalon 5 — couverture du catalogue
 - [x] Classe 10 `maintaining-access` (34 outils : bloodhound, dnscat2, iodine,
       proxychains, socat, stunnel4, weevely, nishang, shellter, pwncat...)
 - [x] Classe 15 `misc` (21 outils : mariadb, postgresql, nginx, apache2, gvm...)
-- [x] Compléter les classes amorcées (jalon 2) : la couverture passe d'environ
-      **40 %** à **88 % du catalogue** (390/445 outils exposés) avant les
-      classes 10 et 15, désormais intégrées.
+- [x] Approfondir les classes amorcées (jalon 2) : la couverture passe d'environ
+      **40 %** à **97 % du catalogue** (432/445 outils exposés). Les 13 restants
+      sont des méta-paquets ou interfaces graphiques (bulk-extractor, sleuthkit,
+      wireshark, johnny, mdk3, gdb-gef...), dont les binaires sous-jacents sont
+      déjà couverts.
 - [ ] Enrichir les `examples` des outils (levier n°1 de l'entraînement).
 
 ---
