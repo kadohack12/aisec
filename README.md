@@ -355,7 +355,7 @@ aisec/
                 executor, intent, analyzer, engine, orchestrator, registry
   experts/      experts par classe: base.py (socle) + dns, info, vulnerability,
                 webapp, passwords, sniffing, exploitation, forensics, reverse,
-                post_exploit, reporting, wireless, ai, automotive
+                post_exploit, reporting, wireless, ai, automotive, misc
   providers/    backends LLM: ollama (local), openai-compatible (API)
   report.py     rapport d'audit: agregation + export JSON / Markdown / HTML
   tools/        plugins: nmap, tshark, dig, host, whois, masscan, arp-scan,
@@ -380,10 +380,14 @@ aisec/
                   canconfig, canconvert, isotpdump)
                 + outils IA (classe 14 : hexstrike-ai, mcpwn, opencode, pi-dev,
                   unsloth)
+                + misc (classe 15 : services systeme apache2/nginx/mariadb/
+                  postgresql/openssh/metasploit/gvm, arduino, powershell,
+                  chirp, nyx, firefox, coreutils, gpa, keepassxc, mat2,
+                  sirikali, zulucrypt-gui, zulumount-gui, woeusb-ng)
   cli.py        CLI unifiée + commande `report` + alias (nmapAI, tsharkAI, dnsAI,
                 infoAI, vulnerabilityAI, webappAI, passwordsAI, sniffingAI,
                 exploitationAI, forensicsAI, reverseAI, postExploitAI,
-                reportingAI, wirelessAI, aiAI, automotiveAI)
+                reportingAI, wirelessAI, aiAI, automotiveAI, miscAI)
 ```
 
 Flux : `intention → routeur → expert → outil → params → argv → garde-fous →

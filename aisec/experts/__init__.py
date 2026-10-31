@@ -14,6 +14,7 @@ from .dns import DNS_EXPERT
 from .exploitation import EXPLOITATION_EXPERT
 from .forensics import FORENSICS_EXPERT
 from .info import INFO_EXPERT
+from .misc import MISC_EXPERT
 from .passwords import PASSWORDS_EXPERT
 from .post_exploit import POST_EXPLOIT_EXPERT
 from .reporting import REPORTING_EXPERT
@@ -125,5 +126,6 @@ register(REPORTING_EXPERT)
 register(WIRELESS_EXPERT)
 register(AI_EXPERT)
 register(AUTOMOTIVE_EXPERT)
+register(MISC_EXPERT)
 
 __all__ = ["Expert", "register", "get", "all_experts", "select", "route", "run_expert"]
